@@ -3,6 +3,9 @@ package com.vann.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.vann.model.enums.Colour;
+import com.vann.model.enums.Size;
+
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +19,7 @@ public class InvoiceProductTest {
     @BeforeEach
     public void setUp() {
         invoice = new Invoice();
-        product = new Product("Ring", "Gold ring", 499.99, "Available", "image.png", new Category("Jewelry", "Luxury items"));
+        product = new Product("Ring", "Gold ring", 499.99, "Available", "image.png", new Category("Jewellery", "Luxury items"), Size.US_07, Colour.YELLOW_GOLD);
         invoiceProduct = new InvoiceProduct(invoice, product, 2, 499.99);
     }
 
@@ -45,7 +48,7 @@ public class InvoiceProductTest {
         invoiceProduct.setInvoiceProductUuid(newUuid);
 
         Invoice newInvoice = new Invoice(); // Alternatively, mock with Mockito
-        Product newProduct = new Product("Necklace", "Silver necklace", 299.99, "Out of Stock", "necklace.png", new Category("Accessories", "Luxury items"));
+        Product newProduct = new Product("Necklace", "Silver necklace", 299.99, "Out of Stock", "necklace.png", new Category("Accessories", "Luxury items"), Size.LARGE, Colour.SILVER);
 
         invoiceProduct.setInvoice(newInvoice);
         invoiceProduct.setProduct(newProduct);

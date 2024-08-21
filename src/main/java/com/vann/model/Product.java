@@ -1,11 +1,17 @@
 package com.vann.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import java.util.UUID;
+
+import com.vann.model.enums.Colour;
+import com.vann.model.enums.Size;
 
 @Entity
 public class Product {
@@ -22,11 +28,19 @@ public class Product {
     @JoinColumn(name = "FK_categoryUuid", referencedColumnName = "categoryUuid")
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true) // Optional attribute
+    private Size size;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true) // Optional attribute
+    private Colour colour;
+
     public Product() {
         this.productUuid = UUID.randomUUID();
     }
 
-    public Product(String name, String desc, double price, String status, String image, Category category) {
+    public Product(String name, String desc, double price, String status, String image, Category category, Size size, Colour colour) {
         this();
         this.productName = name;
         this.productDesc = desc;
@@ -34,6 +48,8 @@ public class Product {
         this.productStatus = status;
         this.productImage = image;
         this.category = category;
+        this.size = size;
+        this.colour = colour;
     }
 
     public UUID getProductUuid() {
@@ -92,11 +108,26 @@ public class Product {
         this.category = category;
     }
 
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public Colour getColour() {
+        return colour;
+    }
+
+    public void setColour(Colour colour) {
+        this.colour = colour;
+    }
+
     @Override
     public String toString() {
         return "Product [productUuid=" + productUuid + ", productName=" + productName + ", productDesc=" + productDesc
-                + ", productPrice=" + productPrice + ", productStatus=" + productStatus + ", category=" + category
-                + "]";
+                + ", productPrice=" + productPrice + ", productStatus=" + productStatus + ", category=" + category + ", size=" + size + ", colour=" + colour + "]";
     }
 
 }

@@ -3,6 +3,9 @@ package com.vann.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.vann.model.enums.Colour;
+import com.vann.model.enums.Size;
+
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +18,7 @@ public class ProductTest {
     @BeforeEach
     public void setUp() {
         category = new Category("Jewellery", "Luxury jewellery items");
-        product = new Product("Ring", "Gold ring with diamonds", 499.99, "Available", "image.png", category);
+        product = new Product("Ring", "Gold ring with diamonds", 499.99, "Available", "image.png", category, Size.US_07, Colour.YELLOW_GOLD);
     }
 
     @Test
@@ -67,7 +70,7 @@ public class ProductTest {
     public void testToString() {
         String expectedString = "Product [productUuid=" + product.getProductUuid() +
                 ", productName=Ring, productDesc=Gold ring with diamonds, productPrice=499.99, productStatus=Available, category=" +
-                category.toString() + "]";
+                category.toString() + ", size=" + product.getSize() + ", colour=" + product.getColour() + "]";
 
         assertEquals(expectedString, product.toString(), "toString should match the expected output");
     }
