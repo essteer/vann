@@ -25,18 +25,18 @@ public class Invoice {
     private double totalAmount;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<InvoiceProduct> invoiceProducts;
+    private List<InvoiceItem> invoiceItems;
 
     public Invoice() {
         this.invoiceUuid = UUID.randomUUID();
     }
 
-    public Invoice(Customer customer, String billingAddress, String shippingAddress, List<InvoiceProduct> invoiceProducts, double totalAmount) {
+    public Invoice(Customer customer, String billingAddress, String shippingAddress, List<InvoiceItem> invoiceItems, double totalAmount) {
         this();
         this.customer = customer;
         this.billingAddress = billingAddress;
         this.shippingAddress = shippingAddress;
-        this.invoiceProducts = invoiceProducts;
+        this.invoiceItems = invoiceItems;
         this.totalAmount = totalAmount;
     }
 
@@ -72,30 +72,30 @@ public class Invoice {
         this.shippingAddress = shippingAddress;
     }
 
-    public List<InvoiceProduct> getInvoiceProducts() {
-        return invoiceProducts;
-    }
-
-    public void setInvoiceProducts(List<InvoiceProduct> invoiceProducts) {
-        this.invoiceProducts = invoiceProducts;
-        this.totalAmount = calculateTotalAmount();
-    }
-
     public double getTotalAmount() {
         return totalAmount;
     }
 
     public double calculateTotalAmount() {
-        return invoiceProducts.stream()
+        return invoiceItems.stream()
         .mapToDouble(ip -> ip.getPrice() * ip.getQuantity())
         .sum();
+    }
+
+    public List<InvoiceItem> getInvoiceItems() {
+        return invoiceItems;
+    }
+
+    public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
+        this.invoiceItems = invoiceItems;
+        this.totalAmount = calculateTotalAmount();
     }
 
     @Override
     public String toString() {
         return "Invoice [invoiceUuid=" + invoiceUuid + ", customer=" + customer + ", billingAddress=" + billingAddress
-                + ", shippingAddress=" + shippingAddress + ", totalAmount=" + totalAmount + ", invoiceProducts="
-                + invoiceProducts + "]";
+                + ", shippingAddress=" + shippingAddress + ", totalAmount=" + totalAmount + ", invoiceItems="
+                + invoiceItems + "]";
     }
 
 }

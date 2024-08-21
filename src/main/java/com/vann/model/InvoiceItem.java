@@ -8,40 +8,40 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class InvoiceProduct {
+public class InvoiceItem {
 
     @Id
-    private UUID invoiceProductUuid;
+    private UUID invoiceItemUuid;
 
     @ManyToOne
     @JoinColumn(name = "FK_invoiceUuid")
     private Invoice invoice;
 
     @ManyToOne
-    @JoinColumn(name = "FK_productUuid")
-    private Product product;
+    @JoinColumn(name = "FK_itemUuid")
+    private Product invoiceItem;
 
     private int quantity;
     private double price;
 
-    public InvoiceProduct() {
-        this.invoiceProductUuid = UUID.randomUUID();
+    public InvoiceItem() {
+        this.invoiceItemUuid = UUID.randomUUID();
     }
 
-    public InvoiceProduct(Invoice invoice, Product product, int quantity, double price) {
+    public InvoiceItem(Invoice invoice, Product product, int quantity, double price) {
         this();
         this.invoice = invoice;
-        this.product = product;
+        this.invoiceItem = product;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public UUID getInvoiceProductUuid() {
-        return invoiceProductUuid;
+    public UUID getInvoiceItemUuid() {
+        return invoiceItemUuid;
     }
 
-    public void setInvoiceProductUuid(UUID invoiceProductUuid) {
-        this.invoiceProductUuid = invoiceProductUuid;
+    public void setInvoiceItemUuid(UUID invoiceItemUuid) {
+        this.invoiceItemUuid = invoiceItemUuid;
     }
 
     public Invoice getInvoice() {
@@ -52,12 +52,12 @@ public class InvoiceProduct {
         this.invoice = invoice;
     }
 
-    public Product getProduct() {
-        return product;
+    public Product getInvoiceItem() {
+        return invoiceItem;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setInvoiceItem(Product invoiceItem) {
+        this.invoiceItem = invoiceItem;
     }
 
     public int getQuantity() {
@@ -78,8 +78,8 @@ public class InvoiceProduct {
 
     @Override
     public String toString() {
-        return "InvoiceProduct [invoiceProductUuid=" + invoiceProductUuid + ", invoice=" + invoice + ", product="
-                + product + ", quantity=" + quantity + ", price=" + price + "]";
+        return "InvoiceItem [invoiceItemUuid=" + invoiceItemUuid + ", invoice=" + invoice + ", invoiceItem="
+                + invoiceItem + ", quantity=" + quantity + ", price=" + price + "]";
     }
 
 }

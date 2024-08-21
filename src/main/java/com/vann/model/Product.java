@@ -21,7 +21,6 @@ public class Product {
     private String productName;
     private String productDesc;
     private double productPrice;
-    private String productStatus;
     private String productImage;
 
     @ManyToOne
@@ -40,12 +39,10 @@ public class Product {
         this.productUuid = UUID.randomUUID();
     }
 
-    public Product(String name, String desc, double price, String status, String image, Category category, Size size, Colour colour) {
+    public Product(String name, double price, String image, Category category, Size size, Colour colour) {
         this();
         this.productName = name;
-        this.productDesc = desc;
         this.productPrice = price;
-        this.productStatus = status;
         this.productImage = image;
         this.category = category;
         this.size = size;
@@ -84,14 +81,6 @@ public class Product {
         this.productPrice = productPrice;
     }
 
-    public String getProductStatus() {
-        return productStatus;
-    }
-
-    public void setProductStatus(String productStatus) {
-        this.productStatus = productStatus;
-    }
-
     public String getProductImage() {
         return productImage;
     }
@@ -126,8 +115,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [productUuid=" + productUuid + ", productName=" + productName + ", productDesc=" + productDesc
-                + ", productPrice=" + productPrice + ", productStatus=" + productStatus + ", category=" + category + ", size=" + size + ", colour=" + colour + "]";
+        return "Product [productUuid=" + productUuid + ", productName=" + productName + ", productPrice=" + productPrice + ", category=" + category
+                + ", size=" + size + ", colour=" + colour + "]";
     }
+
+
 
 }

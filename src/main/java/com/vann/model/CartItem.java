@@ -8,14 +8,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class ShoppingCartItem {
+public class CartItem {
 
     @Id
-    private UUID shoppingCartItemUuid;
+    private UUID cartItemUuid;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
-    private ShoppingCart shoppingCart;
+    private Cart cart;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -23,32 +23,32 @@ public class ShoppingCartItem {
 
     private Integer quantity;
 
-    public ShoppingCartItem() {
-        this.shoppingCartItemUuid = UUID.randomUUID();
+    public CartItem() {
+        this.cartItemUuid = UUID.randomUUID();
     }
 
-    public ShoppingCartItem(ShoppingCart cart, Product product, Integer quantity) {
+    public CartItem(Cart cart, Product product, Integer quantity) {
         this();
-        this.shoppingCart = cart;
+        this.cart = cart;
         this.product = product;
         this.quantity = quantity;
 
     }
 
-    public UUID getShoppingCartItemUuid() {
-        return shoppingCartItemUuid;
+    public UUID getCartItemUuid() {
+        return cartItemUuid;
     }
 
-    public void setShoppingCartItemUuid(UUID shoppingCartItemUuid) {
-        this.shoppingCartItemUuid = shoppingCartItemUuid;
+    public void setCartItemUuid(UUID cartItemUuid) {
+        this.cartItemUuid = cartItemUuid;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
+    public Cart getCart() {
+        return cart;
     }
 
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public Product getProduct() {
@@ -69,7 +69,7 @@ public class ShoppingCartItem {
 
     @Override
     public String toString() {
-        return "ShoppingCartItem [shoppingCartItemUuid=" + shoppingCartItemUuid + ", shoppingCart=" + shoppingCart + ", product=" + product
+        return "CartItem [cartItemUuid=" + cartItemUuid + ", cart=" + cart + ", product=" + product
                 + ", quantity=" + quantity + "]";
     }
 

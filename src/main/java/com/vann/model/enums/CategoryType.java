@@ -2,8 +2,8 @@ package com.vann.model.enums;
 
 public enum CategoryType {
 
+    JEWELLERY, // base-enum for test cases
     BRACELET,
-    EARCUFF,
     EARRING,
     NECKLACE,
     RING
