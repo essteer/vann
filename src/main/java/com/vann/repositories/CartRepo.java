@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.vann.model.ShoppingCart;
+import com.vann.model.Cart;
 
 @Repository
-public interface ShoppingCartRepo extends JpaRepository<ShoppingCart, UUID> {
+public interface CartRepo extends JpaRepository<Cart, UUID> {
 
 }
