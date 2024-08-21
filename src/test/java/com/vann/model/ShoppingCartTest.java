@@ -30,7 +30,7 @@ public class ShoppingCartTest {
     @Test
     public void testShoppingCartDefaultConstructor() {
         ShoppingCart defaultCart = new ShoppingCart();
-        assertNotNull(defaultCart.getCartUuid(), "UUID should be generated");
+        assertNotNull(defaultCart.getShoppingCartUuid(), "UUID should be generated");
         assertNull(defaultCart.getCustomer(), "Customer should be null");
         assertNotNull(defaultCart.getItems(), "Items should not be null");
         assertTrue(defaultCart.getItems().isEmpty(), "Items should be empty");
@@ -38,7 +38,7 @@ public class ShoppingCartTest {
 
     @Test
     public void testShoppingCartParameterizedConstructor() {
-        assertNotNull(shoppingCart.getCartUuid(), "UUID should be generated");
+        assertNotNull(shoppingCart.getShoppingCartUuid(), "UUID should be generated");
         assertEquals(customer, shoppingCart.getCustomer(), "Customer should match");
         assertEquals(items, shoppingCart.getItems(), "Items should match");
         assertEquals(2, shoppingCart.getItems().size(), "Items size should match");
@@ -47,7 +47,7 @@ public class ShoppingCartTest {
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
-        shoppingCart.setCartUuid(newUuid);
+        shoppingCart.setShoppingCartUuid(newUuid);
 
         Customer newCustomer = new Customer("Jane Doe", "jane.doe@example.com");
         Set<ShoppingCartItem> newItems = new HashSet<>();
@@ -57,7 +57,7 @@ public class ShoppingCartTest {
         shoppingCart.setCustomer(newCustomer);
         shoppingCart.setItems(newItems);
 
-        assertEquals(newUuid, shoppingCart.getCartUuid(), "UUID should match");
+        assertEquals(newUuid, shoppingCart.getShoppingCartUuid(), "UUID should match");
         assertEquals(newCustomer, shoppingCart.getCustomer(), "Customer should match");
         assertEquals(newItems, shoppingCart.getItems(), "Items should match");
         assertEquals(1, shoppingCart.getItems().size(), "Items size should match");
@@ -65,7 +65,7 @@ public class ShoppingCartTest {
 
     @Test
     public void testToString() {
-        String expectedString = "ShoppingCart [cartUuid=" + shoppingCart.getCartUuid() +
+        String expectedString = "ShoppingCart [shoppingCartUuid=" + shoppingCart.getShoppingCartUuid() +
                 ", customer=" + customer + ", items=" + items + "]";
         assertEquals(expectedString, shoppingCart.toString(), "toString should match the expected output");
     }

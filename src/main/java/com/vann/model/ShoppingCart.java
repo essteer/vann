@@ -16,7 +16,7 @@ import jakarta.persistence.OneToOne;
 public class ShoppingCart {
 
     @Id
-    private UUID cartUuid;
+    private UUID shoppingCartUuid;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_customerUuid", referencedColumnName = "customerUuid")
@@ -26,7 +26,7 @@ public class ShoppingCart {
     private Set<ShoppingCartItem> items = new HashSet<>();
 
     public ShoppingCart() {
-        this.cartUuid = UUID.randomUUID();
+        this.shoppingCartUuid = UUID.randomUUID();
     }
 
     public ShoppingCart(Customer customer, Set<ShoppingCartItem> items) {
@@ -35,12 +35,12 @@ public class ShoppingCart {
         this.items = items;
     }
 
-    public UUID getCartUuid() {
-        return cartUuid;
+    public UUID getShoppingCartUuid() {
+        return shoppingCartUuid;
     }
 
-    public void setCartUuid(UUID cartUuid) {
-        this.cartUuid = cartUuid;
+    public void setShoppingCartUuid(UUID cartUuid) {
+        this.shoppingCartUuid = cartUuid;
     }
 
     public Customer getCustomer() {
@@ -61,7 +61,7 @@ public class ShoppingCart {
 
     @Override
     public String toString() {
-        return "ShoppingCart [cartUuid=" + cartUuid + ", customer=" + customer + ", items=" + items + "]";
+        return "ShoppingCart [shoppingCartUuid=" + shoppingCartUuid + ", customer=" + customer + ", items=" + items + "]";
     }
 
 }

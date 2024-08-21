@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 public class ShoppingCartItem {
 
     @Id
-    private UUID itemUuid;
+    private UUID shoppingCartItemUuid;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
@@ -24,7 +24,7 @@ public class ShoppingCartItem {
     private Integer quantity;
 
     public ShoppingCartItem() {
-        this.itemUuid = UUID.randomUUID();
+        this.shoppingCartItemUuid = UUID.randomUUID();
     }
 
     public ShoppingCartItem(ShoppingCart cart, Product product, Integer quantity) {
@@ -35,12 +35,12 @@ public class ShoppingCartItem {
 
     }
 
-    public UUID getItemUuid() {
-        return itemUuid;
+    public UUID getShoppingCartItemUuid() {
+        return shoppingCartItemUuid;
     }
 
-    public void setItemUuid(UUID itemUuid) {
-        this.itemUuid = itemUuid;
+    public void setShoppingCartItemUuid(UUID shoppingCartItemUuid) {
+        this.shoppingCartItemUuid = shoppingCartItemUuid;
     }
 
     public ShoppingCart getShoppingCart() {
@@ -69,7 +69,7 @@ public class ShoppingCartItem {
 
     @Override
     public String toString() {
-        return "ShoppingCartItem [itemUuid=" + itemUuid + ", shoppingCart=" + shoppingCart + ", product=" + product
+        return "ShoppingCartItem [shoppingCartItemUuid=" + shoppingCartItemUuid + ", shoppingCart=" + shoppingCart + ", product=" + product
                 + ", quantity=" + quantity + "]";
     }
 

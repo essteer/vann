@@ -3,6 +3,9 @@ package com.vann.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.vann.model.enums.Colour;
+import com.vann.model.enums.Size;
+
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -17,7 +20,7 @@ public class ShoppingCartItemTest {
     @BeforeEach
     public void setUp() {
         shoppingCart = new ShoppingCart(new Customer("John Doe", "john.doe@example.com"), new HashSet<>());
-        product = new Product("Bracelet", "Silver bracelet", 199.99, "Available", "bracelet.png", new Category("Accessories", "Luxury items"));
+        product = new Product("Bracelet", "Silver bracelet", 199.99, "Available", "bracelet.png", new Category("Accessories", "Luxury items"), Size.MEDIUM, Colour.SILVER);
 
         shoppingCartItem = new ShoppingCartItem(shoppingCart, product, 3);
     }
@@ -25,7 +28,7 @@ public class ShoppingCartItemTest {
     @Test
     public void testShoppingCartItemDefaultConstructor() {
         ShoppingCartItem defaultItem = new ShoppingCartItem();
-        assertNotNull(defaultItem.getItemUuid(), "UUID should be generated");
+        assertNotNull(defaultItem.getShoppingCartItemUuid(), "UUID should be generated");
         assertNull(defaultItem.getShoppingCart(), "ShoppingCart should be null");
         assertNull(defaultItem.getProduct(), "Product should be null");
         assertNull(defaultItem.getQuantity(), "Quantity should be null");
@@ -33,7 +36,7 @@ public class ShoppingCartItemTest {
 
     @Test
     public void testShoppingCartItemParameterizedConstructor() {
-        assertNotNull(shoppingCartItem.getItemUuid(), "UUID should be generated");
+        assertNotNull(shoppingCartItem.getShoppingCartItemUuid(), "UUID should be generated");
         assertEquals(shoppingCart, shoppingCartItem.getShoppingCart(), "ShoppingCart should match");
         assertEquals(product, shoppingCartItem.getProduct(), "Product should match");
         assertEquals(3, shoppingCartItem.getQuantity(), "Quantity should match");
@@ -42,16 +45,16 @@ public class ShoppingCartItemTest {
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
-        shoppingCartItem.setItemUuid(newUuid);
+        shoppingCartItem.setShoppingCartItemUuid(newUuid);
 
         ShoppingCart newCart = new ShoppingCart(new Customer("Jane Doe", "jane.doe@example.com"), new HashSet<>());
-        Product newProduct = new Product("Necklace", "Gold necklace", 299.99, "Available", "necklace.png", new Category("Jewelry", "Luxury items"));
+        Product newProduct = new Product("Necklace", "Gold necklace", 299.99, "Available", "necklace.png", new Category("Jewellery", "Luxury items"), Size.MEDIUM, Colour.SILVER);
 
         shoppingCartItem.setShoppingCart(newCart);
         shoppingCartItem.setProduct(newProduct);
         shoppingCartItem.setQuantity(5);
 
-        assertEquals(newUuid, shoppingCartItem.getItemUuid(), "UUID should match");
+        assertEquals(newUuid, shoppingCartItem.getShoppingCartItemUuid(), "UUID should match");
         assertEquals(newCart, shoppingCartItem.getShoppingCart(), "ShoppingCart should match");
         assertEquals(newProduct, shoppingCartItem.getProduct(), "Product should match");
         assertEquals(5, shoppingCartItem.getQuantity(), "Quantity should match");
@@ -59,7 +62,7 @@ public class ShoppingCartItemTest {
 
     @Test
     public void testToString() {
-        String expectedString = "ShoppingCartItem [itemUuid=" + shoppingCartItem.getItemUuid() +
+        String expectedString = "ShoppingCartItem [shoppingCartItemUuid=" + shoppingCartItem.getShoppingCartItemUuid() +
                 ", shoppingCart=" + shoppingCart + 
                 ", product=" + product + 
                 ", quantity=" + shoppingCartItem.getQuantity() + "]";
