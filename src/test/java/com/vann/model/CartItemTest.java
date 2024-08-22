@@ -29,6 +29,7 @@ public class CartItemTest {
     @Test
     public void testCartItemDefaultConstructor() {
         CartItem defaultItem = new CartItem();
+        defaultItem.generateId();
         assertNotNull(defaultItem.getCartItemId(), "UUID should be generated");
         assertNull(defaultItem.getCart(), "Cart should be null");
         assertNull(defaultItem.getProduct(), "Product should be null");
@@ -63,7 +64,7 @@ public class CartItemTest {
 
     @Test
     public void testToString() {
-        String expectedString = "CartItem [cartItemId=" + cartItem.getCartItemId() +
+        String expectedString = "CartItem [id=" + cartItem.getCartItemId() +
                 ", cart=" + cart + 
                 ", product=" + product + 
                 ", quantity=" + cartItem.getQuantity() + "]";

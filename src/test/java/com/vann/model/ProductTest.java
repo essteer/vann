@@ -25,6 +25,7 @@ public class ProductTest {
     @Test
     public void testProductDefaultConstructor() {
         Product defaultProduct = new Product();
+        defaultProduct.generateId();
         assertNotNull(defaultProduct.getProductId(), "UUID should be generated");
         assertNull(defaultProduct.getProductName(), "Product name should be null");
         assertEquals(0.0, defaultProduct.getProductPrice(), "Product price should be 0.0");
@@ -61,8 +62,8 @@ public class ProductTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Product [productId=" + product.getProductId() +
-                ", productName=Ring, productPrice=499.99, category=" +
+        String expectedString = "Product [id=" + product.getProductId() +
+                ", name=Ring, price=499.99, category=" +
                 category.toString() + ", size=" + product.getSize() + ", colour=" + product.getColour() + "]";
 
         assertEquals(expectedString, product.toString(), "toString should match the expected output");

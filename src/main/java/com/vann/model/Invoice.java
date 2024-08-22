@@ -14,66 +14,71 @@ import jakarta.persistence.OneToMany;
 public class Invoice {
 
     @Id
-    private UUID invoiceId;
+    private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "FK_customerId", referencedColumnName = "customerId")
-    private Customer customer;
+    @JoinColumn(name = "FK_customer_id", referencedColumnName = "customer_id")
+    private Customer invoiceCustomer;
 
-    private String billAddress;
-    private String shipAddress;
-    private double totalAmount;
+    private String invoiceBillAddress;
+    private String invoiceShipAddress;
+    private double invoiceTotalAmount;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<InvoiceItem> invoiceItems;
 
     public Invoice() {
-        this.invoiceId = UUID.randomUUID();
     }
 
     public Invoice(Customer customer, String billAddress, String shipAddress, List<InvoiceItem> invoiceItems, double totalAmount) {
-        this();
-        this.customer = customer;
-        this.billAddress = billAddress;
-        this.shipAddress = shipAddress;
+        generateId();
+        this.invoiceCustomer = customer;
+        this.invoiceBillAddress = billAddress;
+        this.invoiceShipAddress = shipAddress;
         this.invoiceItems = invoiceItems;
-        this.totalAmount = totalAmount;
+        this.invoiceTotalAmount = totalAmount;
+    }
+
+    public void generateId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
     }
 
     public UUID getInvoiceId() {
-        return invoiceId;
+        return id;
     }
 
-    public void setInvoiceId(UUID invoiceId) {
-        this.invoiceId = invoiceId;
+    public void setInvoiceId(UUID id) {
+        this.id = id;
     }
 
     public Customer getCustomer() {
-        return customer;
+        return invoiceCustomer;
     }
 
     public void setCustomer(Customer customer) {
-        this.customer = customer;
+        this.invoiceCustomer = customer;
     }
 
     public String getBillAddress() {
-        return billAddress;
+        return invoiceBillAddress;
     }
 
     public void setBillAddress(String billAddress) {
-        this.billAddress = billAddress;
+        this.invoiceBillAddress = billAddress;
     }
 
     public String getShipAddress() {
-        return shipAddress;
+        return invoiceShipAddress;
     }
 
     public void setShipAddress(String shipAddress) {
-        this.shipAddress = shipAddress;
+        this.invoiceShipAddress = shipAddress;
     }
 
     public double getTotalAmount() {
-        return totalAmount;
+        return invoiceTotalAmount;
     }
 
     public double calculateTotalAmount() {
@@ -88,14 +93,13 @@ public class Invoice {
 
     public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
         this.invoiceItems = invoiceItems;
-        this.totalAmount = calculateTotalAmount();
+        this.invoiceTotalAmount = calculateTotalAmount();
     }
 
     @Override
     public String toString() {
-        return "Invoice [invoiceId=" + invoiceId + ", customer=" + customer + ", billAddress=" + billAddress
-                + ", shipAddress=" + shipAddress + ", totalAmount=" + totalAmount + ", invoiceItems="
-                + invoiceItems + "]";
+        return "Invoice [id=" + id + ", customer=" + invoiceCustomer + ", billAddress=" + invoiceBillAddress
+                + ", shipAddress=" + invoiceShipAddress + ", totalAmount=" + invoiceTotalAmount + "]";
     }
 
 }

@@ -17,14 +17,14 @@ import com.vann.model.enums.Size;
 public class Product {
 
     @Id
-    private UUID productId;
+    private UUID id;
     private String productName;
     private String productDesc;
     private double productPrice;
     private String productImage;
 
     @ManyToOne
-    @JoinColumn(name = "FK_categoryUuid", referencedColumnName = "categoryUuid")
+    @JoinColumn(name = "FK_category_id", referencedColumnName = "category_id")
     private Category category;
 
     @Enumerated(EnumType.STRING)
@@ -36,11 +36,10 @@ public class Product {
     private Colour colour;
 
     public Product() {
-        this.productId = UUID.randomUUID();
     }
 
     public Product(String name, double price, String image, Category category, Size size, Colour colour) {
-        this();
+        generateId();
         this.productName = name;
         this.productPrice = price;
         this.productImage = image;
@@ -49,12 +48,18 @@ public class Product {
         this.colour = colour;
     }
 
-    public UUID getProductId() {
-        return productId;
+    public void generateId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
     }
 
-    public void setProductId(UUID productId) {
-        this.productId = productId;
+    public UUID getProductId() {
+        return id;
+    }
+
+    public void setProductId(UUID id) {
+        this.id = id;
     }
 
     public String getProductName() {
@@ -115,7 +120,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [productId=" + productId + ", productName=" + productName + ", productPrice=" + productPrice + ", category=" + category
+        return "Product [id=" + id + ", name=" + productName + ", price=" + productPrice + ", category=" + category
                 + ", size=" + size + ", colour=" + colour + "]";
     }
 

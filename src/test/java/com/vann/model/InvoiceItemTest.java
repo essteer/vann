@@ -27,7 +27,8 @@ public class InvoiceItemTest {
     @Test
     public void testInvoiceItemDefaultConstructor() {
         InvoiceItem defaultInvoiceItem = new InvoiceItem();
-        assertNotNull(defaultInvoiceItem.getInvoiceItemUuid(), "UUID should be generated");
+        defaultInvoiceItem.generateId();
+        assertNotNull(defaultInvoiceItem.getInvoiceItemId(), "UUID should be generated");
         assertNull(defaultInvoiceItem.getInvoice(), "Invoice should be null");
         assertNull(defaultInvoiceItem.getInvoiceItem(), "Product should be null");
         assertEquals(0, defaultInvoiceItem.getQuantity(), "Quantity should be 0");
@@ -36,7 +37,7 @@ public class InvoiceItemTest {
 
     @Test
     public void testInvoiceItemParameterizedConstructor() {
-        assertNotNull(invoiceItem.getInvoiceItemUuid(), "UUID should be generated");
+        assertNotNull(invoiceItem.getInvoiceItemId(), "UUID should be generated");
         assertEquals(invoice, invoiceItem.getInvoice(), "Invoice should match");
         assertEquals(product, invoiceItem.getInvoiceItem(), "Product should match");
         assertEquals(2, invoiceItem.getQuantity(), "Quantity should match");
@@ -45,8 +46,8 @@ public class InvoiceItemTest {
 
     @Test
     public void testSettersAndGetters() {
-        UUID newUuid = UUID.randomUUID();
-        invoiceItem.setInvoiceItemUuid(newUuid);
+        UUID newId = UUID.randomUUID();
+        invoiceItem.setInvoiceItemId(newId);
 
         Invoice newInvoice = new Invoice(); // Alternatively, mock with Mockito
         Product newProduct = new Product("Necklace", 299.99, "necklace.png", new Category(CategoryType.NECKLACE, "Accessories"), Size.LARGE, Colour.SILVER);
@@ -56,7 +57,7 @@ public class InvoiceItemTest {
         invoiceItem.setQuantity(3);
         invoiceItem.setPrice(299.99);
 
-        assertEquals(newUuid, invoiceItem.getInvoiceItemUuid(), "UUID should match");
+        assertEquals(newId, invoiceItem.getInvoiceItemId(), "UUID should match");
         assertEquals(newInvoice, invoiceItem.getInvoice(), "Invoice should match");
         assertEquals(newProduct, invoiceItem.getInvoiceItem(), "Product should match");
         assertEquals(3, invoiceItem.getQuantity(), "Quantity should match");
@@ -65,7 +66,7 @@ public class InvoiceItemTest {
 
     @Test
     public void testToString() {
-        String expectedString = "InvoiceItem [invoiceItemUuid=" + invoiceItem.getInvoiceItemUuid() +
+        String expectedString = "InvoiceItem [id=" + invoiceItem.getInvoiceItemId() +
                 ", invoice=" + invoice.toString() + 
                 ", invoiceItem=" + product.toString() + 
                 ", quantity=2, price=499.99]";

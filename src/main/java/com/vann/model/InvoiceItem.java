@@ -11,37 +11,42 @@ import jakarta.persistence.ManyToOne;
 public class InvoiceItem {
 
     @Id
-    private UUID invoiceItemUuid;
+    private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "FK_invoiceUuid")
+    @JoinColumn(name = "FK_invoice_id")
     private Invoice invoice;
 
     @ManyToOne
-    @JoinColumn(name = "FK_itemUuid")
+    @JoinColumn(name = "FK_item_id")
     private Product invoiceItem;
 
     private int quantity;
     private double price;
 
     public InvoiceItem() {
-        this.invoiceItemUuid = UUID.randomUUID();
     }
 
     public InvoiceItem(Invoice invoice, Product product, int quantity, double price) {
-        this();
+        generateId();
         this.invoice = invoice;
         this.invoiceItem = product;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public UUID getInvoiceItemUuid() {
-        return invoiceItemUuid;
+    public void generateId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
     }
 
-    public void setInvoiceItemUuid(UUID invoiceItemUuid) {
-        this.invoiceItemUuid = invoiceItemUuid;
+    public UUID getInvoiceItemId() {
+        return id;
+    }
+
+    public void setInvoiceItemId(UUID id) {
+        this.id = id;
     }
 
     public Invoice getInvoice() {
@@ -78,7 +83,7 @@ public class InvoiceItem {
 
     @Override
     public String toString() {
-        return "InvoiceItem [invoiceItemUuid=" + invoiceItemUuid + ", invoice=" + invoice + ", invoiceItem="
+        return "InvoiceItem [id=" + id + ", invoice=" + invoice + ", invoiceItem="
                 + invoiceItem + ", quantity=" + quantity + ", price=" + price + "]";
     }
 

@@ -19,6 +19,7 @@ public class CustomerTest {
     @Test
     public void testCustomerDefaultConstructor() {
         Customer defaultCustomer = new Customer();
+        defaultCustomer.generateId();
         assertNotNull(defaultCustomer.getCustomerId(), "UUID should be generated");
         assertNull(defaultCustomer.getCustomerName(), "Customer name should be null");
         assertNull(defaultCustomer.getCustomerEmail(), "Customer email should be null");
@@ -45,8 +46,8 @@ public class CustomerTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Customer [customerId=" + customer.getCustomerId() + 
-                                ", customerName=John Doe, customerEmail=john.doe@example.com]";
+        String expectedString = "Customer [id=" + customer.getCustomerId() + 
+                                ", name=John Doe, email=john.doe@example.com]";
         assertEquals(expectedString, customer.toString(), "toString should match");
     }
 }

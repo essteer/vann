@@ -21,6 +21,7 @@ public class CategoryTest {
     @Test
     public void testCategoryDefaultConstructor() {
         Category defaultCategory = new Category();
+        defaultCategory.generateId();
         assertNotNull(defaultCategory.getCategoryId(), "UUID should be generated");
         assertNull(defaultCategory.getCategoryName(), "Category name should be null");
     }
@@ -43,8 +44,8 @@ public class CategoryTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Category [categoryId=" + category.getCategoryId() + ", categoryType=" + category.getCategoryType() +
-                                ", categoryName=Jewellery]";
+        String expectedString = "Category [id=" + category.getCategoryId() + ", type=" + category.getCategoryType() +
+                                ", name=Jewellery]";
         assertEquals(expectedString, category.toString(), "toString should match");
     }
 }

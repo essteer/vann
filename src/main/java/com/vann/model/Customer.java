@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 public class Customer {
 
     @Id
-    private UUID customerId;
+    private UUID id;
 
     private String customerName;
 
@@ -18,22 +18,27 @@ public class Customer {
     private String customerEmail;
 
     public Customer() {
-        this.customerId = UUID.randomUUID();
     }
 
     public Customer(String name, String email) {
-        this();
+        generateId();
         this.customerName = name;
         this.customerEmail = email;
 
     }
 
-    public UUID getCustomerId() {
-        return customerId;
+    public void generateId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
     }
 
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
+    public UUID getCustomerId() {
+        return id;
+    }
+
+    public void setCustomerId(UUID id) {
+        this.id = id;
     }
 
     public String getCustomerName() {
@@ -54,7 +59,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer [customerId=" + customerId + ", customerName=" + customerName + ", customerEmail="
+        return "Customer [id=" + id + ", name=" + customerName + ", email="
                 + customerEmail + "]";
     }
 

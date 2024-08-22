@@ -16,31 +16,36 @@ import jakarta.persistence.OneToOne;
 public class Cart {
 
     @Id
-    private UUID cartId;
+    private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "FK_customerId", referencedColumnName = "customerId")
+    @JoinColumn(name = "FK_customer_id", referencedColumnName = "customer_id")
     private Customer customer;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems = new HashSet<>();
 
     public Cart() {
-        this.cartId = UUID.randomUUID();
     }
 
     public Cart(Customer customer, Set<CartItem> cartItems) {
-        this();
+        generateId();
         this.customer = customer;
         this.cartItems = cartItems;
     }
 
-    public UUID getCartId() {
-        return cartId;
+    public void generateId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
     }
 
-    public void setCartId(UUID cartId) {
-        this.cartId = cartId;
+    public UUID getCartId() {
+        return id;
+    }
+
+    public void setCartId(UUID id) {
+        this.id = id;
     }
 
     public Customer getCartCustomer() {
@@ -61,7 +66,7 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart [cartId=" + cartId + ", customer=" + customer + ", cartItems=" + cartItems + "]";
+        return "Cart [id=" + id + ", customer=" + customer + "]";
     }
 
 }
