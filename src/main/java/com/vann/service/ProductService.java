@@ -29,13 +29,13 @@ public class ProductService {
     public Product findProductById(UUID productId) {
         Optional<Product> productOptional = productRepo.findById(productId);
         return productOptional.orElseThrow(() -> 
-            new ProductNotFoundException("Product with ID " + productId + " not found"));
+            new ProductNotFoundException("Product with ID '" + productId + "' not found"));
     }
 
     public Product updateProduct(UUID productId, Product updatedProduct) {
         // Check if the Product exists
         if (!productRepo.existsById(productId)) {
-            throw new ProductNotFoundException("Product with ID " + productId + " not found");
+            throw new ProductNotFoundException("Product with ID '" + productId + "' not found");
         }
         // Set the ID of the updated Product
         updatedProduct.setProductId(productId);

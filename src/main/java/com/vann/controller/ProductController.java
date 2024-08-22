@@ -46,8 +46,7 @@ public class ProductController {
             .path("/{id}")
             .buildAndExpand(savedProduct.getProductId())
             .toUri();
-        return ResponseEntity.created(location).build();
-        // return ResponseEntity.created(location).body(savedProduct);
+        return ResponseEntity.created(location).body(savedProduct);
     }    
 
 }
