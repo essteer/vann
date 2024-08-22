@@ -1,5 +1,6 @@
 package com.vann.service;
 
+import com.vann.exceptions.CategoryNotFoundException;
 import com.vann.model.Category;
 import com.vann.repositories.CategoryRepo;
 import org.springframework.stereotype.Service;
@@ -30,13 +31,10 @@ public class CategoryService {
     }
 
     public Category updateCategory(UUID categoryId, Category updatedCategory) {
-        // Check if the Category exists
         if (!categoryRepo.existsById(categoryId)) {
-            throw new IllegalArgumentException("Category not found");
+            throw new CategoryNotFoundException("Category " + categoryId + " not found");
         }
-        // Set the ID of the updated Category
         updatedCategory.setCategoryId(categoryId);
-        // Save the updated Category
         return categoryRepo.save(updatedCategory);
     }
 
