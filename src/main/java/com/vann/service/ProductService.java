@@ -1,5 +1,6 @@
 package com.vann.service;
 
+import com.vann.exceptions.ProductNotFoundException;
 import com.vann.model.Product;
 import com.vann.repositories.ProductRepo;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,10 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    public Optional<Product> findProductById(UUID productUuid) {
-        return productRepo.findById(productUuid);
+    public Product findProductById(UUID productUuid) {
+        Optional<Product> productOptional = productRepo.findById(productUuid);
+        return productOptional.orElseThrow(() -> 
+            new ProductNotFoundException("Product with id " + productUuid + " not found"));
     }
 
     public Product updateProduct(UUID productUuid, Product updatedProduct) {

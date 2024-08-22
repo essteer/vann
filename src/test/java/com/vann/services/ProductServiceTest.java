@@ -54,10 +54,8 @@ class ProductServiceTest {
 
         when(productRepo.findById(productUuid)).thenReturn(Optional.of(product));
 
-        Optional<Product> foundProduct = productService.findProductById(productUuid);
-
-        assertTrue(foundProduct.isPresent());
-        assertEquals("Necklace", foundProduct.get().getProductName());
+        Product foundProduct = productService.findProductById(productUuid);
+        assertEquals("Necklace", foundProduct.getProductName());
         verify(productRepo, times(1)).findById(productUuid);
     }
 
