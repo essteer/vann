@@ -38,6 +38,9 @@ public class Category {
     }
 
     public UUID getCategoryId() {
+        if (this.id == null) {
+            generateId();
+        }
         return id;
     }
 

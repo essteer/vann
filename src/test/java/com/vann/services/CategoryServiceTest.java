@@ -47,33 +47,6 @@ class CategoryServiceTest {
     }
 
     @Test
-    void testFindCategoryById() {
-        UUID categoryId = UUID.randomUUID();
-        Category category = new Category();
-        category.setCategoryId(categoryId);
-        category.setCategoryName("Earring");
-
-        when(categoryRepo.findById(categoryId)).thenReturn(Optional.of(category));
-
-        Optional<Category> foundCategory = categoryService.findCategoryById(categoryId);
-
-        assertTrue(foundCategory.isPresent());
-        assertEquals("Earring", foundCategory.get().getCategoryName());
-        verify(categoryRepo, times(1)).findById(categoryId);
-    }
-
-    @Test
-    void testDeleteCategory() {
-        UUID categoryId = UUID.randomUUID();
-
-        doNothing().when(categoryRepo).deleteById(categoryId);
-
-        categoryService.deleteCategory(categoryId);
-
-        verify(categoryRepo, times(1)).deleteById(categoryId);
-    }
-
-    @Test
     void testFindAllCategories() {
         List<Category> categories = Arrays.asList(
             new Category(CategoryType.EARRING, "Earring"),
@@ -88,4 +61,78 @@ class CategoryServiceTest {
         assertEquals(2, foundCategories.size());
         verify(categoryRepo, times(1)).findAll();
     }
+
+    @Test
+    void testFindCategoryById() {
+        UUID categoryId = UUID.randomUUID();
+        Category category = new Category();
+        category.setCategoryId(categoryId);
+        category.setCategoryName("Earring");
+
+        when(categoryRepo.findById(categoryId)).thenReturn(Optional.of(category));
+
+        Category foundCategory = categoryService.findCategoryById(categoryId);
+
+        assertEquals("Earring", foundCategory.getCategoryName());
+        verify(categoryRepo, times(1)).findById(categoryId);
+    }
+
+    @Test
+    void testFindCategoriesByType() {
+        CategoryType categoryType = CategoryType.EARRING;
+        List<Category> categories = Arrays.asList(
+            new Category(categoryType, "Gold Earring"),
+            new Category(categoryType, "Silver Earring")
+        );
+    
+        when(categoryRepo.findByCategoryType(categoryType)).thenReturn(categories);
+    
+        List<Category> foundCategories = categoryService.findCategoriesByType(categoryType);
+    
+        assertNotNull(foundCategories);
+        assertEquals(2, foundCategories.size());
+        assertEquals(categoryType, foundCategories.get(0).getCategoryType());
+        verify(categoryRepo, times(1)).findByCategoryType(categoryType);
+    }
+
+    @Test
+    void testFindCategoryByName() {
+        String categoryName = "Earring";
+        Category category = new Category(CategoryType.EARRING, categoryName);
+    
+        when(categoryRepo.findByCategoryName(categoryName)).thenReturn(Optional.of(category));
+        Category foundCategory = categoryService.findCategoryByName(categoryName);
+    
+        assertEquals(categoryName, foundCategory.getCategoryName());
+        verify(categoryRepo, times(1)).findByCategoryName(categoryName);
+    }
+
+    @Test
+    void testUpdateCategory() {
+        UUID categoryId = UUID.randomUUID();
+        Category existingCategory = new Category(CategoryType.EARRING, "Earring");
+        existingCategory.setCategoryId(categoryId);
+    
+        Category updatedCategory = new Category(CategoryType.NECKLACE, "Necklace");
+    
+        when(categoryRepo.existsById(categoryId)).thenReturn(true);
+        when(categoryRepo.save(updatedCategory)).thenReturn(updatedCategory);
+    
+        Category result = categoryService.updateCategory(categoryId, updatedCategory);
+    
+        assertNotNull(result);
+        assertEquals(categoryId, result.getCategoryId());
+        assertEquals("Necklace", result.getCategoryName());
+        verify(categoryRepo, times(1)).existsById(categoryId);
+        verify(categoryRepo, times(1)).save(updatedCategory);
+    }
+
+    @Test
+    void testDeleteCategory() {
+        UUID categoryId = UUID.randomUUID();
+        doNothing().when(categoryRepo).deleteById(categoryId);
+        categoryService.deleteCategory(categoryId);
+        verify(categoryRepo, times(1)).deleteById(categoryId);
+    }
+
 }
