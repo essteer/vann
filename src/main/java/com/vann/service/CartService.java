@@ -1,7 +1,8 @@
 package com.vann.service;
 
-import com.vann.model.Cart;
+import com.vann.exceptions.CartNotFoundException;
 import com.vann.model.CartItem;
+import com.vann.model.Cart;
 import com.vann.repositories.CartRepo;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +27,16 @@ public class CartService {
         return cartRepo.findAll();
     }
 
-    public Optional<Cart> findCartById(UUID cartId) {
-        return cartRepo.findById(cartId);
+    public Cart findCartById(UUID cartId) {
+        Optional<Cart> cartOptional = cartRepo.findById(cartId);
+        return cartOptional.orElseThrow(() -> 
+            new CartNotFoundException("Cart with ID " + cartId + " not found"));
     }
 
     public Cart updateCart(UUID cartId, Cart updatedCart) {
         // Check if the Cart exists
         if (!cartRepo.existsById(cartId)) {
-            throw new IllegalArgumentException("Cart not found");
+            throw new CartNotFoundException("Cart with ID " + cartId + " not found");
         }
         // Set the ID of the updated Cart
         updatedCart.setCartId(cartId);

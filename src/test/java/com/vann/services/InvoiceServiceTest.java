@@ -81,7 +81,7 @@ public class InvoiceServiceTest {
         invoiceRepo.save(invoice);
     
         InvoiceItem invoiceItem = new InvoiceItem();
-        invoiceItem.setInvoiceItemUuid(UUID.randomUUID());
+        invoiceItem.setInvoiceItemId(UUID.randomUUID());
         invoiceItem.setInvoice(invoice);
         invoiceItemService.saveInvoiceItem(invoiceItem);
     

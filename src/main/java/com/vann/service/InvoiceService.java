@@ -29,13 +29,13 @@ public class InvoiceService {
     public Invoice findInvoiceById(UUID invoiceId) {
         Optional<Invoice> invoiceOptional = invoiceRepo.findById(invoiceId);
         return invoiceOptional.orElseThrow(() -> 
-            new InvoiceNotFoundException("Invoice with id " + invoiceId + " not found"));
+            new InvoiceNotFoundException("Invoice with ID " + invoiceId + " not found"));
     }
 
     public Invoice updateInvoice(UUID invoiceId, Invoice updatedInvoice) {
         // Check if the Invoice exists
         if (!invoiceRepo.existsById(invoiceId)) {
-            throw new InvoiceNotFoundException("Invoice with id " + invoiceId + " not found");
+            throw new InvoiceNotFoundException("Invoice with ID " + invoiceId + " not found");
         }
         // Set the ID of the updated Invoice
         updatedInvoice.setInvoiceId(invoiceId);

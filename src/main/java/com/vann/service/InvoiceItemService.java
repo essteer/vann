@@ -30,7 +30,7 @@ public class InvoiceItemService {
             throw new IllegalArgumentException("InvoiceItem not found");
         }
         // Set the ID of the updated InvoiceItem
-        updatedInvoiceItem.setInvoiceItemUuid(invoiceItemUuid);
+        updatedInvoiceItem.setInvoiceItemId(invoiceItemUuid);
         // Save the updated InvoiceItem
         return invoiceItemRepo.save(updatedInvoiceItem);
     }
@@ -42,7 +42,7 @@ public class InvoiceItemService {
     public void deleteInvoiceItemsByInvoiceId(UUID invoiceId) {
         for (InvoiceItem invoiceItem : invoiceItemRepo.findAll()) {
             if (invoiceItem.getInvoice().getInvoiceId() == invoiceId) {
-                deleteInvoiceItem(invoiceItem.getInvoiceItemUuid());
+                deleteInvoiceItem(invoiceItem.getInvoiceItemId());
             }
         }
     }
