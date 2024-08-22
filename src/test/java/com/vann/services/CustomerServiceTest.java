@@ -46,28 +46,28 @@ class CustomerServiceTest {
 
     @Test
     void testFindCustomerById() {
-        UUID customerUuid = UUID.randomUUID();
+        UUID customerId = UUID.randomUUID();
         Customer customer = new Customer();
-        customer.setCustomerUuid(customerUuid);
+        customer.setCustomerId(customerId);
         customer.setCustomerName("John Doe");
 
-        when(customerRepo.findById(customerUuid)).thenReturn(Optional.of(customer));
+        when(customerRepo.findById(customerId)).thenReturn(Optional.of(customer));
 
-        Optional<Customer> foundCustomer = customerService.findCustomerById(customerUuid);
+        Optional<Customer> foundCustomer = customerService.findCustomerById(customerId);
 
         assertTrue(foundCustomer.isPresent());
         assertEquals("John Doe", foundCustomer.get().getCustomerName());
-        verify(customerRepo, times(1)).findById(customerUuid);
+        verify(customerRepo, times(1)).findById(customerId);
     }
 
     @Test
     void testDeleteCustomer() {
-        UUID customerUuid = UUID.randomUUID();
+        UUID customerId = UUID.randomUUID();
 
-        doNothing().when(customerRepo).deleteById(customerUuid);
+        doNothing().when(customerRepo).deleteById(customerId);
 
-        customerService.deleteCustomer(customerUuid);
+        customerService.deleteCustomer(customerId);
 
-        verify(customerRepo, times(1)).deleteById(customerUuid);
+        verify(customerRepo, times(1)).deleteById(customerId);
     }
 }

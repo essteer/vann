@@ -25,22 +25,22 @@ public class CustomerService {
         return customerRepo.findAll();
     }
 
-    public Optional<Customer> findCustomerById(UUID customerUuid) {
-        return customerRepo.findById(customerUuid);
+    public Optional<Customer> findCustomerById(UUID customerId) {
+        return customerRepo.findById(customerId);
     }
 
-    public Customer updateCustomer(UUID customerUuid, Customer updatedCustomer) {
+    public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
         // Check if the customer exists
-        if (!customerRepo.existsById(customerUuid)) {
+        if (!customerRepo.existsById(customerId)) {
             throw new IllegalArgumentException("Customer not found");
         }
         // Set the ID of the updated customer
-        updatedCustomer.setCustomerUuid(customerUuid);
+        updatedCustomer.setCustomerId(customerId);
         // Save the updated customer
         return customerRepo.save(updatedCustomer);
     }
 
-    public void deleteCustomer(UUID customerUuid) {
-        customerRepo.deleteById(customerUuid);
+    public void deleteCustomer(UUID customerId) {
+        customerRepo.deleteById(customerId);
     }
 }

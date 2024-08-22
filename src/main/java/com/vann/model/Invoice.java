@@ -17,7 +17,7 @@ public class Invoice {
     private UUID invoiceId;
 
     @ManyToOne
-    @JoinColumn(name = "FK_customerUuid", referencedColumnName = "customerUuid")
+    @JoinColumn(name = "FK_customerId", referencedColumnName = "customerId")
     private Customer customer;
 
     private String billAddress;
