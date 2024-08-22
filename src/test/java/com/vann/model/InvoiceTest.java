@@ -37,20 +37,20 @@ public class InvoiceTest {
     @Test
     public void testInvoiceDefaultConstructor() {
         Invoice defaultInvoice = new Invoice();
-        assertNotNull(defaultInvoice.getInvoiceUuid(), "UUID should be generated");
+        assertNotNull(defaultInvoice.getInvoiceId(), "ID should be generated");
         assertNull(defaultInvoice.getCustomer(), "Customer should be null");
-        assertNull(defaultInvoice.getBillingAddress(), "Billing address should be null");
-        assertNull(defaultInvoice.getShippingAddress(), "Shipping address should be null");
+        assertNull(defaultInvoice.getBillAddress(), "Billing address should be null");
+        assertNull(defaultInvoice.getShipAddress(), "Shipping address should be null");
         assertEquals(0.0, defaultInvoice.getTotalAmount(), "Total amount should be 0.0");
         assertNull(defaultInvoice.getInvoiceItems(), "Invoice items should be null");
     }
 
     @Test
     public void testInvoiceParameterizedConstructor() {
-        assertNotNull(invoice.getInvoiceUuid(), "UUID should be generated");
+        assertNotNull(invoice.getInvoiceId(), "ID should be generated");
         assertEquals(customer, invoice.getCustomer(), "Customer should match");
-        assertEquals("123 Main St", invoice.getBillingAddress(), "Billing address should match");
-        assertEquals("456 Elm St", invoice.getShippingAddress(), "Shipping address should match");
+        assertEquals("123 Main St", invoice.getBillAddress(), "Billing address should match");
+        assertEquals("456 Elm St", invoice.getShipAddress(), "Shipping address should match");
         assertEquals(invoiceItems, invoice.getInvoiceItems(), "Invoice items should match");
     }
 
@@ -75,12 +75,12 @@ public class InvoiceTest {
 
     @Test
     public void testSettersAndGetters() {
-        UUID newUuid = UUID.randomUUID();
-        invoice.setInvoiceUuid(newUuid);
+        UUID newId = UUID.randomUUID();
+        invoice.setInvoiceId(newId);
         Customer newCustomer = new Customer("Jane Doe", "jane.doe@example.com");
         invoice.setCustomer(newCustomer);
-        invoice.setBillingAddress("789 Pine St");
-        invoice.setShippingAddress("321 Oak St");
+        invoice.setBillAddress("789 Pine St");
+        invoice.setShipAddress("321 Oak St");
     
         InvoiceItem item1 = Mockito.mock(InvoiceItem.class);
         Mockito.when(item1.getPrice()).thenReturn(150.0);
@@ -93,19 +93,19 @@ public class InvoiceTest {
         List<InvoiceItem> newInvoiceItems = Arrays.asList(item1, item2);
         invoice.setInvoiceItems(newInvoiceItems);
     
-        assertEquals(newUuid, invoice.getInvoiceUuid(), "UUID should match");
+        assertEquals(newId, invoice.getInvoiceId(), "ID should match");
         assertEquals(newCustomer, invoice.getCustomer(), "Customer should match");
-        assertEquals("789 Pine St", invoice.getBillingAddress(), "Billing address should match");
-        assertEquals("321 Oak St", invoice.getShippingAddress(), "Shipping address should match");
+        assertEquals("789 Pine St", invoice.getBillAddress(), "Billing address should match");
+        assertEquals("321 Oak St", invoice.getShipAddress(), "Shipping address should match");
         assertEquals(newInvoiceItems, invoice.getInvoiceItems(), "Invoice items should match");
         assertEquals(300.0, invoice.getTotalAmount(), "Total amount should match the sum of item prices times quantities");
     }
 
     @Test
     public void testToString() {
-        String expectedString = "Invoice [invoiceUuid=" + invoice.getInvoiceUuid() +
+        String expectedString = "Invoice [invoiceId=" + invoice.getInvoiceId() +
                 ", customer=" + customer + 
-                ", billingAddress=123 Main St, shippingAddress=456 Elm St, totalAmount=0.0, invoiceItems=" +
+                ", billAddress=123 Main St, shipAddress=456 Elm St, totalAmount=0.0, invoiceItems=" +
                 invoiceItems + "]";
     
         assertEquals(expectedString, invoice.toString(), "toString should match the expected output");

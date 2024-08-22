@@ -38,4 +38,12 @@ public class InvoiceItemService {
     public void deleteInvoiceItem(UUID invoiceItemUuid) {
         invoiceItemRepo.deleteById(invoiceItemUuid);
     }
+
+    public void deleteInvoiceItemsByInvoiceId(UUID invoiceId) {
+        for (InvoiceItem invoiceItem : invoiceItemRepo.findAll()) {
+            if (invoiceItem.getInvoice().getInvoiceId() == invoiceId) {
+                deleteInvoiceItem(invoiceItem.getInvoiceItemUuid());
+            }
+        }
+    }
 }

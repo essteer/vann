@@ -14,38 +14,38 @@ import jakarta.persistence.OneToMany;
 public class Invoice {
 
     @Id
-    private UUID invoiceUuid;
+    private UUID invoiceId;
 
     @ManyToOne
     @JoinColumn(name = "FK_customerUuid", referencedColumnName = "customerUuid")
     private Customer customer;
 
-    private String billingAddress;
-    private String shippingAddress;
+    private String billAddress;
+    private String shipAddress;
     private double totalAmount;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<InvoiceItem> invoiceItems;
 
     public Invoice() {
-        this.invoiceUuid = UUID.randomUUID();
+        this.invoiceId = UUID.randomUUID();
     }
 
-    public Invoice(Customer customer, String billingAddress, String shippingAddress, List<InvoiceItem> invoiceItems, double totalAmount) {
+    public Invoice(Customer customer, String billAddress, String shipAddress, List<InvoiceItem> invoiceItems, double totalAmount) {
         this();
         this.customer = customer;
-        this.billingAddress = billingAddress;
-        this.shippingAddress = shippingAddress;
+        this.billAddress = billAddress;
+        this.shipAddress = shipAddress;
         this.invoiceItems = invoiceItems;
         this.totalAmount = totalAmount;
     }
 
-    public UUID getInvoiceUuid() {
-        return invoiceUuid;
+    public UUID getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setInvoiceUuid(UUID invoiceUuid) {
-        this.invoiceUuid = invoiceUuid;
+    public void setInvoiceId(UUID invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public Customer getCustomer() {
@@ -56,20 +56,20 @@ public class Invoice {
         this.customer = customer;
     }
 
-    public String getBillingAddress() {
-        return billingAddress;
+    public String getBillAddress() {
+        return billAddress;
     }
 
-    public void setBillingAddress(String billingAddress) {
-        this.billingAddress = billingAddress;
+    public void setBillAddress(String billAddress) {
+        this.billAddress = billAddress;
     }
 
-    public String getShippingAddress() {
-        return shippingAddress;
+    public String getShipAddress() {
+        return shipAddress;
     }
 
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
+    public void setShipAddress(String shipAddress) {
+        this.shipAddress = shipAddress;
     }
 
     public double getTotalAmount() {
@@ -93,8 +93,8 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice [invoiceUuid=" + invoiceUuid + ", customer=" + customer + ", billingAddress=" + billingAddress
-                + ", shippingAddress=" + shippingAddress + ", totalAmount=" + totalAmount + ", invoiceItems="
+        return "Invoice [invoiceId=" + invoiceId + ", customer=" + customer + ", billAddress=" + billAddress
+                + ", shipAddress=" + shipAddress + ", totalAmount=" + totalAmount + ", invoiceItems="
                 + invoiceItems + "]";
     }
 

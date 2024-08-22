@@ -1,7 +1,7 @@
 package com.vann.service;
 
+import com.vann.exceptions.InvoiceNotFoundException;
 import com.vann.model.Invoice;
-import com.vann.model.InvoiceItem;
 import com.vann.repositories.InvoiceRepo;
 import org.springframework.stereotype.Service;
 
@@ -26,29 +26,25 @@ public class InvoiceService {
         return invoiceRepo.findAll();
     }
 
-    public Optional<Invoice> findInvoiceById(UUID invoiceUuid) {
-        return invoiceRepo.findById(invoiceUuid);
+    public Invoice findInvoiceById(UUID invoiceId) {
+        Optional<Invoice> invoiceOptional = invoiceRepo.findById(invoiceId);
+        return invoiceOptional.orElseThrow(() -> 
+            new InvoiceNotFoundException("Invoice with id " + invoiceId + " not found"));
     }
 
-    public Invoice updateInvoice(UUID invoiceUuid, Invoice updatedInvoice) {
+    public Invoice updateInvoice(UUID invoiceId, Invoice updatedInvoice) {
         // Check if the Invoice exists
-        if (!invoiceRepo.existsById(invoiceUuid)) {
-            throw new IllegalArgumentException("Invoice not found");
+        if (!invoiceRepo.existsById(invoiceId)) {
+            throw new InvoiceNotFoundException("Invoice with id " + invoiceId + " not found");
         }
         // Set the ID of the updated Invoice
-        updatedInvoice.setInvoiceUuid(invoiceUuid);
+        updatedInvoice.setInvoiceId(invoiceId);
         // Save the updated Invoice
         return invoiceRepo.save(updatedInvoice);
     }
 
-    public void deleteInvoice(UUID invoiceUuid, InvoiceItemService invoiceItemService) {
-        Optional<Invoice> invoiceOpt = invoiceRepo.findById(invoiceUuid);
-        if (invoiceOpt.isPresent()) {
-            Invoice invoice = invoiceOpt.get();
-            for (InvoiceItem invoiceItem : invoice.getInvoiceItems()) {
-                invoiceItemService.deleteInvoiceItem(invoiceItem.getInvoiceItemUuid());
-            }
-            invoiceRepo.deleteById(invoiceUuid);
-        }
+    public void deleteInvoice(UUID invoiceId, InvoiceItemService invoiceItemService) {
+        invoiceRepo.deleteById(invoiceId);
+        invoiceItemService.deleteInvoiceItemsByInvoiceId(invoiceId);
     }
 }
