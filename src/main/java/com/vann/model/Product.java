@@ -17,7 +17,7 @@ import com.vann.model.enums.Size;
 public class Product {
 
     @Id
-    private UUID productUuid;
+    private UUID productId;
     private String productName;
     private String productDesc;
     private double productPrice;
@@ -36,7 +36,7 @@ public class Product {
     private Colour colour;
 
     public Product() {
-        this.productUuid = UUID.randomUUID();
+        this.productId = UUID.randomUUID();
     }
 
     public Product(String name, double price, String image, Category category, Size size, Colour colour) {
@@ -49,12 +49,12 @@ public class Product {
         this.colour = colour;
     }
 
-    public UUID getProductUuid() {
-        return productUuid;
+    public UUID getProductId() {
+        return productId;
     }
 
-    public void setProductUuid(UUID productUuid) {
-        this.productUuid = productUuid;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
 
     public String getProductName() {
@@ -115,7 +115,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [productUuid=" + productUuid + ", productName=" + productName + ", productPrice=" + productPrice + ", category=" + category
+        return "Product [productId=" + productId + ", productName=" + productName + ", productPrice=" + productPrice + ", category=" + category
                 + ", size=" + size + ", colour=" + colour + "]";
     }
 

@@ -25,23 +25,23 @@ public class CategoryService {
         return categoryRepo.findAll();
     }
 
-    public Optional<Category> findCategoryById(UUID CategoryUuid) {
-        return categoryRepo.findById(CategoryUuid);
+    public Optional<Category> findCategoryById(UUID CategoryId) {
+        return categoryRepo.findById(CategoryId);
     }
 
-    public Category updateCategory(UUID categoryUuid, Category updatedCategory) {
+    public Category updateCategory(UUID categoryId, Category updatedCategory) {
         // Check if the Category exists
-        if (!categoryRepo.existsById(categoryUuid)) {
+        if (!categoryRepo.existsById(categoryId)) {
             throw new IllegalArgumentException("Category not found");
         }
         // Set the ID of the updated Category
-        updatedCategory.setCategoryUuid(categoryUuid);
+        updatedCategory.setCategoryId(categoryId);
         // Save the updated Category
         return categoryRepo.save(updatedCategory);
     }
 
-    public void deleteCategory(UUID categoryUuid) {
-        categoryRepo.deleteById(categoryUuid);
+    public void deleteCategory(UUID categoryId) {
+        categoryRepo.deleteById(categoryId);
     }
 
 }

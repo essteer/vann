@@ -20,22 +20,22 @@ public class CartItemService {
         return cartItemRepo.save(cartItem);
     }
 
-    public Optional<CartItem> findCartItemById(UUID cartItemUuid) {
-        return cartItemRepo.findById(cartItemUuid);
+    public Optional<CartItem> findCartItemById(UUID cartItemId) {
+        return cartItemRepo.findById(cartItemId);
     }
 
-    public CartItem updateCartItem(UUID cartItemUuid, CartItem updatedCartItem) {
+    public CartItem updateCartItem(UUID cartItemId, CartItem updatedCartItem) {
         // Check if the CartItem exists
-        if (!cartItemRepo.existsById(cartItemUuid)) {
+        if (!cartItemRepo.existsById(cartItemId)) {
             throw new IllegalArgumentException("CartItem not found");
         }
         // Set the ID of the updated CartItem
-        updatedCartItem.setCartItemUuid(cartItemUuid);
+        updatedCartItem.setCartItemId(cartItemId);
         // Save the updated CartItem
         return cartItemRepo.save(updatedCartItem);
     }
 
-    public void deleteCartItem(UUID cartItemUuid) {
-        cartItemRepo.deleteById(cartItemUuid);
+    public void deleteCartItem(UUID cartItemId) {
+        cartItemRepo.deleteById(cartItemId);
     }
 }

@@ -26,39 +26,39 @@ public class CartService {
         return cartRepo.findAll();
     }
 
-    public Optional<Cart> findCartById(UUID cartUuid) {
-        return cartRepo.findById(cartUuid);
+    public Optional<Cart> findCartById(UUID cartId) {
+        return cartRepo.findById(cartId);
     }
 
-    public Cart updateCart(UUID cartUuid, Cart updatedCart) {
+    public Cart updateCart(UUID cartId, Cart updatedCart) {
         // Check if the Cart exists
-        if (!cartRepo.existsById(cartUuid)) {
+        if (!cartRepo.existsById(cartId)) {
             throw new IllegalArgumentException("Cart not found");
         }
         // Set the ID of the updated Cart
-        updatedCart.setCartUuid(cartUuid);
+        updatedCart.setCartId(cartId);
         // Save the updated Cart
         return cartRepo.save(updatedCart);
     }
 
-    public void checkoutCart(UUID cartUuid, String billingAndShippingAddress, CartItemService cartItemService) {
-        this.checkoutCart(cartUuid, billingAndShippingAddress, billingAndShippingAddress, cartItemService);
+    public void checkoutCart(UUID cartId, String billAndShipAddress, CartItemService cartItemService) {
+        this.checkoutCart(cartId, billAndShipAddress, billAndShipAddress, cartItemService);
     }
 
-    public void checkoutCart(UUID cartUuid, String billingAddress, String shippingAddress, CartItemService cartItemService) {
+    public void checkoutCart(UUID cartId, String billAddress, String shipAddress, CartItemService cartItemService) {
 
         // some code
-        // this.deleteCart(cartUuid, cartItemService);
+        // this.deleteCart(cartId, cartItemService);
     }
 
-    public void deleteCart(UUID cartUuid, CartItemService cartItemService) {
-        Optional<Cart> cartOpt = cartRepo.findById(cartUuid);
+    public void deleteCart(UUID cartId, CartItemService cartItemService) {
+        Optional<Cart> cartOpt = cartRepo.findById(cartId);
         if (cartOpt.isPresent()) {
             Cart cart = cartOpt.get();
             for (CartItem cartItem : cart.getCartItems()) {
-                cartItemService.deleteCartItem(cartItem.getCartItemUuid());
+                cartItemService.deleteCartItem(cartItem.getCartItemId());
             }
-            cartRepo.deleteById(cartUuid);
+            cartRepo.deleteById(cartId);
         }
     }
 

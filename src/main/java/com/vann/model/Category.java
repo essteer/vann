@@ -13,7 +13,7 @@ import com.vann.model.enums.CategoryType;
 public class Category {
 
     @Id
-    private UUID categoryUuid;
+    private UUID categoryId;
 
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
@@ -21,7 +21,7 @@ public class Category {
     private String categoryName;
 
     public Category() {
-        this.categoryUuid = UUID.randomUUID();
+        this.categoryId = UUID.randomUUID();
     }
 
     public Category(CategoryType categoryType, String name) {
@@ -30,12 +30,12 @@ public class Category {
         this.categoryName = name;
     }
 
-    public UUID getCategoryUuid() {
-        return categoryUuid;
+    public UUID getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategoryUuid(UUID categoryUuid) {
-        this.categoryUuid = categoryUuid;
+    public void setCategoryId(UUID categoryId) {
+        this.categoryId = categoryId;
     }
 
     public CategoryType getCategoryType() {
@@ -56,7 +56,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category [categoryUuid=" + categoryUuid + ", categoryType=" + categoryType + ", categoryName="
+        return "Category [categoryId=" + categoryId + ", categoryType=" + categoryType + ", categoryName="
                 + categoryName + "]";
     }
 

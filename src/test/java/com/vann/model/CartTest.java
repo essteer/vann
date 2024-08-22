@@ -30,7 +30,7 @@ public class CartTest {
     @Test
     public void testCartDefaultConstructor() {
         Cart defaultCart = new Cart();
-        assertNotNull(defaultCart.getCartUuid(), "UUID should be generated");
+        assertNotNull(defaultCart.getCartId(), "UUID should be generated");
         assertNull(defaultCart.getCartCustomer(), "Customer should be null");
         assertNotNull(defaultCart.getCartItems(), "Items should not be null");
         assertTrue(defaultCart.getCartItems().isEmpty(), "Items should be empty");
@@ -38,7 +38,7 @@ public class CartTest {
 
     @Test
     public void testCartParameterizedConstructor() {
-        assertNotNull(cart.getCartUuid(), "UUID should be generated");
+        assertNotNull(cart.getCartId(), "UUID should be generated");
         assertEquals(customer, cart.getCartCustomer(), "Customer should match");
         assertEquals(items, cart.getCartItems(), "Items should match");
         assertEquals(2, cart.getCartItems().size(), "Items size should match");
@@ -46,8 +46,8 @@ public class CartTest {
 
     @Test
     public void testSettersAndGetters() {
-        UUID newUuid = UUID.randomUUID();
-        cart.setCartUuid(newUuid);
+        UUID newId = UUID.randomUUID();
+        cart.setCartId(newId);
 
         Customer newCustomer = new Customer("Jane Doe", "jane.doe@example.com");
         Set<CartItem> newItems = new HashSet<>();
@@ -57,7 +57,7 @@ public class CartTest {
         cart.setCartCustomer(newCustomer);
         cart.setCartItems(newItems);
 
-        assertEquals(newUuid, cart.getCartUuid(), "UUID should match");
+        assertEquals(newId, cart.getCartId(), "UUID should match");
         assertEquals(newCustomer, cart.getCartCustomer(), "Customer should match");
         assertEquals(newItems, cart.getCartItems(), "Items should match");
         assertEquals(1, cart.getCartItems().size(), "Items size should match");
@@ -65,7 +65,7 @@ public class CartTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Cart [cartUuid=" + cart.getCartUuid() +
+        String expectedString = "Cart [cartId=" + cart.getCartId() +
                 ", customer=" + customer + ", cartItems=" + items + "]";
         assertEquals(expectedString, cart.toString(), "toString should match the expected output");
     }

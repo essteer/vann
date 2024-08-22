@@ -25,7 +25,7 @@ public class ProductTest {
     @Test
     public void testProductDefaultConstructor() {
         Product defaultProduct = new Product();
-        assertNotNull(defaultProduct.getProductUuid(), "UUID should be generated");
+        assertNotNull(defaultProduct.getProductId(), "UUID should be generated");
         assertNull(defaultProduct.getProductName(), "Product name should be null");
         assertEquals(0.0, defaultProduct.getProductPrice(), "Product price should be 0.0");
         assertNull(defaultProduct.getProductImage(), "Product image should be null");
@@ -34,7 +34,7 @@ public class ProductTest {
 
     @Test
     public void testProductParameterizedConstructor() {
-        assertNotNull(product.getProductUuid(), "UUID should be generated");
+        assertNotNull(product.getProductId(), "UUID should be generated");
         assertEquals("Ring", product.getProductName(), "Product name should match");
         assertEquals(499.99, product.getProductPrice(), "Product price should match");
         assertEquals("image.png", product.getProductImage(), "Product image should match");
@@ -44,7 +44,7 @@ public class ProductTest {
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
-        product.setProductUuid(newUuid);
+        product.setProductId(newUuid);
         product.setProductName("Necklace");
         product.setProductPrice(299.99);
         product.setProductImage("necklace.png");
@@ -52,7 +52,7 @@ public class ProductTest {
         Category newCategory = new Category(CategoryType.NECKLACE, "Accessories");
         product.setCategory(newCategory);
 
-        assertEquals(newUuid, product.getProductUuid(), "UUID should match");
+        assertEquals(newUuid, product.getProductId(), "UUID should match");
         assertEquals("Necklace", product.getProductName(), "Product name should match");
         assertEquals(299.99, product.getProductPrice(), "Product price should match");
         assertEquals("necklace.png", product.getProductImage(), "Product image should match");
@@ -61,7 +61,7 @@ public class ProductTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Product [productUuid=" + product.getProductUuid() +
+        String expectedString = "Product [productId=" + product.getProductId() +
                 ", productName=Ring, productPrice=499.99, category=" +
                 category.toString() + ", size=" + product.getSize() + ", colour=" + product.getColour() + "]";
 

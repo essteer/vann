@@ -29,7 +29,7 @@ public class CartItemTest {
     @Test
     public void testCartItemDefaultConstructor() {
         CartItem defaultItem = new CartItem();
-        assertNotNull(defaultItem.getCartItemUuid(), "UUID should be generated");
+        assertNotNull(defaultItem.getCartItemId(), "UUID should be generated");
         assertNull(defaultItem.getCart(), "Cart should be null");
         assertNull(defaultItem.getProduct(), "Product should be null");
         assertNull(defaultItem.getQuantity(), "Quantity should be null");
@@ -37,7 +37,7 @@ public class CartItemTest {
 
     @Test
     public void testCartItemParameterizedConstructor() {
-        assertNotNull(cartItem.getCartItemUuid(), "UUID should be generated");
+        assertNotNull(cartItem.getCartItemId(), "UUID should be generated");
         assertEquals(cart, cartItem.getCart(), "Cart should match");
         assertEquals(product, cartItem.getProduct(), "Product should match");
         assertEquals(3, cartItem.getQuantity(), "Quantity should match");
@@ -46,7 +46,7 @@ public class CartItemTest {
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
-        cartItem.setCartItemUuid(newUuid);
+        cartItem.setCartItemId(newUuid);
 
         Cart newCart = new Cart(new Customer("Jane Doe", "jane.doe@example.com"), new HashSet<>());
         Product newProduct = new Product("Necklace", 299.99, "necklace.png", new Category(CategoryType.NECKLACE, "Jewellery"), Size.MEDIUM, Colour.SILVER);
@@ -55,7 +55,7 @@ public class CartItemTest {
         cartItem.setProduct(newProduct);
         cartItem.setQuantity(5);
 
-        assertEquals(newUuid, cartItem.getCartItemUuid(), "UUID should match");
+        assertEquals(newUuid, cartItem.getCartItemId(), "UUID should match");
         assertEquals(newCart, cartItem.getCart(), "Cart should match");
         assertEquals(newProduct, cartItem.getProduct(), "Product should match");
         assertEquals(5, cartItem.getQuantity(), "Quantity should match");
@@ -63,7 +63,7 @@ public class CartItemTest {
 
     @Test
     public void testToString() {
-        String expectedString = "CartItem [cartItemUuid=" + cartItem.getCartItemUuid() +
+        String expectedString = "CartItem [cartItemId=" + cartItem.getCartItemId() +
                 ", cart=" + cart + 
                 ", product=" + product + 
                 ", quantity=" + cartItem.getQuantity() + "]";

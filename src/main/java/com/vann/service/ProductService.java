@@ -26,25 +26,25 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    public Product findProductById(UUID productUuid) {
-        Optional<Product> productOptional = productRepo.findById(productUuid);
+    public Product findProductById(UUID productId) {
+        Optional<Product> productOptional = productRepo.findById(productId);
         return productOptional.orElseThrow(() -> 
-            new ProductNotFoundException("Product with id " + productUuid + " not found"));
+            new ProductNotFoundException("Product with id " + productId + " not found"));
     }
 
-    public Product updateProduct(UUID productUuid, Product updatedProduct) {
+    public Product updateProduct(UUID productId, Product updatedProduct) {
         // Check if the Product exists
-        if (!productRepo.existsById(productUuid)) {
-            throw new IllegalArgumentException("Product not found");
+        if (!productRepo.existsById(productId)) {
+            throw new ProductNotFoundException("Product with id " + productId + " not found");
         }
         // Set the ID of the updated Product
-        updatedProduct.setProductUuid(productUuid);
+        updatedProduct.setProductId(productId);
         // Save the updated Product
         return productRepo.save(updatedProduct);
     }
 
-    public void deleteProduct(UUID productUuid) {
-        productRepo.deleteById(productUuid);
+    public void deleteProduct(UUID productId) {
+        productRepo.deleteById(productId);
     }
 
 }

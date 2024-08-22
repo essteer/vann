@@ -47,26 +47,23 @@ class ProductServiceTest {
 
     @Test
     void testFindProductById() {
-        UUID productUuid = UUID.randomUUID();
+        UUID productId = UUID.randomUUID();
         Product product = new Product();
-        product.setProductUuid(productUuid);
+        product.setProductId(productId);
         product.setProductName("Necklace");
 
-        when(productRepo.findById(productUuid)).thenReturn(Optional.of(product));
+        when(productRepo.findById(productId)).thenReturn(Optional.of(product));
 
-        Product foundProduct = productService.findProductById(productUuid);
+        Product foundProduct = productService.findProductById(productId);
         assertEquals("Necklace", foundProduct.getProductName());
-        verify(productRepo, times(1)).findById(productUuid);
+        verify(productRepo, times(1)).findById(productId);
     }
 
     @Test
     void testDeleteProduct() {
-        UUID productUuid = UUID.randomUUID();
-
-        doNothing().when(productRepo).deleteById(productUuid);
-
-        productService.deleteProduct(productUuid);
-
-        verify(productRepo, times(1)).deleteById(productUuid);
+        UUID productId = UUID.randomUUID();
+        doNothing().when(productRepo).deleteById(productId);
+        productService.deleteProduct(productId);
+        verify(productRepo, times(1)).deleteById(productId);
     }
 }

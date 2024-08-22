@@ -21,29 +21,29 @@ public class CategoryTest {
     @Test
     public void testCategoryDefaultConstructor() {
         Category defaultCategory = new Category();
-        assertNotNull(defaultCategory.getCategoryUuid(), "UUID should be generated");
+        assertNotNull(defaultCategory.getCategoryId(), "UUID should be generated");
         assertNull(defaultCategory.getCategoryName(), "Category name should be null");
     }
 
     @Test
     public void testCategoryParameterizedConstructor() {
-        assertNotNull(category.getCategoryUuid(), "UUID should be generated");
+        assertNotNull(category.getCategoryId(), "UUID should be generated");
         assertEquals("Jewellery", category.getCategoryName(), "Category name should match");
     }
 
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
-        category.setCategoryUuid(newUuid);
+        category.setCategoryId(newUuid);
         category.setCategoryName("Rings");
 
-        assertEquals(newUuid, category.getCategoryUuid(), "UUID should match");
+        assertEquals(newUuid, category.getCategoryId(), "UUID should match");
         assertEquals("Rings", category.getCategoryName(), "Category name should match");
     }
 
     @Test
     public void testToString() {
-        String expectedString = "Category [categoryUuid=" + category.getCategoryUuid() + ", categoryType=" + category.getCategoryType() +
+        String expectedString = "Category [categoryId=" + category.getCategoryId() + ", categoryType=" + category.getCategoryType() +
                                 ", categoryName=Jewellery]";
         assertEquals(expectedString, category.toString(), "toString should match");
     }
