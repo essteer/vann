@@ -43,7 +43,7 @@ public class InvoiceTest {
         assertNull(defaultInvoice.getBillAddress(), "Billing address should be null");
         assertNull(defaultInvoice.getShipAddress(), "Shipping address should be null");
         assertEquals(0.0, defaultInvoice.getTotalAmount(), "Total amount should be 0.0");
-        assertNull(defaultInvoice.getInvoiceItems(), "Invoice items should be null");
+        assertTrue(defaultInvoice.getInvoiceItems().isEmpty(), "Invoice items should be empty");
     }
 
     @Test

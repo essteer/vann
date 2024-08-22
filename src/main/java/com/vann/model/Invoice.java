@@ -1,5 +1,6 @@
 package com.vann.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public class Invoice {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "FK_customer_id", referencedColumnName = "customer_id")
+    @JoinColumn(name = "FK_customer_id", referencedColumnName = "id")
     private Customer invoiceCustomer;
 
     private String invoiceBillAddress;
@@ -88,6 +89,9 @@ public class Invoice {
     }
 
     public List<InvoiceItem> getInvoiceItems() {
+        if (invoiceItems == null) {
+            this.invoiceItems = new ArrayList<>();
+        }
         return invoiceItems;
     }
 

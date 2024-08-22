@@ -24,7 +24,7 @@ public class Product {
     private String productImage;
 
     @ManyToOne
-    @JoinColumn(name = "FK_category_id", referencedColumnName = "category_id")
+    @JoinColumn(name = "FK_category_id", referencedColumnName = "id")
     private Category category;
 
     @Enumerated(EnumType.STRING)

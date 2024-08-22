@@ -5,6 +5,7 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 
 @Entity
 public class Customer {
@@ -15,6 +16,7 @@ public class Customer {
     private String customerName;
 
     @Column(unique = true)
+    @Email
     private String customerEmail;
 
     public Customer() {

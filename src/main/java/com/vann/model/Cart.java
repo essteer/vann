@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -19,10 +18,10 @@ public class Cart {
     private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "FK_customer_id", referencedColumnName = "customer_id")
+    @JoinColumn(name = "FK_customer_id", referencedColumnName = "id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
 
     public Cart() {
@@ -57,6 +56,9 @@ public class Cart {
     }
 
     public Set<CartItem> getCartItems() {
+        if (cartItems == null) {
+            this.cartItems = new HashSet<>();
+        }
         return cartItems;
     }
 
