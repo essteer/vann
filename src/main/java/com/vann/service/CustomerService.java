@@ -1,5 +1,6 @@
 package com.vann.service;
 
+import com.vann.exceptions.CustomerNotFoundException;
 import com.vann.model.Customer;
 import com.vann.repositories.CustomerRepo;
 import org.springframework.stereotype.Service;
@@ -25,18 +26,23 @@ public class CustomerService {
         return customerRepo.findAll();
     }
 
-    public Optional<Customer> findCustomerById(UUID customerId) {
-        return customerRepo.findById(customerId);
+    public Customer findCustomerById(UUID customerId) {
+        Optional<Customer> customerOptional = customerRepo.findById(customerId);
+        return customerOptional.orElseThrow(() -> 
+            new CustomerNotFoundException("Customer with ID '" + customerId + "'' not found"));
+    }
+
+    public Customer findCustomerByEmail(String email) {
+        Optional<Customer> customerOptional = customerRepo.findByCustomerEmail(email);
+        return customerOptional.orElseThrow(() -> 
+            new CustomerNotFoundException("Customer with email '" + email + "'' not found"));
     }
 
     public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
-        // Check if the customer exists
         if (!customerRepo.existsById(customerId)) {
-            throw new IllegalArgumentException("Customer not found");
+            throw new CustomerNotFoundException("Customer '" + customerId + "' not found");
         }
-        // Set the ID of the updated customer
         updatedCustomer.setCustomerId(customerId);
-        // Save the updated customer
         return customerRepo.save(updatedCustomer);
     }
 

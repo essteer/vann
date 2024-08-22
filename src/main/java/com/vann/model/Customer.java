@@ -26,7 +26,6 @@ public class Customer {
         generateId();
         this.customerName = name;
         this.customerEmail = email;
-
     }
 
     public void generateId() {
@@ -36,6 +35,9 @@ public class Customer {
     }
 
     public UUID getCustomerId() {
+        if (this.id == null) {
+            generateId();
+        }
         return id;
     }
 
