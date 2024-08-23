@@ -52,7 +52,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/name/{categoryName}")
+    @GetMapping("/category/{categoryName}")
     public ResponseEntity<?> getCategoryByName(@PathVariable String categoryName) {
         try {
             Category category = categoryService.findCategoryByName(categoryName);

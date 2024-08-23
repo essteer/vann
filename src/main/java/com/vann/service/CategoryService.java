@@ -50,7 +50,7 @@ public class CategoryService {
             throw new RecordNotFoundException("Category with ID '" + categoryId + "' not found");
         }
         updatedCategory.setCategoryId(categoryId);
-        updatedCategory.setCategoryName(updatedCategory.getCategoryName().toLowerCase());
+        updatedCategory.setCategoryName(updatedCategory.getCategoryName());
         return saveCategory(updatedCategory);
     }
     
