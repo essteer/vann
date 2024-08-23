@@ -33,6 +33,28 @@ public class CustomerTest {
     }
 
     @Test
+    public void testEmailNormalisation() {
+        Customer customer = new Customer("Jane Doe", "JANE.DOE@EXAMPLE.COM");
+        assertEquals("jane.doe@example.com", customer.getCustomerEmail(), "Email should be normalised to lowercase");
+    }
+
+    @Test
+    public void testEmptyNameAndEmail() {
+        Customer customer = new Customer("", "");
+        customer.generateIdIfAbsent();
+        assertNotNull(customer.getCustomerId(), "UUID should be generated");
+        assertEquals("", customer.getCustomerName(), "Customer name should be empty");
+        assertEquals("", customer.getCustomerEmail(), "Customer email should be empty");
+    }
+
+    @Test
+    public void testGenerateIdIfAbsent() {
+        Customer customer = new Customer();
+        customer.generateIdIfAbsent();
+        assertNotNull(customer.getCustomerId(), "UUID should be generated");
+    }
+
+    @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
         customer.setCustomerId(newUuid);

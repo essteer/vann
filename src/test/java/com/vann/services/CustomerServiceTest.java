@@ -1,5 +1,7 @@
 package com.vann.services;
 
+import com.vann.exceptions.FieldConflictException;
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Customer;
 import com.vann.repositories.CustomerRepo;
 import com.vann.service.CustomerService;
@@ -28,21 +30,6 @@ class CustomerServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void testSaveCustomer() {
-        Customer customer = new Customer();
-        customer.setCustomerName("John Doe");
-        customer.setCustomerEmail("john.doe@example.com");
-
-        when(customerRepo.save(customer)).thenReturn(customer);
-
-        Customer savedCustomer = customerService.saveCustomer(customer);
-
-        assertNotNull(savedCustomer);
-        assertEquals("John Doe", savedCustomer.getCustomerName());
-        verify(customerRepo, times(1)).save(customer);
     }
 
     @Test
@@ -76,6 +63,13 @@ class CustomerServiceTest {
     }
 
     @Test
+    void testFindCustomerByIdNotFound() {
+        UUID customerId = UUID.randomUUID();
+        when(customerRepo.findById(customerId)).thenReturn(Optional.empty());
+        assertThrows(RecordNotFoundException.class, () -> customerService.findCustomerById(customerId));
+    }
+
+    @Test
     void testFindCustomerByEmail() {
         String email = "john.doe@example.com";
         Customer customer = new Customer();
@@ -89,6 +83,46 @@ class CustomerServiceTest {
         assertEquals("John Doe", foundCustomer.getCustomerName());
         assertEquals(email, foundCustomer.getCustomerEmail());
         verify(customerRepo, times(1)).findByCustomerEmail(email);
+    }
+
+    @Test
+    void testFindCustomerByEmailNotFound() {
+        String email = "nonexistent@example.com";
+        when(customerRepo.findByCustomerEmail(email)).thenReturn(Optional.empty());
+        assertThrows(RecordNotFoundException.class, () -> customerService.findCustomerByEmail(email));
+    }
+
+    @Test
+    void testSaveCustomer() {
+        Customer customer = new Customer();
+        customer.setCustomerName("John Doe");
+        customer.setCustomerEmail("john.doe@example.com");
+
+        when(customerRepo.save(customer)).thenReturn(customer);
+
+        Customer savedCustomer = customerService.saveCustomer(customer);
+
+        assertNotNull(savedCustomer);
+        assertEquals("John Doe", savedCustomer.getCustomerName());
+        verify(customerRepo, times(1)).save(customer);
+    }
+
+    @Test
+    void testEmailConflict() {
+        UUID existingCustomerId = UUID.randomUUID();
+        Customer existingCustomer = new Customer("John Doe", "john.doe@example.com");
+        existingCustomer.setCustomerId(existingCustomerId);
+    
+        Customer newCustomer = new Customer("Jane Doe", "john.doe@example.com");
+        newCustomer.generateIdIfAbsent();
+    
+        when(customerRepo.findByCustomerEmail("john.doe@example.com")).thenReturn(Optional.of(existingCustomer));
+    
+        assertThrows(FieldConflictException.class, () -> {
+            customerService.saveCustomer(newCustomer);
+        });
+    
+        verify(customerRepo, times(1)).findByCustomerEmail("john.doe@example.com");
     }
 
     @Test
