@@ -46,8 +46,8 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> getCustomerByEmail(@RequestParam String email) {
+    @GetMapping("/q/{email}")
+    public ResponseEntity<?> getCustomerByEmail(@PathVariable String email) {
         try {
             Customer customer = customerService.findCustomerByEmail(email);
             return ResponseEntity.ok(customer);
@@ -68,6 +68,26 @@ public class CustomerController {
                 .toUri();
                 
             return ResponseEntity.created(location).body(savedCustomer);
+        } catch (FieldConflictException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createCustomer(
+        @RequestParam String name,
+        @RequestParam String email
+    ) {
+        try {
+            Customer customer = customerService.createCustomer(name, email);
+            URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(customer.getCustomerId())
+                .toUri();
+    
+            return ResponseEntity.created(location).body(customer);
+        
         } catch (FieldConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }

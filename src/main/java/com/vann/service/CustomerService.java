@@ -19,6 +19,11 @@ public class CustomerService {
         this.customerRepo = customerRepo;
     }
 
+    public Customer createCustomer(String name, String email) {
+        Customer customer = new Customer(name, email);
+        return saveCustomer(customer);
+    }
+
     public List<Customer> findAllCustomers() {
         return customerRepo.findAll();
     }
