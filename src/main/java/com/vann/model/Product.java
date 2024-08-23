@@ -55,6 +55,9 @@ public class Product {
     }
 
     public UUID getProductId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
         return id;
     }
 

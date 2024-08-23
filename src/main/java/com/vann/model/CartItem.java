@@ -40,6 +40,9 @@ public class CartItem {
     }
 
     public UUID getCartItemId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
         return id;
     }
 

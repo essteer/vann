@@ -47,6 +47,9 @@ public class Invoice {
     }
 
     public UUID getInvoiceId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
         return id;
     }
 
