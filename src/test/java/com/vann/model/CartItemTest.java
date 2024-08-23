@@ -29,7 +29,7 @@ public class CartItemTest {
     @Test
     public void testCartItemDefaultConstructor() {
         CartItem defaultItem = new CartItem();
-        defaultItem.generateId();
+        defaultItem.generateIdIfAbsent();
         assertNotNull(defaultItem.getCartItemId(), "UUID should be generated");
         assertNull(defaultItem.getCart(), "Cart should be null");
         assertNull(defaultItem.getProduct(), "Product should be null");

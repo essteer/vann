@@ -30,7 +30,7 @@ public class CartTest {
     @Test
     public void testCartDefaultConstructor() {
         Cart defaultCart = new Cart();
-        defaultCart.generateId();
+        defaultCart.generateIdIfAbsent();
         assertNotNull(defaultCart.getCartId(), "UUID should be generated");
         assertNull(defaultCart.getCartCustomer(), "Customer should be null");
         assertNotNull(defaultCart.getCartItems(), "Items should not be null");

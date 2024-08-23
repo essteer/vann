@@ -32,7 +32,7 @@ public class Invoice {
     }
 
     public Invoice(Customer customer, String billAddress, String shipAddress, List<InvoiceItem> invoiceItems, double totalAmount) {
-        generateId();
+        generateIdIfAbsent();
         this.invoiceCustomer = customer;
         this.invoiceBillAddress = billAddress;
         this.invoiceShipAddress = shipAddress;
@@ -40,16 +40,14 @@ public class Invoice {
         this.invoiceTotalAmount = totalAmount;
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getInvoiceId() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        generateIdIfAbsent();
         return id;
     }
 

@@ -28,23 +28,21 @@ public class InvoiceItem {
     }
 
     public InvoiceItem(Invoice invoice, Product product, int quantity, double price) {
-        generateId();
+        generateIdIfAbsent();
         this.invoice = invoice;
         this.invoiceItem = product;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getInvoiceItemId() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        generateIdIfAbsent();
         return id;
     }
 

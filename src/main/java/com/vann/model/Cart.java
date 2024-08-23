@@ -28,21 +28,19 @@ public class Cart {
     }
 
     public Cart(Customer customer, Set<CartItem> cartItems) {
-        generateId();
+        generateIdIfAbsent();
         this.customer = customer;
         this.cartItems = cartItems;
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getCartId() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        generateIdIfAbsent();
         return id;
     }
 

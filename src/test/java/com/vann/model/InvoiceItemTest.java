@@ -27,7 +27,7 @@ public class InvoiceItemTest {
     @Test
     public void testInvoiceItemDefaultConstructor() {
         InvoiceItem defaultInvoiceItem = new InvoiceItem();
-        defaultInvoiceItem.generateId();
+        defaultInvoiceItem.generateIdIfAbsent();
         assertNotNull(defaultInvoiceItem.getInvoiceItemId(), "UUID should be generated");
         assertNull(defaultInvoiceItem.getInvoice(), "Invoice should be null");
         assertNull(defaultInvoiceItem.getInvoiceItem(), "Product should be null");

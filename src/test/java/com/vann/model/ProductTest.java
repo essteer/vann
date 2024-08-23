@@ -25,7 +25,7 @@ public class ProductTest {
     @Test
     public void testProductDefaultConstructor() {
         Product defaultProduct = new Product();
-        defaultProduct.generateId();
+        defaultProduct.generateIdIfAbsent();
         assertNotNull(defaultProduct.getProductId(), "UUID should be generated");
         assertNull(defaultProduct.getProductName(), "Product name should be null");
         assertEquals(0.0, defaultProduct.getProductPrice(), "Product price should be 0.0");

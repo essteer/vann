@@ -27,22 +27,20 @@ public class CartItem {
     }
 
     public CartItem(Cart cart, Product product, Integer quantity) {
-        generateId();
+        generateIdIfAbsent();
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getCartItemId() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        generateIdIfAbsent();
         return id;
     }
 

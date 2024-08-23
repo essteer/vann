@@ -21,7 +21,7 @@ public class CategoryTest {
     @Test
     public void testCategoryDefaultConstructor() {
         Category defaultCategory = new Category();
-        defaultCategory.generateId();
+        defaultCategory.generateIdIfAbsent();
         assertNotNull(defaultCategory.getCategoryId(), "UUID should be generated");
         assertNull(defaultCategory.getCategoryName(), "Category name should be null");
     }

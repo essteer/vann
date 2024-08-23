@@ -26,21 +26,19 @@ public class Category {
     }
 
     public Category(CategoryType categoryType, String name) {
-        generateId();
+        generateIdIfAbsent();
         this.categoryType = categoryType;
         this.categoryName = name.toLowerCase();
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getCategoryId() {
-        if (this.id == null) {
-            generateId();
-        }
+        generateIdIfAbsent();
         return id;
     }
 

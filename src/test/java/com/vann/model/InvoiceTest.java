@@ -37,7 +37,7 @@ public class InvoiceTest {
     @Test
     public void testInvoiceDefaultConstructor() {
         Invoice defaultInvoice = new Invoice();
-        defaultInvoice.generateId();
+        defaultInvoice.generateIdIfAbsent();
         assertNotNull(defaultInvoice.getInvoiceId(), "ID should be generated");
         assertNull(defaultInvoice.getCustomer(), "Customer should be null");
         assertNull(defaultInvoice.getBillAddress(), "Billing address should be null");

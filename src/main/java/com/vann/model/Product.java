@@ -39,7 +39,7 @@ public class Product {
     }
 
     public Product(String name, double price, String image, Category category, Size size, Colour colour) {
-        generateId();
+        generateIdIfAbsent();
         this.productName = name.toUpperCase();
         this.productPrice = price;
         this.productImage = image;
@@ -48,16 +48,14 @@ public class Product {
         this.colour = colour;
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getProductId() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        generateIdIfAbsent();
         return id;
     }
 

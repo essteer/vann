@@ -23,21 +23,19 @@ public class Customer {
     }
 
     public Customer(String name, String email) {
-        generateId();
+        generateIdIfAbsent();
         this.customerName = name;
         this.customerEmail = email.toLowerCase();
     }
 
-    public void generateId() {
+    public void generateIdIfAbsent() {
         if (this.id == null) {
             this.id = UUID.randomUUID();
         }
     }
 
     public UUID getCustomerId() {
-        if (this.id == null) {
-            generateId();
-        }
+        generateIdIfAbsent();
         return id;
     }
 
