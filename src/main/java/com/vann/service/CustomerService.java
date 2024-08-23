@@ -42,7 +42,7 @@ public class CustomerService {
 
     public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
         if (!customerRepo.existsById(customerId)) {
-            throw new RecordNotFoundException("Customer '" + customerId + "' not found");
+            throw new RecordNotFoundException("Customer with ID '" + customerId + "' not found");
         }
         updatedCustomer.setCustomerId(customerId);
         updatedCustomer.setCustomerEmail(updatedCustomer.getCustomerEmail().toLowerCase());
