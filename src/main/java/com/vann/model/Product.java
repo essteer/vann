@@ -19,7 +19,6 @@ public class Product {
     @Id
     private UUID id;
     private String productName;
-    private String productDesc;
     private double productPrice;
     private String productImage;
 
@@ -28,11 +27,11 @@ public class Product {
     private Category category;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true) // Optional attribute
+    @Column(nullable = true)
     private Size size;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true) // Optional attribute
+    @Column(nullable = true)
     private Colour colour;
 
     public Product() {
@@ -69,14 +68,6 @@ public class Product {
 
     public void setProductName(String productName) {
         this.productName = productName.toUpperCase();
-    }
-
-    public String getProductDesc() {
-        return productDesc;
-    }
-
-    public void setProductDesc(String productDesc) {
-        this.productDesc = productDesc;
     }
 
     public double getProductPrice() {

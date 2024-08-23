@@ -1,9 +1,13 @@
 package com.vann.service;
 
 import com.vann.exceptions.RecordNotFoundException;
+import com.vann.model.Category;
 import com.vann.model.Product;
 import com.vann.model.enums.CategoryType;
+import com.vann.model.enums.Colour;
+import com.vann.model.enums.Size;
 import com.vann.repositories.ProductRepo;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +21,14 @@ public class ProductService {
 
     public ProductService(ProductRepo productRepo) {
         this.productRepo = productRepo;
+    }
+
+    public Product createProduct(String name, double price, String image, Category category, Size size, Colour colour) {
+        if (category == null) {
+            throw new RecordNotFoundException("Category not found");
+        }
+        Product product = new Product(name, price, image, category, size, colour);
+        return saveProduct(product);
     }
 
     public List<Product> findAllProducts() {
@@ -42,6 +54,7 @@ public class ProductService {
     }
 
     public Product saveProduct(Product product) {
+        product.generateIdIfAbsent();
         return productRepo.save(product);
     }
 
