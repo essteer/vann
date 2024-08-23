@@ -45,7 +45,7 @@ public class CustomerService {
             throw new RecordNotFoundException("Customer with ID '" + customerId + "' not found");
         }
         updatedCustomer.setCustomerId(customerId);
-        updatedCustomer.setCustomerEmail(updatedCustomer.getCustomerEmail().toLowerCase());
+        updatedCustomer.setCustomerEmail(updatedCustomer.getCustomerEmail());
         return customerRepo.save(updatedCustomer);
     }
 
