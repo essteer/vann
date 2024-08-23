@@ -42,6 +42,7 @@ public class CategoryService {
 
     public Category saveCategory(Category category) {
         checkForNameConflict(category);
+        category.generateIdIfAbsent();
         return categoryRepo.save(category);
     }
     
