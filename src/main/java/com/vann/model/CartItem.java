@@ -69,7 +69,7 @@ public class CartItem {
     }
 
     public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+        this.quantity = Math.max(0, quantity);
     }
 
     @Override

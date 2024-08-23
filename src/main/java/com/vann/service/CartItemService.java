@@ -1,7 +1,9 @@
 package com.vann.service;
 
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.CartItem;
 import com.vann.repositories.CartItemRepo;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,18 +22,17 @@ public class CartItemService {
         return cartItemRepo.save(cartItem);
     }
 
-    public Optional<CartItem> findCartItemById(UUID cartItemId) {
-        return cartItemRepo.findById(cartItemId);
+    public CartItem findCartItemById(UUID cartItemId) {
+        Optional<CartItem> cartItemOptional = cartItemRepo.findById(cartItemId);
+        return cartItemOptional.orElseThrow(() -> 
+            new RecordNotFoundException("CartItem with ID '" + cartItemId + "' not found"));
     }
 
     public CartItem updateCartItem(UUID cartItemId, CartItem updatedCartItem) {
-        // Check if the CartItem exists
         if (!cartItemRepo.existsById(cartItemId)) {
             throw new IllegalArgumentException("CartItem not found");
         }
-        // Set the ID of the updated CartItem
         updatedCartItem.setCartItemId(cartItemId);
-        // Save the updated CartItem
         return cartItemRepo.save(updatedCartItem);
     }
 
