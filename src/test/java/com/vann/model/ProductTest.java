@@ -36,7 +36,7 @@ public class ProductTest {
     @Test
     public void testProductParameterizedConstructor() {
         assertNotNull(product.getProductId(), "UUID should be generated");
-        assertEquals("Ring", product.getProductName(), "Product name should match");
+        assertEquals("RING", product.getProductName(), "Product name should match");
         assertEquals(499.99, product.getProductPrice(), "Product price should match");
         assertEquals("image.png", product.getProductImage(), "Product image should match");
         assertEquals(category, product.getCategory(), "Category should match");
@@ -54,7 +54,7 @@ public class ProductTest {
         product.setCategory(newCategory);
 
         assertEquals(newUuid, product.getProductId(), "UUID should match");
-        assertEquals("Necklace", product.getProductName(), "Product name should match");
+        assertEquals("NECKLACE", product.getProductName(), "Product name should match");
         assertEquals(299.99, product.getProductPrice(), "Product price should match");
         assertEquals("necklace.png", product.getProductImage(), "Product image should match");
         assertEquals(newCategory, product.getCategory(), "Category should match");
@@ -63,7 +63,7 @@ public class ProductTest {
     @Test
     public void testToString() {
         String expectedString = "Product [id=" + product.getProductId() +
-                ", name=Ring, price=499.99, category=" +
+                ", name=RING, price=499.99, category=" +
                 category.toString() + ", size=" + product.getSize() + ", colour=" + product.getColour() + "]";
 
         assertEquals(expectedString, product.toString(), "toString should match the expected output");

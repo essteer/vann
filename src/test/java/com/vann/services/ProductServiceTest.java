@@ -40,7 +40,7 @@ class ProductServiceTest {
         Product savedProduct = productService.saveProduct(product);
 
         assertNotNull(savedProduct);
-        assertEquals("Necklace", savedProduct.getProductName());
+        assertEquals("NECKLACE", savedProduct.getProductName());
         assertEquals(100.0, savedProduct.getProductPrice());
         verify(productRepo, times(1)).save(product);
     }
@@ -55,7 +55,7 @@ class ProductServiceTest {
         when(productRepo.findById(productId)).thenReturn(Optional.of(product));
 
         Product foundProduct = productService.findProductById(productId);
-        assertEquals("Necklace", foundProduct.getProductName());
+        assertEquals("NECKLACE", foundProduct.getProductName());
         verify(productRepo, times(1)).findById(productId);
     }
 

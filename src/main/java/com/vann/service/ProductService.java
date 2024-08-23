@@ -1,7 +1,8 @@
 package com.vann.service;
 
-import com.vann.exceptions.ProductNotFoundException;
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Product;
+import com.vann.model.enums.CategoryType;
 import com.vann.repositories.ProductRepo;
 import org.springframework.stereotype.Service;
 
@@ -18,28 +19,38 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public Product saveProduct(Product product) {
-        return productRepo.save(product);
-    }
-
     public List<Product> findAllProducts() {
         return productRepo.findAll();
+    }
+
+    public List<Product> findProductsByCategoryName(String categoryName) {
+        return productRepo.findByCategory_CategoryName(categoryName);
+    }
+
+    public List<Product> findProductsByCategoryType(CategoryType categoryType) {
+        return productRepo.findByCategory_CategoryType(categoryType);
+    }
+
+    public List<Product> findProductsByName(String productName) {
+        return productRepo.findByProductName(productName.toUpperCase());
     }
 
     public Product findProductById(UUID productId) {
         Optional<Product> productOptional = productRepo.findById(productId);
         return productOptional.orElseThrow(() -> 
-            new ProductNotFoundException("Product with ID '" + productId + "' not found"));
+            new RecordNotFoundException("Product with ID '" + productId + "' not found"));
+    }
+
+    public Product saveProduct(Product product) {
+        return productRepo.save(product);
     }
 
     public Product updateProduct(UUID productId, Product updatedProduct) {
-        // Check if the Product exists
         if (!productRepo.existsById(productId)) {
-            throw new ProductNotFoundException("Product with ID '" + productId + "' not found");
+            throw new RecordNotFoundException("Product with ID '" + productId + "' not found");
         }
-        // Set the ID of the updated Product
         updatedProduct.setProductId(productId);
-        // Save the updated Product
+        updatedProduct.setProductName(updatedProduct.getProductName());
         return productRepo.save(updatedProduct);
     }
 

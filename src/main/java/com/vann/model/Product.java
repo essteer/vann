@@ -40,7 +40,7 @@ public class Product {
 
     public Product(String name, double price, String image, Category category, Size size, Colour colour) {
         generateId();
-        this.productName = name;
+        this.productName = name.toUpperCase();
         this.productPrice = price;
         this.productImage = image;
         this.category = category;
@@ -67,7 +67,7 @@ public class Product {
     }
 
     public void setProductName(String productName) {
-        this.productName = productName;
+        this.productName = productName.toUpperCase();
     }
 
     public String getProductDesc() {
@@ -123,7 +123,5 @@ public class Product {
         return "Product [id=" + id + ", name=" + productName + ", price=" + productPrice + ", category=" + category
                 + ", size=" + size + ", colour=" + colour + "]";
     }
-
-
 
 }
