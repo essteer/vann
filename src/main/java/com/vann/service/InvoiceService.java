@@ -1,6 +1,6 @@
 package com.vann.service;
 
-import com.vann.exceptions.InvoiceNotFoundException;
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Invoice;
 import com.vann.repositories.InvoiceRepo;
 import org.springframework.stereotype.Service;
@@ -26,20 +26,37 @@ public class InvoiceService {
         return invoiceRepo.findAll();
     }
 
+    public List<Invoice> findInvoicesByTotalAmountBetween(double minAmount, double maxAmount) {
+        return invoiceRepo.findByInvoiceTotalAmountBetween(minAmount, maxAmount);
+    }
+
+    public List<Invoice> findInvoicesByTotalAmountGreaterThan(double amount) {
+        return invoiceRepo.findByInvoiceTotalAmountGreaterThan(amount);
+    }
+
+    public List<Invoice> findInvoicesByTotalAmountLessThan(double amount) {
+        return invoiceRepo.findByInvoiceTotalAmountLessThan(amount);
+    }
+
+    public List<Invoice> findInvoicesByCustomerId(UUID customerId) {
+        return invoiceRepo.findByInvoiceCustomer_Id(customerId);
+    }
+
+    public List<Invoice> findInvoicesByCustomerEmail(String email) {
+        return invoiceRepo.findByInvoiceCustomer_CustomerEmail(email);
+    }
+
     public Invoice findInvoiceById(UUID invoiceId) {
         Optional<Invoice> invoiceOptional = invoiceRepo.findById(invoiceId);
         return invoiceOptional.orElseThrow(() -> 
-            new InvoiceNotFoundException("Invoice with ID " + invoiceId + " not found"));
+            new RecordNotFoundException("Invoice with ID '" + invoiceId + "'' not found"));
     }
 
     public Invoice updateInvoice(UUID invoiceId, Invoice updatedInvoice) {
-        // Check if the Invoice exists
         if (!invoiceRepo.existsById(invoiceId)) {
-            throw new InvoiceNotFoundException("Invoice with ID " + invoiceId + " not found");
+            throw new RecordNotFoundException("Invoice with ID '" + invoiceId + "'' not found");
         }
-        // Set the ID of the updated Invoice
         updatedInvoice.setInvoiceId(invoiceId);
-        // Save the updated Invoice
         return invoiceRepo.save(updatedInvoice);
     }
 
