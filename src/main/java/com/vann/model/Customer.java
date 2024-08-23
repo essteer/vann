@@ -25,7 +25,7 @@ public class Customer {
     public Customer(String name, String email) {
         generateId();
         this.customerName = name;
-        this.customerEmail = email;
+        this.customerEmail = email.toLowerCase();
     }
 
     public void generateId() {
@@ -58,7 +58,7 @@ public class Customer {
     }
 
     public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+        this.customerEmail = customerEmail.toLowerCase();
     }
 
     @Override

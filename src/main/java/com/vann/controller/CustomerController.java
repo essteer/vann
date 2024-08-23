@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.vann.exceptions.FieldConflictException;
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Customer;
 import com.vann.service.CustomerService;
 
@@ -34,33 +37,52 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable UUID id) {
-        Customer customer = customerService.findCustomerById(id);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<?> getCustomer(@PathVariable UUID id) {
+        try {
+            Customer customer = customerService.findCustomerById(id);
+            return ResponseEntity.ok(customer);
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Customer> getCustomerByEmail(@RequestParam String email) {
-        Customer customer = customerService.findCustomerByEmail(email);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<?> getCustomerByEmail(@RequestParam String email) {
+        try {
+            Customer customer = customerService.findCustomerByEmail(email);
+            return ResponseEntity.ok(customer);
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PostMapping
-    public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.saveCustomer(customer);
+    public ResponseEntity<?> saveCustomer(@RequestBody Customer customer) {
+        try {
+            Customer savedCustomer = customerService.saveCustomer(customer);
 
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(savedCustomer.getCustomerId())
-            .toUri();
-        return ResponseEntity.created(location).body(savedCustomer);
+            URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedCustomer.getCustomerId())
+                .toUri();
+                
+            return ResponseEntity.created(location).body(savedCustomer);
+        } catch (FieldConflictException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID id, @RequestBody Customer customer) {
-        Customer updatedCustomer = customerService.updateCustomer(id, customer);
-        return ResponseEntity.ok(updatedCustomer);
+    public ResponseEntity<?> updateCustomer(@PathVariable UUID id, @RequestBody Customer customer) {
+        try {
+            Customer updatedCustomer = customerService.updateCustomer(id, customer);
+            return ResponseEntity.ok(updatedCustomer);
+        } catch (FieldConflictException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }
