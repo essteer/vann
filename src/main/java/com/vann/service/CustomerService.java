@@ -42,6 +42,7 @@ public class CustomerService {
 
     public Customer saveCustomer(Customer customer) {
         checkForEmailConflict(customer);
+        customer.generateIdIfAbsent();
         return customerRepo.save(customer);
     }
 

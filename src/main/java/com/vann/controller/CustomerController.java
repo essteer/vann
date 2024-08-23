@@ -33,6 +33,9 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<List<Customer>> getAllCustomers() {
         List<Customer> customers = customerService.findAllCustomers();
+        if (customers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
         return ResponseEntity.ok(customers);
     }
 
@@ -46,7 +49,7 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/q/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<?> getCustomerByEmail(@PathVariable String email) {
         try {
             Customer customer = customerService.findCustomerByEmail(email);
