@@ -28,7 +28,7 @@ public class Category {
     public Category(CategoryType categoryType, String name) {
         generateId();
         this.categoryType = categoryType;
-        this.categoryName = name;
+        this.categoryName = name.toLowerCase();
     }
 
     public void generateId() {
@@ -61,7 +61,7 @@ public class Category {
     }
 
     public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+        this.categoryName = categoryName.toLowerCase();
     }
 
     @Override

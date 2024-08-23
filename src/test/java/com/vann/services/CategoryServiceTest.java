@@ -42,14 +42,14 @@ class CategoryServiceTest {
         Category savedCategory = categoryService.saveCategory(category);
 
         assertNotNull(savedCategory);
-        assertEquals("Earring", savedCategory.getCategoryName());
+        assertEquals("earring", savedCategory.getCategoryName());
         verify(categoryRepo, times(1)).save(category);
     }
 
     @Test
     void testFindAllCategories() {
         List<Category> categories = Arrays.asList(
-            new Category(CategoryType.EARRING, "Earring"),
+            new Category(CategoryType.EARRING, "earring"),
             new Category(CategoryType.NECKLACE, "Necklace")
         );
 
@@ -67,13 +67,13 @@ class CategoryServiceTest {
         UUID categoryId = UUID.randomUUID();
         Category category = new Category();
         category.setCategoryId(categoryId);
-        category.setCategoryName("Earring");
+        category.setCategoryName("earring");
 
         when(categoryRepo.findById(categoryId)).thenReturn(Optional.of(category));
 
         Category foundCategory = categoryService.findCategoryById(categoryId);
 
-        assertEquals("Earring", foundCategory.getCategoryName());
+        assertEquals("earring", foundCategory.getCategoryName());
         verify(categoryRepo, times(1)).findById(categoryId);
     }
 
@@ -97,7 +97,7 @@ class CategoryServiceTest {
 
     @Test
     void testFindCategoryByName() {
-        String categoryName = "Earring";
+        String categoryName = "earring";
         Category category = new Category(CategoryType.EARRING, categoryName);
     
         when(categoryRepo.findByCategoryName(categoryName)).thenReturn(Optional.of(category));
@@ -110,10 +110,10 @@ class CategoryServiceTest {
     @Test
     void testUpdateCategory() {
         UUID categoryId = UUID.randomUUID();
-        Category existingCategory = new Category(CategoryType.EARRING, "Earring");
+        Category existingCategory = new Category(CategoryType.EARRING, "earring");
         existingCategory.setCategoryId(categoryId);
     
-        Category updatedCategory = new Category(CategoryType.NECKLACE, "Necklace");
+        Category updatedCategory = new Category(CategoryType.NECKLACE, "necklace");
     
         when(categoryRepo.existsById(categoryId)).thenReturn(true);
         when(categoryRepo.save(updatedCategory)).thenReturn(updatedCategory);
@@ -122,7 +122,7 @@ class CategoryServiceTest {
     
         assertNotNull(result);
         assertEquals(categoryId, result.getCategoryId());
-        assertEquals("Necklace", result.getCategoryName());
+        assertEquals("necklace", result.getCategoryName());
         verify(categoryRepo, times(1)).existsById(categoryId);
         verify(categoryRepo, times(1)).save(updatedCategory);
     }

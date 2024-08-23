@@ -15,7 +15,7 @@ public class CategoryTest {
 
     @BeforeEach
     public void setUp() {
-        category = new Category(CategoryType.JEWELLERY, "Jewellery");
+        category = new Category(CategoryType.JEWELLERY, "jewellery");
     }
 
     @Test
@@ -29,23 +29,23 @@ public class CategoryTest {
     @Test
     public void testCategoryParameterizedConstructor() {
         assertNotNull(category.getCategoryId(), "UUID should be generated");
-        assertEquals("Jewellery", category.getCategoryName(), "Category name should match");
+        assertEquals("jewellery", category.getCategoryName(), "Category name should match");
     }
 
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
         category.setCategoryId(newUuid);
-        category.setCategoryName("Rings");
+        category.setCategoryName("rings");
 
         assertEquals(newUuid, category.getCategoryId(), "UUID should match");
-        assertEquals("Rings", category.getCategoryName(), "Category name should match");
+        assertEquals("rings", category.getCategoryName(), "Category name should match");
     }
 
     @Test
     public void testToString() {
         String expectedString = "Category [id=" + category.getCategoryId() + ", type=" + category.getCategoryType() +
-                                ", name=Jewellery]";
+                                ", name=jewellery]";
         assertEquals(expectedString, category.toString(), "toString should match");
     }
 }

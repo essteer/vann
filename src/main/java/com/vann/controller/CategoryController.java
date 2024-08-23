@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.vann.exceptions.FieldConflictException;
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Category;
 import com.vann.model.enums.CategoryType;
 import com.vann.service.CategoryService;
@@ -33,40 +36,59 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategory(@PathVariable UUID id) {
-        Category category = categoryService.findCategoryById(id);
-        return ResponseEntity.ok(category);
-    }
-
     @GetMapping("/type/{categoryType}")
     public ResponseEntity<List<Category>> getCategoriesByType(@PathVariable CategoryType categoryType) {
         List<Category> categories = categoryService.findCategoriesByType(categoryType);
         return ResponseEntity.ok(categories);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategory(@PathVariable UUID id) {
+        try {
+            Category category = categoryService.findCategoryById(id);
+            return ResponseEntity.ok(category);
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/name/{categoryName}")
-    public ResponseEntity<Category> getCategoryByName(@PathVariable String categoryName) {
-        Category category = categoryService.findCategoryByName(categoryName);
-        return ResponseEntity.ok(category);
+    public ResponseEntity<?> getCategoryByName(@PathVariable String categoryName) {
+        try {
+            Category category = categoryService.findCategoryByName(categoryName);
+            return ResponseEntity.ok(category);
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PostMapping
-    public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
-        Category savedCategory = categoryService.saveCategory(category);
-
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(savedCategory.getCategoryId())
-            .toUri();
-        return ResponseEntity.created(location).body(savedCategory);
+    public ResponseEntity<?> saveCategory(@RequestBody Category category) {
+        try {
+            Category savedCategory = categoryService.saveCategory(category);
+    
+            URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedCategory.getCategoryId())
+                .toUri();
+    
+            return ResponseEntity.created(location).body(savedCategory);
+        } catch (FieldConflictException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable UUID id, @RequestBody Category updatedCategory) {
-        Category updated = categoryService.updateCategory(id, updatedCategory);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<?> updateCategory(@PathVariable UUID id, @RequestBody Category updatedCategory) {
+        try {
+            Category updated = categoryService.updateCategory(id, updatedCategory);
+            return ResponseEntity.ok(updated);
+        } catch (FieldConflictException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }
