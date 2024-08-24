@@ -41,6 +41,9 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.findAllProducts();
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
         return ResponseEntity.ok(products);
     }
 
@@ -72,7 +75,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createProduct(
         @RequestParam String productName,
         @RequestParam double productPrice,
@@ -96,18 +99,6 @@ public class ProductController {
             Exception elaboratedException = new RecordNotFoundException("Category with name '" + categoryName + "' not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(elaboratedException.getMessage());
         }
-    }
-
-    @PostMapping
-    public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
-        Product savedProduct = productService.saveProduct(product);
-
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(savedProduct.getProductId())
-            .toUri();
-        return ResponseEntity.created(location).body(savedProduct);
     }
 
     @PutMapping("/{id}")
