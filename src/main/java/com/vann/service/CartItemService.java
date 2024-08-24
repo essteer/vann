@@ -6,8 +6,10 @@ import com.vann.repositories.CartItemRepo;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 
 @Service
 public class CartItemService {
@@ -18,8 +20,13 @@ public class CartItemService {
         this.cartItemRepo = cartItemRepo;
     }
 
-    public CartItem saveCartItem(CartItem cartItem) {
-        return cartItemRepo.save(cartItem);
+    public CartItem createCartItem(UUID productId, Integer quantity) {
+        CartItem cartItem = new CartItem(productId, quantity);
+        return saveCartItem(cartItem);
+    }
+
+    public List<CartItem> findAllCartItems() {
+        return cartItemRepo.findAll();
     }
 
     public CartItem findCartItemById(UUID cartItemId) {
@@ -30,13 +37,20 @@ public class CartItemService {
 
     public CartItem updateCartItem(UUID cartItemId, CartItem updatedCartItem) {
         if (!cartItemRepo.existsById(cartItemId)) {
-            throw new IllegalArgumentException("CartItem not found");
+            throw new RecordNotFoundException("CartItem with id '" + cartItemId + "' not found");
         }
         updatedCartItem.setCartItemId(cartItemId);
-        return cartItemRepo.save(updatedCartItem);
+        return saveCartItem(updatedCartItem);
+    }
+
+    public CartItem saveCartItem(CartItem cartItem) {
+        return cartItemRepo.save(cartItem);
     }
 
     public void deleteCartItem(UUID cartItemId) {
+        if (!cartItemRepo.existsById(cartItemId)) {
+            throw new RecordNotFoundException("CartItem with id '" + cartItemId + "' not found");
+        }
         cartItemRepo.deleteById(cartItemId);
     }
 }

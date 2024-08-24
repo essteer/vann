@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,22 +55,12 @@ public class CartController {
         }
     }
 
-    @GetMapping("/customer-email/{email}")
-    public ResponseEntity<?> getCartByCustomerEmail(@PathVariable String email) {
-        try {
-            Cart cart = cartService.findOrCreateCartByCustomerEmail(email);
-            return ResponseEntity.ok(cart);
-        } catch (RecordNotFoundException e) {  // if customer not found
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/update-items/{cartId}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateCartItems(
-            @PathVariable UUID cartId,
+            @PathVariable UUID id,
             @RequestBody Map<UUID, Integer> items) {
         try {
-            Cart updatedCart = cartService.addOrUpdateCartItems(cartId, items);
+            Cart updatedCart = cartService.addOrUpdateCartItems(id, items);
             return ResponseEntity.ok(updatedCart);
         } catch (RecordNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -79,7 +69,7 @@ public class CartController {
         }
     }
 
-    @PutMapping("/empty/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> emptyCart(@PathVariable UUID id) {
         try {
             Cart cart = cartService.emptyCart(id);

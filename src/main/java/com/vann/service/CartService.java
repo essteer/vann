@@ -2,7 +2,6 @@ package com.vann.service;
 
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.CartItem;
-import com.vann.model.Customer;
 import com.vann.model.Cart;
 import com.vann.repositories.CartRepo;
 
@@ -20,16 +19,14 @@ public class CartService {
 
     private final CartRepo cartRepo;
     private final CartItemService cartItemService;
-    private final CustomerService customerService;
 
-    public CartService(CartRepo cartRepo, CartItemService cartItemService, CustomerService customerService) {
+    public CartService(CartRepo cartRepo, CartItemService cartItemService) {
         this.cartRepo = cartRepo;
         this.cartItemService = cartItemService;
-        this.customerService = customerService;
     }
 
-    private Cart createCart(Customer customer) {
-        Cart newCart = new Cart(customer, new HashSet<>());
+    private Cart createCart(UUID customerId) {
+        Cart newCart = new Cart(customerId, new HashSet<>());
         return cartRepo.save(newCart);
     }
 
@@ -45,22 +42,15 @@ public class CartService {
 
     private Cart findOrCreateCart(
         Supplier<Optional<Cart>> cartFinder, 
-        Supplier<Customer> customerSupplier
+        Supplier<UUID> idSupplier
     ) {
-        return cartFinder.get().orElseGet(() -> createCart(customerSupplier.get()));
-    }
-    
-    public Cart findOrCreateCartByCustomerEmail(String email) {
-        return findOrCreateCart(
-            () -> cartRepo.findByCustomer_CustomerEmail(email),
-            () -> customerService.findCustomerByEmail(email)
-        );
+        return cartFinder.get().orElseGet(() -> createCart(idSupplier.get()));
     }
     
     public Cart findOrCreateCartByCustomerId(UUID customerId) {
         return findOrCreateCart(
-            () -> cartRepo.findByCustomer_Id(customerId),
-            () -> customerService.findCustomerById(customerId)
+            () -> cartRepo.findByCustomerId(customerId),
+            () -> customerId
         );
     }
 
@@ -70,25 +60,28 @@ public class CartService {
 
     public Cart addOrUpdateCartItems(UUID cartId, Map<UUID, Integer> items) {
         Cart cart = findCartById(cartId);
-            // .orElseThrow(() -> new RecordNotFoundException("Cart with ID '" + cartId + "' not found"));
     
         for (Map.Entry<UUID, Integer> entry : items.entrySet()) {
             UUID cartItemId = entry.getKey();
             int quantity = entry.getValue();
-    
-            CartItem newItem = cartItemService.findCartItemById(cartItemId);
-    
-            if (isValidCartItem(cartItemId, cart)) {
-                CartItem existingItem = findExistingCartItem(cart, newItem);
-    
-                if (existingItem != null) {
-                    updateExistingCartItem(cart, existingItem, quantity);
-                } else {
-                    addNewCartItem(cart, newItem, quantity);
-                }
-            }
+
+            addOrUpdateCartItem(cart, cartItemId, quantity);
         }
         return saveCart(cart);
+    }
+
+    private void addOrUpdateCartItem(Cart cart, UUID cartItemId, int quantity) {
+        CartItem newItem = cartItemService.findCartItemById(cartItemId);
+
+        if (isValidCartItem(cartItemId, cart)) {
+            CartItem existingItem = findExistingCartItem(cart, newItem);
+
+            if (existingItem != null) {
+                updateExistingCartItem(cart, existingItem, quantity);
+            } else {
+                addNewCartItem(cart, newItem, quantity);
+            }
+        }
     }
 
     private boolean isValidCartItem(UUID cartItemId, Cart cart) {
@@ -97,7 +90,7 @@ public class CartService {
 
     private CartItem findExistingCartItem(Cart cart, CartItem newItem) {
         return cart.getCartItems().stream()
-            .filter(item -> item.getProduct().getProductId().equals(newItem.getProduct().getProductId()))
+            .filter(item -> item.getProductId().equals(newItem.getProductId()))
             .findFirst()
             .orElse(null);
     }
@@ -114,7 +107,6 @@ public class CartService {
 
     private void addNewCartItem(Cart cart, CartItem newItem, int quantity) {
         newItem.setQuantity(quantity);
-        newItem.setCart(cart);
         cart.getCartItems().add(newItem);
         cartItemService.saveCartItem(newItem);
     }

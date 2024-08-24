@@ -11,7 +11,6 @@ import com.vann.model.Cart;
 @Repository
 public interface CartRepo extends JpaRepository<Cart, UUID> {
 
-    Optional<Cart> findByCustomer_CustomerEmail(String email);
-    Optional<Cart> findByCustomer_Id(UUID id);
+    Optional<Cart> findByCustomerId(UUID id);
 
 }
