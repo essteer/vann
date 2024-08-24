@@ -60,7 +60,7 @@ public class CustomerService {
     
         if (existingCustomerOptional.isPresent() && 
             !existingCustomerOptional.get().getCustomerId().equals(customer.getCustomerId())) {
-            throw new FieldConflictException("Customer with email '" + customer.getCustomerName() + "' already exists");
+            throw new FieldConflictException("Customer with email '" + customer.getCustomerEmail() + "' already exists");
         }
     }
 

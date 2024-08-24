@@ -60,23 +60,6 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveCustomer(@RequestBody Customer customer) {
-        try {
-            Customer savedCustomer = customerService.saveCustomer(customer);
-
-            URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedCustomer.getCustomerId())
-                .toUri();
-                
-            return ResponseEntity.created(location).body(savedCustomer);
-        } catch (FieldConflictException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/create")
     public ResponseEntity<?> createCustomer(
         @RequestParam String name,
         @RequestParam String email
