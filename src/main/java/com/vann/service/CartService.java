@@ -72,20 +72,12 @@ public class CartService {
 
     private void addOrUpdateCartItem(Cart cart, UUID cartItemId, int quantity) {
         CartItem newItem = cartItemService.findCartItemById(cartItemId);
-
-        if (isValidCartItem(cartItemId, cart)) {
-            CartItem existingItem = findExistingCartItem(cart, newItem);
-
-            if (existingItem != null) {
-                updateExistingCartItem(cart, existingItem, quantity);
-            } else {
-                addNewCartItem(cart, newItem, quantity);
-            }
+        CartItem existingItem = findExistingCartItem(cart, newItem);
+        if (existingItem != null) {
+            updateExistingCartItem(cart, existingItem, quantity);
+        } else {
+            addNewCartItem(cart, newItem, quantity);
         }
-    }
-
-    private boolean isValidCartItem(UUID cartItemId, Cart cart) {
-        return cartItemId.equals(cart.getCartId());
     }
 
     private CartItem findExistingCartItem(Cart cart, CartItem newItem) {
