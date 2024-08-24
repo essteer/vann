@@ -17,7 +17,6 @@ public class DataLoader implements ApplicationRunner {
     private InvoiceItemRepo invoiceItemRepo;
     private InvoiceRepo invoiceRepo;
     private ProductRepo productRepo;
-    
 
     public DataLoader(CartItemRepo cartItemRepo, CartRepo cartRepo, CategoryRepo categoryRepo, CustomerRepo customerRepo, InvoiceItemRepo invoiceItemRepo, InvoiceRepo invoiceRepo, ProductRepo productRepo) {
         super();
@@ -37,10 +36,11 @@ public class DataLoader implements ApplicationRunner {
         CategoryService categoryService = new CategoryService(this.categoryRepo);
         @SuppressWarnings("unused")
         ProductService productService = new ProductService(this.productRepo);
+        @SuppressWarnings("unused")
         CustomerService customerService = new CustomerService(this.customerRepo);
         CartItemService cartItemService = new CartItemService(this.cartItemRepo);
         @SuppressWarnings("unused")
-        CartService cartService = new CartService(this.cartRepo, cartItemService, customerService);
+        CartService cartService = new CartService(this.cartRepo, cartItemService);
         @SuppressWarnings("unused")
         InvoiceItemService invoiceItemService = new InvoiceItemService(this.invoiceItemRepo);
         @SuppressWarnings("unused")
