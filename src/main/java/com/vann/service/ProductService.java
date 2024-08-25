@@ -23,7 +23,7 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public Product createProduct(String name, double price, String image, Category category, Size size, Colour colour) {
+    public Product createProduct(String name, double price, String image, Category category, Size size, Colour colour) throws RecordNotFoundException {
         if (category == null) {
             throw new RecordNotFoundException("Category not found");
         }
@@ -47,7 +47,7 @@ public class ProductService {
         return productRepo.findByProductName(productName.toUpperCase());
     }
 
-    public Product findProductById(UUID productId) {
+    public Product findProductById(UUID productId) throws RecordNotFoundException {
         Optional<Product> productOptional = productRepo.findById(productId);
         return productOptional.orElseThrow(() -> 
             new RecordNotFoundException("Product with ID '" + productId + "' not found"));
@@ -58,7 +58,7 @@ public class ProductService {
         return productRepo.save(product);
     }
 
-    public Product updateProduct(UUID productId, Product updatedProduct) {
+    public Product updateProduct(UUID productId, Product updatedProduct) throws RecordNotFoundException {
         if (!productRepo.existsById(productId)) {
             throw new RecordNotFoundException("Product with ID '" + productId + "' not found");
         }

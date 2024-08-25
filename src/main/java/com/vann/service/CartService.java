@@ -30,7 +30,7 @@ public class CartService {
         return cartRepo.findAll();
     }
 
-    public Cart findCartById(UUID cartId) {
+    public Cart findCartById(UUID cartId) throws RecordNotFoundException {
         Optional<Cart> cartOptional = cartRepo.findById(cartId);
         return cartOptional.orElseThrow(() -> 
             new RecordNotFoundException("Cart with ID '" + cartId + "' not found"));
@@ -53,7 +53,7 @@ public class CartService {
             new RecordNotFoundException("Cart for customer with ID '" + customerId + "' not found"));
     }
 
-    public Cart addOrUpdateCartItems(UUID cartId, Map<UUID, Integer> items) {
+    public Cart addOrUpdateCartItems(UUID cartId, Map<UUID, Integer> items) throws RecordNotFoundException {
         Cart cart = findCartById(cartId);
         List<UUID> invalidProductIds = new ArrayList<>();
     
