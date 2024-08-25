@@ -48,7 +48,7 @@ public class CartController {
     @GetMapping("/customer-id/{id}")
     public ResponseEntity<?> getCartByCustomerId(@PathVariable UUID id) {
         try {
-            Cart cart = cartService.findOrCreateCartByCustomerId(id);
+            Cart cart = cartService.createOrFindCartByCustomerId(id);
             return ResponseEntity.ok(cart);
         } catch (RecordNotFoundException e) {  // if customer not found
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

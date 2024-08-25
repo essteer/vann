@@ -1,33 +1,29 @@
 package com.vann.service;
 
 import com.vann.exceptions.RecordNotFoundException;
-import com.vann.model.CartItem;
 import com.vann.model.Cart;
 import com.vann.repositories.CartRepo;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @Service
 public class CartService {
 
     private final CartRepo cartRepo;
-    private final CartItemService cartItemService;
+    private final CustomerService customerService;
+    private final ProductService productService;
 
-    public CartService(CartRepo cartRepo, CartItemService cartItemService) {
+    public CartService(CartRepo cartRepo, CustomerService customerService, ProductService productService) {
         this.cartRepo = cartRepo;
-        this.cartItemService = cartItemService;
-    }
-
-    private Cart createCart(UUID customerId) {
-        Cart newCart = new Cart(customerId, new HashSet<>());
-        return cartRepo.save(newCart);
+        this.customerService = customerService;
+        this.productService = productService;
     }
 
     public List<Cart> findAllCarts() {
@@ -40,82 +36,94 @@ public class CartService {
             new RecordNotFoundException("Cart with ID '" + cartId + "' not found"));
     }
 
-    private Cart findOrCreateCart(
-        Supplier<Optional<Cart>> cartFinder, 
-        Supplier<UUID> idSupplier
-    ) {
-        return cartFinder.get().orElseGet(() -> createCart(idSupplier.get()));
-    }
-    
-    public Cart findOrCreateCartByCustomerId(UUID customerId) {
-        return findOrCreateCart(
-            () -> cartRepo.findByCustomerId(customerId),
-            () -> customerId
-        );
+    public Cart createOrFindCartByCustomerId(UUID customerId) throws RecordNotFoundException {
+        customerService.findCustomerById(customerId);
+        try {
+            Cart cart = findCartByCustomerId(customerId);
+            return cart;
+        } catch (RecordNotFoundException e) {
+            Cart newCart = new Cart(customerId, new HashMap<>());
+            return cartRepo.save(newCart);
+        }
     }
 
-    private Cart saveCart(Cart cart) {
-        return cartRepo.save(cart);
+    private Cart findCartByCustomerId(UUID customerId) throws RecordNotFoundException {
+        Optional<Cart> cartOptional = cartRepo.findByCustomerId(customerId);
+        return cartOptional.orElseThrow(() -> 
+            new RecordNotFoundException("Cart for customer with ID '" + customerId + "' not found"));
     }
 
     public Cart addOrUpdateCartItems(UUID cartId, Map<UUID, Integer> items) {
         Cart cart = findCartById(cartId);
+        List<UUID> invalidProductIds = new ArrayList<>();
     
         for (Map.Entry<UUID, Integer> entry : items.entrySet()) {
-            UUID cartItemId = entry.getKey();
+            UUID productId = entry.getKey();
             int quantity = entry.getValue();
-
-            addOrUpdateCartItem(cart, cartItemId, quantity);
+            if (isValidProductId(productId)) {
+                addOrUpdateCartItem(cart, productId, quantity);
+            } else {
+                invalidProductIds.add(productId);
+            }
         }
-        return saveCart(cart);
+        saveCart(cart);
+        if (!invalidProductIds.isEmpty()) {
+            throw new RecordNotFoundException("Products with invalid IDs not updated: " + invalidProductIds.toString());
+        }
+        return cart;
     }
 
-    private void addOrUpdateCartItem(Cart cart, UUID cartItemId, int quantity) {
-        CartItem newItem = cartItemService.findCartItemById(cartItemId);
-        CartItem existingItem = findExistingCartItem(cart, newItem);
-        if (existingItem != null) {
-            updateExistingCartItem(cart, existingItem, quantity);
+    private boolean isValidProductId(UUID productId) {
+        try {
+            productService.findProductById(productId);
+            return true;
+        } catch (RecordNotFoundException e) {
+            return false;
+        }
+    }
+
+    private void addOrUpdateCartItem(Cart cart, UUID productId, int quantity) {
+        int existingQuantity = findExistingCartItem(cart, productId);
+        if (existingQuantity >= 0) {
+            updateExistingCartItem(cart, productId, quantity);
         } else {
-            addNewCartItem(cart, newItem, quantity);
+            addNewCartItem(cart, productId, quantity);
         }
     }
 
-    private CartItem findExistingCartItem(Cart cart, CartItem newItem) {
-        return cart.getCartItems().stream()
-            .filter(item -> item.getProductId().equals(newItem.getProductId()))
-            .findFirst()
-            .orElse(null);
+    private int findExistingCartItem(Cart cart, UUID productId) {
+        return cart.getCartItems().getOrDefault(productId, 0);
     }
 
-    private void updateExistingCartItem(Cart cart, CartItem existingItem, int quantity) {
-        existingItem.setQuantity(existingItem.getQuantity() + quantity);
-        if (existingItem.getQuantity() <= 0) {
-            cartItemService.deleteCartItem(existingItem.getCartItemId());
-            cart.getCartItems().remove(existingItem);
+    private void updateExistingCartItem(Cart cart, UUID productId, int quantity) {
+        int updatedQuantity = cart.getCartItems().getOrDefault(productId, 0) + quantity;
+        if (updatedQuantity <= 0) {
+            cart.getCartItems().remove(productId);
         } else {
-            cartItemService.saveCartItem(existingItem);
+            cart.getCartItems().put(productId, updatedQuantity);
         }
     }
 
-    private void addNewCartItem(Cart cart, CartItem newItem, int quantity) {
-        newItem.setQuantity(quantity);
-        cart.getCartItems().add(newItem);
-        cartItemService.saveCartItem(newItem);
+    private void addNewCartItem(Cart cart, UUID productId, int quantity) {
+        cart.getCartItems().put(productId, quantity);
     }
 
-    public void checkoutCart(UUID cartId, String billAndShipAddress, CartItemService cartItemService) {
-        this.checkoutCart(cartId, billAndShipAddress, billAndShipAddress, cartItemService);
-    }
+    // public void checkoutCart(UUID cartId, String billAndShipAddress, ProductService ProductService) {
+    //     this.checkoutCart(cartId, billAndShipAddress, billAndShipAddress, productService);
+    // }
 
-    public void checkoutCart(UUID cartId, String billAddress, String shipAddress, CartItemService cartItemService) {
-        // emptyCart(cartId);
-    }
+    // public void checkoutCart(UUID cartId, String billAddress, String shipAddress, ProductService pServiceroductService) {
+    //     // emptyCart(cartId);
+    // }
 
     public Cart emptyCart(UUID cartId) {
         Cart cart = findCartById(cartId);
-        cart.getCartItems().forEach(cartItem -> cartItemService.deleteCartItem(cartItem.getCartItemId()));
         cart.getCartItems().clear();
         return saveCart(cart);
+    }
+
+    private Cart saveCart(Cart cart) {
+        return cartRepo.save(cart);
     }
 
 }
