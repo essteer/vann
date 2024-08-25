@@ -10,7 +10,6 @@ import com.vann.service.*;
 @Component
 public class DataLoader implements ApplicationRunner {
 
-    private CartItemRepo cartItemRepo;
     private CartRepo cartRepo;
     private CategoryRepo categoryRepo;
     private CustomerRepo customerRepo;
@@ -18,9 +17,8 @@ public class DataLoader implements ApplicationRunner {
     private InvoiceRepo invoiceRepo;
     private ProductRepo productRepo;
 
-    public DataLoader(CartItemRepo cartItemRepo, CartRepo cartRepo, CategoryRepo categoryRepo, CustomerRepo customerRepo, InvoiceItemRepo invoiceItemRepo, InvoiceRepo invoiceRepo, ProductRepo productRepo) {
+    public DataLoader(CartRepo cartRepo, CategoryRepo categoryRepo, CustomerRepo customerRepo, InvoiceItemRepo invoiceItemRepo, InvoiceRepo invoiceRepo, ProductRepo productRepo) {
         super();
-        this.cartItemRepo = cartItemRepo;
         this.cartRepo = cartRepo;
         this.categoryRepo = categoryRepo;
         this.customerRepo = customerRepo;
@@ -34,13 +32,10 @@ public class DataLoader implements ApplicationRunner {
 
         @SuppressWarnings("unused")
         CategoryService categoryService = new CategoryService(this.categoryRepo);
-        @SuppressWarnings("unused")
         ProductService productService = new ProductService(this.productRepo);
-        @SuppressWarnings("unused")
         CustomerService customerService = new CustomerService(this.customerRepo);
-        CartItemService cartItemService = new CartItemService(this.cartItemRepo);
         @SuppressWarnings("unused")
-        CartService cartService = new CartService(this.cartRepo, cartItemService);
+        CartService cartService = new CartService(this.cartRepo, customerService, productService);
         @SuppressWarnings("unused")
         InvoiceItemService invoiceItemService = new InvoiceItemService(this.invoiceItemRepo);
         @SuppressWarnings("unused")
