@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vann.exceptions.RecordNotFoundException;
@@ -73,8 +74,8 @@ public class CartController {
     @PutMapping("/checkout/{id}")
     public ResponseEntity<?> checkoutCart(
         @PathVariable UUID id,
-        @RequestBody String billAddress,
-        @RequestBody(required = false) String shipAddress
+        @RequestParam String billAddress,
+        @RequestParam(required = false) String shipAddress
     ) {
         try {
             if (shipAddress == null) {
