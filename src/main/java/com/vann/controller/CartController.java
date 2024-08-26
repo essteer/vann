@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Cart;
+import com.vann.model.Invoice;
 import com.vann.service.CartService;
 
 @RestController
@@ -62,6 +63,27 @@ public class CartController {
         try {
             Cart updatedCart = cartService.addOrUpdateCartItems(id, items);
             return ResponseEntity.ok(updatedCart);
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/checkout/{id}")
+    public ResponseEntity<?> checkoutCart(
+        @PathVariable UUID id,
+        @RequestBody String billAddress,
+        @RequestBody(required = false) String shipAddress
+    ) {
+        try {
+            if (shipAddress == null) {
+                Invoice invoice = cartService.checkoutCart(id, billAddress);
+                return ResponseEntity.ok(invoice);
+            } else {
+                Invoice invoice = cartService.checkoutCart(id, billAddress, shipAddress);
+                return ResponseEntity.ok(invoice);
+            }
         } catch (RecordNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {

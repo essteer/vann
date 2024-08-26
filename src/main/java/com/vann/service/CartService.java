@@ -2,6 +2,7 @@ package com.vann.service;
 
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Cart;
+import com.vann.model.Invoice;
 import com.vann.repositories.CartRepo;
 
 import org.springframework.stereotype.Service;
@@ -18,11 +19,13 @@ public class CartService {
 
     private final CartRepo cartRepo;
     private final CustomerService customerService;
+    private final InvoiceService invoiceService;
     private final ProductService productService;
 
-    public CartService(CartRepo cartRepo, CustomerService customerService, ProductService productService) {
+    public CartService(CartRepo cartRepo, CustomerService customerService, InvoiceService invoiceService, ProductService productService) {
         this.cartRepo = cartRepo;
         this.customerService = customerService;
+        this.invoiceService = invoiceService;
         this.productService = productService;
     }
 
@@ -108,13 +111,33 @@ public class CartService {
         cart.getCartItems().put(productId, quantity);
     }
 
-    // public void checkoutCart(UUID cartId, String billAndShipAddress, ProductService ProductService) {
-    //     this.checkoutCart(cartId, billAndShipAddress, billAndShipAddress, productService);
-    // }
+    public Invoice checkoutCart(UUID cartId, String billAndShipAddress) throws RecordNotFoundException {
+        return checkoutCart(cartId, billAndShipAddress, billAndShipAddress);
+    }
 
-    // public void checkoutCart(UUID cartId, String billAddress, String shipAddress, ProductService pServiceroductService) {
-    //     // emptyCart(cartId);
-    // }
+    public Invoice checkoutCart(UUID cartId, String billAddress, String shipAddress) throws RecordNotFoundException, IllegalArgumentException {
+        Cart cart = findCartById(cartId);  // throws RecordNotFoundException
+        if (isCartEmpty(cart)) {
+            throw new IllegalArgumentException("Cart with ID '" + cartId + "' is empty and cannot be checked out");
+        }
+        Invoice invoiceTemplate = getInvoiceCustomerTemplate(cart.getCartCustomerId(), billAddress, shipAddress);
+        Invoice invoice = addCartItemsToInvoiceTemplate(invoiceTemplate.getInvoiceId(), cart.getCartItems());
+        emptyCart(cartId);
+
+        return invoice;
+    }
+
+    private boolean isCartEmpty(Cart cart) {
+        return cart.getCartItems().isEmpty();
+    }
+
+    private Invoice getInvoiceCustomerTemplate(UUID customerId, String billAddress, String shipAddress) {
+        return invoiceService.createCustomerInvoice(customerId, billAddress, shipAddress);
+    }
+
+    private Invoice addCartItemsToInvoiceTemplate (UUID invoiceId, Map<UUID, Integer> cartItems) {
+        return invoiceService.updateInvoice(invoiceId, cartItems);
+    }
 
     public Cart emptyCart(UUID cartId) {
         Cart cart = findCartById(cartId);
