@@ -1,6 +1,7 @@
 package com.vann.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -80,6 +81,20 @@ public class CategoryController {
         } catch (FieldConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<?> saveCategories(@RequestBody List<Category> categories) {
+        List<Category> savedCategories = new ArrayList<>();
+        for (Category category : categories) {
+            try {
+                Category savedCategory = categoryService.saveCategory(category);
+                savedCategories.add(savedCategory);
+            } catch (FieldConflictException e) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(savedCategories);
     }
 
     @PutMapping("/{id}")
