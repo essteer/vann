@@ -28,13 +28,13 @@ public class CustomerService {
         return customerRepo.findAll();
     }
 
-    public Customer findCustomerById(UUID customerId) {
+    public Customer findCustomerById(UUID customerId) throws RecordNotFoundException {
         Optional<Customer> customerOptional = customerRepo.findById(customerId);
         return customerOptional.orElseThrow(() -> 
             new RecordNotFoundException("Customer with ID '" + customerId + "'' not found"));
     }
 
-    public Customer findCustomerByEmail(String email) {
+    public Customer findCustomerByEmail(String email) throws RecordNotFoundException {
         Optional<Customer> customerOptional = customerRepo.findByCustomerEmail(email.toLowerCase());
         return customerOptional.orElseThrow(() -> 
             new RecordNotFoundException("Customer with email '" + email + "'' not found"));
@@ -46,7 +46,7 @@ public class CustomerService {
         return customerRepo.save(customer);
     }
 
-    public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
+    public Customer updateCustomer(UUID customerId, Customer updatedCustomer) throws RecordNotFoundException {
         if (!customerRepo.existsById(customerId)) {
             throw new RecordNotFoundException("Customer with ID '" + customerId + "' not found");
         }
@@ -55,7 +55,7 @@ public class CustomerService {
         return customerRepo.save(updatedCustomer);
     }
 
-    private void checkForEmailConflict(Customer customer) {
+    private void checkForEmailConflict(Customer customer) throws FieldConflictException {
         Optional<Customer> existingCustomerOptional = customerRepo.findByCustomerEmail(customer.getCustomerEmail().toLowerCase());
     
         if (existingCustomerOptional.isPresent() && 

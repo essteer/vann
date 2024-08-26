@@ -2,20 +2,22 @@ package com.vann.services;
 
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Cart;
-import com.vann.model.CartItem;
+import com.vann.model.Customer;
+import com.vann.model.Product;
 import com.vann.repositories.CartRepo;
-import com.vann.service.CartItemService;
+import com.vann.repositories.CustomerRepo;
 import com.vann.service.CartService;
+import com.vann.service.CustomerService;
+import com.vann.service.ProductService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,157 +27,170 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class CartServiceTest {
 
     @Mock
     private CartRepo cartRepo;
 
     @Mock
-    private CartItemService cartItemService;
+    private CustomerRepo customerRepo;
+
+    @Mock
+    private CustomerService customerService;
+
+    @Mock
+    private ProductService productService;
 
     @InjectMocks
     private CartService cartService;
 
-    private UUID cartId;
-    private UUID itemId;
+    private Customer customer;
+    private Product product1;
+    private Product product2;
     private Cart cart;
-    private CartItem cartItem;
+    private UUID customerId;
+    private UUID productId1;
+    private UUID productId2;
+    private UUID cartId;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        customerId = UUID.randomUUID();
+        productId1 = UUID.randomUUID();
+        productId2 = UUID.randomUUID();
         cartId = UUID.randomUUID();
-        itemId = UUID.randomUUID();
-        cart = new Cart(UUID.randomUUID(), new HashSet<>());
-        cartItem = new CartItem(itemId, 1);
-    }
-
-    @Test
-    public void testFindAllCarts_ReturnsListOfCarts() {
-        Cart cart1 = new Cart(UUID.randomUUID(), new HashSet<>());
-        Cart cart2 = new Cart(UUID.randomUUID(), new HashSet<>());
-        List<Cart> carts = Arrays.asList(cart1, cart2);
-
-        when(cartRepo.findAll()).thenReturn(carts);
-
-        List<Cart> result = cartService.findAllCarts();
-
-        assertNotNull(result, "List of carts should not be null");
-        assertEquals(2, result.size(), "List of carts should contain 2 items");
-        assertTrue(result.contains(cart1), "List of carts should contain cart1");
-        assertTrue(result.contains(cart2), "List of carts should contain cart2");
-        verify(cartRepo).findAll();
-    }
-
-    @Test
-    public void testFindCartById_FindsCartById() {
-        Cart cart = new Cart(UUID.randomUUID(), new HashSet<>());
+        customer = new Customer("John Doe", "john.doe@example.com");
+        product1 = new Product("Product 1", 10.0, "image1.png", null, null, null);
+        product2 = new Product("Product 2", 20.0, "image2.png", null, null, null);
+        cart = new Cart(customerId, new HashMap<>());
 
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-
-        Cart result = cartService.findCartById(cartId);
-
-        assertNotNull(result, "Cart should not be null");
-        assertEquals(cart, result, "Returned cart should match the expected cart");
-        verify(cartRepo).findById(cartId);
-    }
-    
-    @Test
-    public void testFindCartById_ThrowsExceptionWhenCartNotFound() {
-        when(cartRepo.findById(cartId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> {
-            cartService.findCartById(cartId);
-        }, "Expected RecordNotFoundException to be thrown");
-
-        verify(cartRepo).findById(cartId);
-    }
-
-    @Test
-    public void testAddOrUpdateCartItems_AddsMultipleItems() {
-        UUID productId = UUID.randomUUID();
-        CartItem newItem = new CartItem(productId, 3);
-
-        Map<UUID, Integer> items = Map.of(itemId, 3);
-
-        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cartItemService.findCartItemById(itemId)).thenReturn(newItem);
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> {
-            Cart savedCart = invocation.getArgument(0);
-            savedCart.getCartItems().add(newItem);
-            return savedCart;
-        });
-
-        Cart result = cartService.addOrUpdateCartItems(cartId, items);
-
-        assertNotNull(result, "Cart should not be null");
-        assertTrue(result.getCartItems().contains(newItem), "Cart should contain the updated cart item");
-        assertEquals(3, newItem.getQuantity(), "CartItem quantity should be 3");
-        verify(cartRepo).findById(cartId);
-        verify(cartItemService).findCartItemById(itemId);
-        verify(cartRepo).save(cart);
-    }
-
-    @Test
-    public void testAddOrUpdateCartItems_RemovesItemsWithZeroOrNegativeQuantity() {
-        UUID productId = UUID.randomUUID();
-        CartItem existingItem = new CartItem(productId, 5);
-        cart.getCartItems().add(existingItem);
-
-        Map<UUID, Integer> items = Map.of(itemId, 0);
-
-        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cartItemService.findCartItemById(itemId)).thenReturn(existingItem);
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> {
-            Cart savedCart = invocation.getArgument(0);
-            savedCart.getCartItems().removeIf(item -> item.getCartItemId().equals(itemId));
-            return savedCart;
-        });
-
-        Cart result = cartService.addOrUpdateCartItems(cartId, items);
-
-        assertNotNull(result, "Cart should not be null");
-        assertFalse(result.getCartItems().stream()
-            .anyMatch(item -> item.getCartItemId().equals(itemId)),
-            "Cart should not contain the item with ID " + itemId + " after quantity updated to zero");
-        verify(cartRepo).findById(cartId);
-        verify(cartItemService).findCartItemById(itemId);
-        verify(cartRepo).save(cart);
-    }
-
-    @Test
-    public void testFindOrCreateCartByCustomerId_CreatesNewCart() {
-        UUID customerId = UUID.randomUUID();
-        Cart newCart = new Cart(customerId, new HashSet<>());
-
-        when(cartRepo.findByCustomerId(customerId)).thenReturn(Optional.empty());
-        when(cartRepo.save(any(Cart.class))).thenReturn(newCart);
-
-        Cart result = cartService.findOrCreateCartByCustomerId(customerId);
-
-        assertNotNull(result, "Cart should not be null");
-        assertEquals(newCart, result, "Returned cart should be the new cart created");
-        verify(cartRepo).findByCustomerId(customerId);
-        verify(cartRepo).save(any(Cart.class));
-    }
-
-    @Test
-    public void testFindOrCreateCartByCustomerId_ReturnsExistingCart() {
-        UUID customerId = UUID.randomUUID();
-
         when(cartRepo.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
+        when(productService.findProductById(productId1)).thenReturn(product1);
+        when(productService.findProductById(productId2)).thenReturn(product2);
+        when(customerService.findCustomerById(customerId)).thenReturn(customer);
+    }
 
-        Cart result = cartService.findOrCreateCartByCustomerId(customerId);
+    @Test
+    void testFindAllCarts() {
+        List<Cart> carts = Arrays.asList(cart, new Cart(UUID.randomUUID(), new HashMap<>()));
+        when(cartRepo.findAll()).thenReturn(carts);
+        List<Cart> result = cartService.findAllCarts();
+        assertEquals(2, result.size());
+        assertTrue(result.contains(cart));
+    }
 
+    @Test
+    void testFindCartById_CartExists() {
+        Cart result = cartService.findCartById(cartId);
+        assertEquals(cart, result);
+    }
+
+    @Test
+    void testFindCartById_CartDoesNotExist() {
+        UUID nonExistentCartId = UUID.randomUUID();
+        when(cartRepo.findById(nonExistentCartId)).thenReturn(Optional.empty());
+
+        RecordNotFoundException thrown = assertThrows(RecordNotFoundException.class, () -> {
+            cartService.findCartById(nonExistentCartId);
+        });
+
+        assertEquals("Cart with ID '" + nonExistentCartId + "' not found", thrown.getMessage());
+    }
+
+    @Test
+    void testCreateOrFindCartByCustomerId_CartExists() {
+        Cart result = cartService.createOrFindCartByCustomerId(customerId);
+        assertEquals(cart, result);
+        verify(cartRepo, never()).save(any(Cart.class));
+    }
+
+    @Test
+    void testCreateOrFindCartByCustomerId_CartDoesNotExist() {
+        Customer newCustomer = new Customer("New Customer", "new@customer.com");
+        UUID newCustomerId = newCustomer.getCustomerId();
+    
+        when(customerService.findCustomerById(newCustomerId)).thenReturn(newCustomer);
+        when(cartRepo.findByCustomerId(newCustomerId)).thenReturn(Optional.empty());
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+        Cart result = cartService.createOrFindCartByCustomerId(newCustomerId);
+    
         assertNotNull(result, "Cart should not be null");
-        assertEquals(cart, result, "Returned cart should be the existing cart");
-        verify(cartRepo).findByCustomerId(customerId);
-        verifyNoMoreInteractions(cartRepo);
+        assertEquals(newCustomerId, result.getCartCustomerId(), "Cart should have the correct customer ID");
+        assertTrue(result.getCartItems().isEmpty(), "New cart should be empty");
+        verify(customerService).findCustomerById(newCustomerId);
+        verify(cartRepo).findByCustomerId(newCustomerId);
+        verify(cartRepo).save(result);
+    }
+
+    @Test
+    void testAddOrUpdateCartItems_AddNewItems() {
+        cart.getCartItems().clear();
+        
+        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+    
+        Map<UUID, Integer> items = new HashMap<>();
+        items.put(productId1, 2);
+        items.put(productId2, 3);
+    
+        Cart result = cartService.addOrUpdateCartItems(cartId, items);
+    
+        assertNotNull(result, "Cart should not be null");
+        assertEquals(2, result.getCartItems().size(), "Cart should have 2 items");
+        assertEquals(2, result.getCartItems().get(productId1), "Cart should have the correct quantity for productId1");
+        assertEquals(3, result.getCartItems().get(productId2), "Cart should have the correct quantity for productId2");
+        verify(cartRepo).findById(cartId);
+        verify(cartRepo).save(result);
+    }
+
+    @Test
+    void testAddOrUpdateCartItems_UpdateExistingItem() {
+        cart.getCartItems().put(productId1, 1);
+
+        Map<UUID, Integer> items = new HashMap<>();
+        items.put(productId1, 2);
+
+        Cart result = cartService.addOrUpdateCartItems(cartId, items);
+
+        assertEquals(1, result.getCartItems().size());
+        assertEquals(3, result.getCartItems().get(productId1));
+        verify(cartRepo).save(result);
+    }
+
+    @Test
+    void testAddOrUpdateCartItems_HandleInvalidProducts() {
+        UUID invalidProductId = UUID.randomUUID();
+        when(productService.findProductById(invalidProductId)).thenThrow(new RecordNotFoundException("Product not found"));
+        Map<UUID, Integer> items = new HashMap<>();
+        items.put(productId1, 2);
+        items.put(invalidProductId, 1);
+    
+        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+    
+        RecordNotFoundException thrown = assertThrows(RecordNotFoundException.class, () -> {
+            cartService.addOrUpdateCartItems(cartId, items);
+        });
+    
+        assertEquals("Products with invalid IDs not updated: [" + invalidProductId.toString() + "]", thrown.getMessage());
+    
+        Cart result = cartService.findCartById(cartId);
+        assertNotNull(result, "Cart should not be null");
+        assertEquals(1, result.getCartItems().size(), "Cart should contain only valid items");
+        assertEquals(2, result.getCartItems().get(productId1), "Cart should have the correct quantity for the valid product");
+    
+        verify(cartRepo, times(2)).findById(cartId);
+        verify(cartRepo).save(result);
+        verify(productService).findProductById(productId1);
+        verify(productService).findProductById(invalidProductId);
     }
 
     @Test
     public void testEmptyCart_RemovesAllItems() {
-        cart.getCartItems().add(cartItem);
+        cart.getCartItems().put(productId1, 2);
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
         when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
 
@@ -184,7 +199,6 @@ public class CartServiceTest {
         assertNotNull(result, "Cart should not be null");
         assertTrue(result.getCartItems().isEmpty(), "Cart should be empty");
         verify(cartRepo).findById(cartId);
-        verify(cartItemService).deleteCartItem(cartItem.getCartItemId());
         verify(cartRepo).save(cart);
     }
 }

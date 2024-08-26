@@ -28,13 +28,13 @@ public class CategoryService {
         return categoryRepo.findByCategoryType(categoryType);
     }
 
-    public Category findCategoryById(UUID categoryId) {
+    public Category findCategoryById(UUID categoryId) throws RecordNotFoundException {
         Optional<Category> categoryOptional = categoryRepo.findById(categoryId);
         return categoryOptional.orElseThrow(() -> 
             new RecordNotFoundException("Category with ID '" + categoryId + "'' not found"));
     }
 
-    public Category findCategoryByName(String categoryName) {
+    public Category findCategoryByName(String categoryName) throws RecordNotFoundException {
         Optional<Category> categoryOptional = categoryRepo.findByCategoryName(categoryName);
         return categoryOptional.orElseThrow(() -> 
             new RecordNotFoundException("Category with name '" + categoryName + "'' not found"));
@@ -46,7 +46,7 @@ public class CategoryService {
         return categoryRepo.save(category);
     }
     
-    public Category updateCategory(UUID categoryId, Category updatedCategory) {
+    public Category updateCategory(UUID categoryId, Category updatedCategory) throws RecordNotFoundException {
         if (!categoryRepo.existsById(categoryId)) {
             throw new RecordNotFoundException("Category with ID '" + categoryId + "' not found");
         }
@@ -55,7 +55,7 @@ public class CategoryService {
         return saveCategory(updatedCategory);
     }
     
-    private void checkForNameConflict(Category category) {
+    private void checkForNameConflict(Category category) throws FieldConflictException {
         Optional<Category> existingCategoryOptional = categoryRepo.findByCategoryName(category.getCategoryName().toLowerCase());
     
         if (existingCategoryOptional.isPresent() && 

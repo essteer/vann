@@ -63,7 +63,7 @@ public class ProductTest {
     @Test
     public void testToString() {
         String expectedString = "Product [id=" + product.getProductId() +
-                ", name=RING, price=499.99, category=" +
+                ", name=RING, unitprice=499.99, category=" +
                 category.toString() + ", size=" + product.getSize() + ", colour=" + product.getColour() + "]";
 
         assertEquals(expectedString, product.toString(), "toString should match the expected output");

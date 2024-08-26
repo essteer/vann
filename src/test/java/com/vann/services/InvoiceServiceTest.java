@@ -1,11 +1,15 @@
 package com.vann.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +24,7 @@ import com.vann.model.Customer;
 import com.vann.model.Invoice;
 import com.vann.model.InvoiceItem;
 import com.vann.repositories.InvoiceRepo;
+import com.vann.service.CustomerService;
 import com.vann.service.InvoiceItemService;
 import com.vann.service.InvoiceService;
 
@@ -32,21 +37,58 @@ public class InvoiceServiceTest {
     @Mock
     private InvoiceItemService invoiceItemService;
 
+    @Mock
+    private CustomerService customerService;
+
     @InjectMocks
     private InvoiceService invoiceService;
-
-    @Mock
-    private Customer customer;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    @Test 
+    void testCreateBlankInvoice() {
+        Invoice invoice = invoiceService.createBlankInvoice();
+        assertNotNull(invoice);
+    }
+
+    @Test
+    void testCreateCustomerInvoice() throws RecordNotFoundException {
+        UUID customerId = UUID.randomUUID();
+        String billAddress = "12 Oak Street";
+        String shipAddress = "15 Elm Street";
+    
+        Customer customer = new Customer("John Doe", "john@example.com");
+        customer.setCustomerId(customerId);
+        when(customerService.findCustomerById(customerId)).thenReturn(customer);
+        
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceCustomerId(customerId);
+        invoice.setInvoiceCustomerName("John Doe");
+        invoice.setInvoiceCustomerEmail("john@example.com");
+        invoice.setInvoiceBillAddress(billAddress);
+        invoice.setInvoiceShipAddress(shipAddress);
+        
+        when(invoiceRepo.save(any(Invoice.class))).thenReturn(invoice);
+        
+        Invoice result = invoiceService.createCustomerInvoice(customerId, billAddress, shipAddress);
+    
+        assertNotNull(result);
+        assertEquals(customerId, result.getInvoiceCustomerId());
+        assertEquals("John Doe", result.getInvoiceCustomerName());
+        assertEquals("john@example.com", result.getInvoiceCustomerEmail());
+        assertEquals(billAddress, result.getInvoiceBillAddress());
+        assertEquals(shipAddress, result.getInvoiceShipAddress());
+        verify(invoiceRepo, times(1)).save(any(Invoice.class));
+    }
+
+
     @Test
     void testFindAllInvoices() {
-        Invoice invoice1 = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
-        Invoice invoice2 = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
+        Invoice invoice1 = new Invoice();
+        Invoice invoice2 = new Invoice();
 
         when(invoiceRepo.findAll()).thenReturn(Arrays.asList(invoice1, invoice2));
 
@@ -63,8 +105,8 @@ public class InvoiceServiceTest {
         double minAmount = 100.0;
         double maxAmount = 500.0;
 
-        Invoice invoice1 = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
-        Invoice invoice2 = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
+        Invoice invoice1 = new Invoice();
+        Invoice invoice2 = new Invoice();
 
         when(invoiceRepo.findByInvoiceTotalAmountBetween(minAmount, maxAmount))
             .thenReturn(Arrays.asList(invoice1, invoice2));
@@ -81,8 +123,8 @@ public class InvoiceServiceTest {
     void testFindInvoicesByTotalAmountGreaterThan() {
         double amount = 150.0;
 
-        Invoice invoice1 = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
-        Invoice invoice2 = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
+        Invoice invoice1 = new Invoice();
+        Invoice invoice2 = new Invoice();
 
         when(invoiceRepo.findByInvoiceTotalAmountGreaterThan(amount))
             .thenReturn(Arrays.asList(invoice1, invoice2));
@@ -99,8 +141,8 @@ public class InvoiceServiceTest {
     void testFindInvoicesByTotalAmountLessThan() {
         double amount = 250.0;
 
-        Invoice invoice1 = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
-        Invoice invoice2 = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 150.0);
+        Invoice invoice1 = new Invoice();
+        Invoice invoice2 = new Invoice();
 
         when(invoiceRepo.findByInvoiceTotalAmountLessThan(amount))
             .thenReturn(Arrays.asList(invoice1, invoice2));
@@ -116,123 +158,140 @@ public class InvoiceServiceTest {
     @Test
     void testFindInvoicesByCustomerId() {
         UUID customerId = UUID.randomUUID();
-        Invoice invoice1 = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
-        Invoice invoice2 = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
+        Invoice invoice1 = new Invoice();
+        Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceCustomer_Id(customerId)).thenReturn(Arrays.asList(invoice1, invoice2));
+        when(invoiceRepo.findByInvoiceCustomerId(customerId)).thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByCustomerId(customerId);
 
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceCustomer_Id(customerId);
+        verify(invoiceRepo, times(1)).findByInvoiceCustomerId(customerId);
     }
 
     @Test
     void testFindInvoicesByCustomerEmail() {
         String email = "customer@example.com";
-        Invoice invoice1 = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
-        Invoice invoice2 = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
+        Invoice invoice1 = new Invoice();
+        Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceCustomer_CustomerEmail(email)).thenReturn(Arrays.asList(invoice1, invoice2));
+        when(invoiceRepo.findByInvoiceCustomerEmail(email)).thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByCustomerEmail(email);
 
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceCustomer_CustomerEmail(email);
+        verify(invoiceRepo, times(1)).findByInvoiceCustomerEmail(email);
     }
 
     @Test
-    void testFindInvoiceById() {
+    void testFindInvoiceById() throws RecordNotFoundException {
         UUID invoiceId = UUID.randomUUID();
         Invoice invoice = new Invoice();
         invoice.setInvoiceId(invoiceId);
-        invoice.setBillAddress("43 Main Street");
-        invoice.setShipAddress("44 South Street");
 
         when(invoiceRepo.findById(invoiceId)).thenReturn(Optional.of(invoice));
 
         Invoice foundInvoice = invoiceService.findInvoiceById(invoiceId);
-        assertEquals("43 Main Street", foundInvoice.getBillAddress());
-        assertEquals("44 South Street", foundInvoice.getShipAddress());
+        assertNotNull(foundInvoice);
+        assertEquals(invoiceId, foundInvoice.getInvoiceId());
         verify(invoiceRepo, times(1)).findById(invoiceId);
     }
 
     @Test
-    void testSaveInvoice() {
-        Invoice invoice = new Invoice();
-        invoice.setCustomer(customer);
-        invoice.setBillAddress("10 Garden Road");
-        invoice.setShipAddress("233 Hill Street");
+    void testFindInvoiceById_NotFound() {
+        UUID invoiceId = UUID.randomUUID();
 
-        when(invoiceRepo.save(invoice)).thenReturn(invoice);
+        when(invoiceRepo.findById(invoiceId)).thenReturn(Optional.empty());
 
-        Invoice savedInvoice = invoiceService.saveInvoice(invoice);
+        Exception exception = assertThrows(RecordNotFoundException.class, () -> {
+            invoiceService.findInvoiceById(invoiceId);
+        });
 
-        assertNotNull(savedInvoice);
-        assertEquals(customer, savedInvoice.getCustomer());
-        assertEquals("10 Garden Road", savedInvoice.getBillAddress());
-        assertEquals("233 Hill Street", savedInvoice.getShipAddress());
-        verify(invoiceRepo, times(1)).save(invoice);
+        assertEquals("Invoice with ID '" + invoiceId + "'' not found", exception.getMessage());
+        verify(invoiceRepo, times(1)).findById(invoiceId);
     }
 
     @Test
-    void testUpdateInvoice_Success() {
+    void testUpdateInvoice_Success() throws RecordNotFoundException {
         UUID invoiceId = UUID.randomUUID();
-        Invoice existingInvoice = new Invoice(customer, "12 Oak Street", "15 Elm Street", new ArrayList<>(), 200.0);
+        Invoice existingInvoice = new Invoice();
         existingInvoice.setInvoiceId(invoiceId);
-
-        Invoice updatedInvoice = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
-        updatedInvoice.setInvoiceId(invoiceId);
-
+    
+        Map<UUID, Integer> items = new HashMap<>();
+        items.put(UUID.randomUUID(), 2);
+        items.put(UUID.randomUUID(), 3);
+    
+        List<InvoiceItem> invoiceTable = new ArrayList<>();
+        for (Map.Entry<UUID, Integer> entry : items.entrySet()) {
+            InvoiceItem invoiceItem = new InvoiceItem();
+            invoiceItem.setInvoiceItemProductId(entry.getKey());
+            invoiceItem.setQuantity(entry.getValue());
+            invoiceTable.add(invoiceItem);
+        }
+    
         when(invoiceRepo.existsById(invoiceId)).thenReturn(true);
-        when(invoiceRepo.save(updatedInvoice)).thenReturn(updatedInvoice);
-
-        Invoice result = invoiceService.updateInvoice(invoiceId, updatedInvoice);
-
-        assertNotNull(result);
-        assertEquals("22 Pine Street", result.getBillAddress());
-        assertEquals("25 Maple Street", result.getShipAddress());
-        assertEquals(300.0, result.getTotalAmount());
+        when(invoiceRepo.findById(invoiceId)).thenReturn(Optional.of(existingInvoice));
+        when(invoiceItemService.createInvoiceItem(any(UUID.class), anyInt())).thenAnswer(invocation -> {
+            UUID productId = invocation.getArgument(0);
+            Integer quantity = invocation.getArgument(1);
+            InvoiceItem invoiceItem = new InvoiceItem();
+            invoiceItem.setInvoiceItemProductId(productId);
+            invoiceItem.setQuantity(quantity);
+            return invoiceItem;
+        });
+        when(invoiceRepo.save(any(Invoice.class))).thenAnswer(invocation -> {
+            Invoice invoice = invocation.getArgument(0);
+            return invoice;
+        });
+    
+        Invoice updatedInvoice = invoiceService.updateInvoice(invoiceId, items);
+    
+        assertNotNull(updatedInvoice);
+        assertEquals(invoiceTable.size(), updatedInvoice.getInvoiceItems().size());
+        for (int i = 0; i < invoiceTable.size(); i++) {
+            assertEquals(invoiceTable.get(i).getInvoiceItemProductId(), updatedInvoice.getInvoiceItems().get(i).getInvoiceItemProductId());
+            assertEquals(invoiceTable.get(i).getQuantity(), updatedInvoice.getInvoiceItems().get(i).getQuantity());
+        }
         verify(invoiceRepo, times(1)).existsById(invoiceId);
+        verify(invoiceRepo, times(1)).findById(invoiceId);
+        verify(invoiceItemService, times(invoiceTable.size())).createInvoiceItem(any(UUID.class), anyInt());
         verify(invoiceRepo, times(1)).save(updatedInvoice);
     }
+    
+
 
     @Test
     void testUpdateInvoice_NotFound() {
         UUID invoiceId = UUID.randomUUID();
-        Invoice updatedInvoice = new Invoice(customer, "22 Pine Street", "25 Maple Street", new ArrayList<>(), 300.0);
+        Map<UUID, Integer> items = new HashMap<>();
+        items.put(UUID.randomUUID(), 2);
 
         when(invoiceRepo.existsById(invoiceId)).thenReturn(false);
 
         Exception exception = assertThrows(RecordNotFoundException.class, () -> {
-            invoiceService.updateInvoice(invoiceId, updatedInvoice);
+            invoiceService.updateInvoice(invoiceId, items);
         });
 
         assertEquals("Invoice with ID '" + invoiceId + "'' not found", exception.getMessage());
         verify(invoiceRepo, times(1)).existsById(invoiceId);
-        verify(invoiceRepo, times(0)).save(updatedInvoice);
+        verify(invoiceRepo, times(0)).save(any());
     }
 
     @Test
-    void testDeleteInvoice() {
+    void testDeleteInvoice() throws RecordNotFoundException {
         UUID invoiceId = UUID.randomUUID();
         Invoice invoice = new Invoice();
         invoice.setInvoiceId(invoiceId);
-        invoiceRepo.save(invoice);
-    
-        InvoiceItem invoiceItem = new InvoiceItem();
-        invoiceItem.setInvoiceItemId(UUID.randomUUID());
-        invoiceItem.setInvoice(invoice);
-        invoiceItemService.saveInvoiceItem(invoiceItem);
-    
-        invoiceService.deleteInvoice(invoiceId, invoiceItemService);
-    
-        verify(invoiceRepo, times(1)).deleteById(invoiceId);
-        verify(invoiceItemService, times(1)).deleteInvoiceItemsByInvoiceId(invoiceId);
-    }
+        invoice.setInvoiceItems(new ArrayList<>());
+        
+        when(invoiceRepo.findById(invoiceId)).thenReturn(Optional.of(invoice));
 
+        invoiceService.deleteInvoice(invoiceId);
+
+        verify(invoiceRepo, times(1)).deleteById(invoiceId);
+    }
 }

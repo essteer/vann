@@ -3,8 +3,8 @@ package com.vann.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,16 +13,16 @@ public class CartTest {
 
     private Cart cart;
     private UUID customerId;
-    private Set<CartItem> items;
+    private Map<UUID, Integer> items;
 
     @BeforeEach
     public void setUp() {
         customerId = UUID.randomUUID();
-        items = new HashSet<>();
-        CartItem item1 = new CartItem();
-        CartItem item2 = new CartItem();
-        items.add(item1);
-        items.add(item2);
+        items = new HashMap<>();
+        UUID itemId1 = UUID.randomUUID();
+        UUID itemId2 = UUID.randomUUID();
+        items.put(itemId1, 0);
+        items.put(itemId2, 0);
         cart = new Cart(customerId, items);
     }
 
@@ -50,9 +50,11 @@ public class CartTest {
         cart.setCartId(newId);
 
         UUID newCustomerId = UUID.randomUUID();
-        Set<CartItem> newItems = new HashSet<>();
-        CartItem newItem = new CartItem();
-        newItems.add(newItem);
+        Map<UUID, Integer> newItems = new HashMap<>();
+        UUID newItem1 = UUID.randomUUID();
+        UUID newItem2 = UUID.randomUUID();
+        newItems.put(newItem1, 1);
+        newItems.put(newItem2, 1);
 
         cart.setCartCustomerId(newCustomerId);
         cart.setCartItems(newItems);
@@ -60,7 +62,7 @@ public class CartTest {
         assertEquals(newId, cart.getCartId(), "UUID should match");
         assertEquals(newCustomerId, cart.getCartCustomerId(), "CustomerId should match");
         assertEquals(newItems, cart.getCartItems(), "Items should match");
-        assertEquals(1, cart.getCartItems().size(), "Items size should match");
+        assertEquals(2, cart.getCartItems().size(), "Items size should match");
     }
 
     @Test
