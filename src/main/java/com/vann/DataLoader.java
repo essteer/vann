@@ -34,12 +34,10 @@ public class DataLoader implements ApplicationRunner {
         CategoryService categoryService = new CategoryService(this.categoryRepo);
         ProductService productService = new ProductService(this.productRepo);
         CustomerService customerService = new CustomerService(this.customerRepo);
+        InvoiceItemService invoiceItemService = new InvoiceItemService(this.invoiceItemRepo, productService);
+        InvoiceService invoiceService = new InvoiceService(customerService, invoiceItemService, this.invoiceRepo);
         @SuppressWarnings("unused")
-        CartService cartService = new CartService(this.cartRepo, customerService, productService);
-        @SuppressWarnings("unused")
-        InvoiceItemService invoiceItemService = new InvoiceItemService(this.invoiceItemRepo);
-        @SuppressWarnings("unused")
-        InvoiceService invoiceService = new InvoiceService(this.invoiceRepo);
+        CartService cartService = new CartService(this.cartRepo, customerService, invoiceService, productService);
         
     }
 
