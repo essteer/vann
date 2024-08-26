@@ -1,7 +1,10 @@
 package com.vann.service;
 
+import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.InvoiceItem;
+import com.vann.model.Product;
 import com.vann.repositories.InvoiceItemRepo;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,39 +14,45 @@ import java.util.UUID;
 public class InvoiceItemService {
 
     private final InvoiceItemRepo invoiceItemRepo;
+    private final ProductService productService;
 
-    public InvoiceItemService(InvoiceItemRepo invoiceItemRepo) {
+    public InvoiceItemService(InvoiceItemRepo invoiceItemRepo, ProductService productService) {
         this.invoiceItemRepo = invoiceItemRepo;
+        this.productService = productService;
     }
 
-    public InvoiceItem saveInvoiceItem(InvoiceItem invoiceItem) {
-        return invoiceItemRepo.save(invoiceItem);
+    public InvoiceItem createInvoiceItem(UUID productId, int quantity) throws RecordNotFoundException {
+        Product product = productService.findProductById(productId);
+        String productDetails = product.toString();
+        double productUnitPrice = product.getProductPrice();
+
+        InvoiceItem invoiceItem = new InvoiceItem(productId, quantity);
+        invoiceItem.setUnitPrice(productUnitPrice);
+        invoiceItem.setProductDetails(productDetails);
+        invoiceItem.setProductDetails(productDetails);
+        
+        saveInvoiceItem(invoiceItem);
+        return invoiceItem;
     }
 
     public Optional<InvoiceItem> findInvoiceItemById(UUID invoiceItemUuid) {
         return invoiceItemRepo.findById(invoiceItemUuid);
     }
 
-    public InvoiceItem updateInvoiceItem(UUID invoiceItemUuid, InvoiceItem updatedInvoiceItem) {
-        // Check if the InvoiceItem exists
+    public InvoiceItem updateInvoiceItem(UUID invoiceItemUuid, InvoiceItem updatedInvoiceItem) throws RecordNotFoundException {
         if (!invoiceItemRepo.existsById(invoiceItemUuid)) {
-            throw new IllegalArgumentException("InvoiceItem not found");
+            throw new RecordNotFoundException("InvoiceItem with ID '" + invoiceItemUuid + "' not found");
         }
-        // Set the ID of the updated InvoiceItem
         updatedInvoiceItem.setInvoiceItemId(invoiceItemUuid);
-        // Save the updated InvoiceItem
-        return invoiceItemRepo.save(updatedInvoiceItem);
+        return saveInvoiceItem(updatedInvoiceItem);
     }
 
-    public void deleteInvoiceItem(UUID invoiceItemUuid) {
-        invoiceItemRepo.deleteById(invoiceItemUuid);
+    public InvoiceItem saveInvoiceItem(InvoiceItem invoiceItem) {
+        return invoiceItemRepo.save(invoiceItem);
     }
 
-    public void deleteInvoiceItemsByInvoiceId(UUID invoiceId) {
-        for (InvoiceItem invoiceItem : invoiceItemRepo.findAll()) {
-            if (invoiceItem.getInvoice().getInvoiceId() == invoiceId) {
-                deleteInvoiceItem(invoiceItem.getInvoiceItemId());
-            }
-        }
+    public void deleteInvoiceItem(UUID invoiceItemId) {
+            invoiceItemRepo.deleteById(invoiceItemId);
     }
+
 }

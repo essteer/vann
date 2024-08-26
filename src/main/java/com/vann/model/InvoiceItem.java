@@ -5,7 +5,6 @@ import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class InvoiceItem {
@@ -13,26 +12,20 @@ public class InvoiceItem {
     @Id
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "FK_invoice_id")
-    private Invoice invoice;
-
-    @ManyToOne
-    @JoinColumn(name = "FK_item_id")
-    private Product invoiceItem;
+    @JoinColumn(name = "FK_product_id", referencedColumnName = "id", nullable = false)
+    private UUID productId;
 
     private int quantity;
-    private double price;
+    private double unitPrice;
+    private String productDetails;
 
     public InvoiceItem() {
     }
 
-    public InvoiceItem(Invoice invoice, Product product, int quantity, double price) {
+    public InvoiceItem(UUID productId, int quantity) {
         generateIdIfAbsent();
-        this.invoice = invoice;
-        this.invoiceItem = product;
+        this.productId = productId;
         this.quantity = quantity;
-        this.price = price;
     }
 
     public void generateIdIfAbsent() {
@@ -50,22 +43,14 @@ public class InvoiceItem {
         this.id = id;
     }
 
-    public Invoice getInvoice() {
-        return invoice;
+    public UUID getInvoiceItemProductId() {
+        return productId;
     }
 
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
+    public void setInvoiceItemProductId(UUID productId) {
+        this.productId = productId;
     }
-
-    public Product getInvoiceItem() {
-        return invoiceItem;
-    }
-
-    public void setInvoiceItem(Product invoiceItem) {
-        this.invoiceItem = invoiceItem;
-    }
-
+    
     public int getQuantity() {
         return quantity;
     }
@@ -74,18 +59,30 @@ public class InvoiceItem {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
+    public double getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public String getProductDetails() {
+        return productDetails;
+    }
+
+    public void setProductDetails(String productDetails) {
+        this.productDetails = productDetails;
+    }
+
+    public double calculateInvoiceItemSubtotal() {
+        return unitPrice * quantity;
     }
 
     @Override
     public String toString() {
-        return "InvoiceItem [id=" + id + ", invoice=" + invoice + ", invoiceItem="
-                + invoiceItem + ", quantity=" + quantity + ", price=" + price + "]";
+        return "InvoiceItem [id=" + id + ", unitprice=" + unitPrice + ", quantity=" + quantity + ", subtotal=" + calculateInvoiceItemSubtotal() + 
+        ", Product=[" + productDetails + "]]";
     }
 
 }
