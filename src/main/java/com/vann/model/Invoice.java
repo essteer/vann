@@ -7,8 +7,6 @@ import java.util.UUID;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -17,27 +15,32 @@ public class Invoice {
     @Id
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "FK_customer_id", referencedColumnName = "id")
-    private Customer invoiceCustomer;
+    private UUID invoiceCustomerId;
+    private String invoiceCustomerName;
+    private String invoiceCustomerEmail;
 
     private String invoiceBillAddress;
     private String invoiceShipAddress;
+
     private double invoiceTotalAmount;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<InvoiceItem> invoiceItems;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<InvoiceItem> invoiceItems = new ArrayList<>();
 
     public Invoice() {
     }
 
-    public Invoice(Customer customer, String billAddress, String shipAddress, List<InvoiceItem> invoiceItems, double totalAmount) {
+    public Invoice(UUID customerId, String customerName, String customerEmail, String billAddress, String shipAddress) {
         generateIdIfAbsent();
-        this.invoiceCustomer = customer;
+        this.invoiceCustomerId = customerId;
+        this.invoiceCustomerName = customerName;
+        this.invoiceCustomerEmail = customerEmail;
         this.invoiceBillAddress = billAddress;
         this.invoiceShipAddress = shipAddress;
-        this.invoiceItems = invoiceItems;
-        this.invoiceTotalAmount = totalAmount;
+    }
+
+    public Invoice(UUID customerId, String customerName, String customerEmail, String billAddress) {
+        this(customerId, customerName, customerEmail, billAddress, billAddress);
     }
 
     public void generateIdIfAbsent() {
@@ -55,38 +58,55 @@ public class Invoice {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return invoiceCustomer;
+    public UUID getInvoiceCustomerId() {
+        return invoiceCustomerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.invoiceCustomer = customer;
+    public void setInvoiceCustomerId(UUID invoiceCustomerId) {
+        this.invoiceCustomerId = invoiceCustomerId;
     }
 
-    public String getBillAddress() {
+    public String getInvoiceCustomerName() {
+        return invoiceCustomerName;
+    }
+
+    public void setInvoiceCustomerName(String invoiceCustomerName) {
+        this.invoiceCustomerName = invoiceCustomerName;
+    }
+
+    public String getInvoiceCustomerEmail() {
+        return invoiceCustomerEmail;
+    }
+
+    public void setInvoiceCustomerEmail(String invoiceCustomerEmail) {
+        this.invoiceCustomerEmail = invoiceCustomerEmail;
+    }
+
+    public String getInvoiceBillAddress() {
         return invoiceBillAddress;
     }
 
-    public void setBillAddress(String billAddress) {
-        this.invoiceBillAddress = billAddress;
+    public void setInvoiceBillAddress(String invoiceBillAddress) {
+        this.invoiceBillAddress = invoiceBillAddress;
     }
 
-    public String getShipAddress() {
+    public String getInvoiceShipAddress() {
         return invoiceShipAddress;
     }
 
-    public void setShipAddress(String shipAddress) {
-        this.invoiceShipAddress = shipAddress;
+    public void setInvoiceShipAddress(String invoiceShipAddress) {
+        this.invoiceShipAddress = invoiceShipAddress;
     }
 
-    public double getTotalAmount() {
+    public double getInvoiceTotalAmount() {
+        this.invoiceTotalAmount = calculateTotalAmount();
         return invoiceTotalAmount;
     }
 
     public double calculateTotalAmount() {
         return invoiceItems.stream()
-        .mapToDouble(ip -> ip.getPrice() * ip.getQuantity())
-        .sum();
+                           .mapToDouble(InvoiceItem::calculateInvoiceItemSubtotal)
+                           .sum();
     }
 
     public List<InvoiceItem> getInvoiceItems() {
@@ -103,8 +123,8 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice [id=" + id + ", customer=" + invoiceCustomer + ", billAddress=" + invoiceBillAddress
-                + ", shipAddress=" + invoiceShipAddress + ", totalAmount=" + invoiceTotalAmount + "]";
+        return "Invoice [id=" + id + ", customer=" + invoiceCustomerName + ", email=" + invoiceCustomerEmail + ", billAddress=" + invoiceBillAddress
+                + ", shipAddress=" + invoiceShipAddress + ", totalAmount=" + calculateTotalAmount() + "]";
     }
 
 }
