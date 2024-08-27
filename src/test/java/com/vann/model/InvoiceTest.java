@@ -41,7 +41,6 @@ public class InvoiceTest {
     @Test
     public void testInvoiceDefaultConstructor() {
         Invoice defaultInvoice = new Invoice();
-        defaultInvoice.generateIdIfAbsent();
         assertNotNull(defaultInvoice.getInvoiceId(), "ID should be generated");
         assertNull(defaultInvoice.getInvoiceCustomerId(), "Customer ID should be null");
         assertNull(defaultInvoice.getInvoiceCustomerName(), "Customer name should be null");
@@ -61,24 +60,6 @@ public class InvoiceTest {
         assertEquals("123 Main St", invoice.getInvoiceBillAddress(), "Billing address should match");
         assertEquals("456 Elm St", invoice.getInvoiceShipAddress(), "Shipping address should match");
         assertEquals(invoiceItems, invoice.getInvoiceItems(), "Invoice items should match");
-    }
-
-    @Test
-    public void testCalculateTotalAmount() {
-        double totalAmount = invoice.calculateTotalAmount();
-        assertEquals(250.0, totalAmount, "Total amount should be the sum of the item subtotals");
-    }
-
-    @Test
-    public void testSetInvoiceItems() {
-        InvoiceItem item3 = Mockito.mock(InvoiceItem.class);
-        Mockito.when(item3.calculateInvoiceItemSubtotal()).thenReturn(300.0);
-
-        List<InvoiceItem> newItems = Arrays.asList(item3);
-        invoice.setInvoiceItems(newItems);
-
-        assertEquals(newItems, invoice.getInvoiceItems(), "Invoice items should match the new list");
-        assertEquals(300.0, invoice.getInvoiceTotalAmount(), "Total amount should be recalculated based on the new items");
     }
 
     @Test
@@ -107,6 +88,24 @@ public class InvoiceTest {
         assertEquals("321 Oak St", invoice.getInvoiceShipAddress(), "Shipping address should match");
         assertEquals(newInvoiceItems, invoice.getInvoiceItems(), "Invoice items should match");
         assertEquals(225.0, invoice.getInvoiceTotalAmount(), "Total amount should match the sum of item subtotals");
+    }
+
+    @Test
+    public void testCalculateTotalAmount() {
+        double totalAmount = invoice.calculateTotalAmount();
+        assertEquals(250.0, totalAmount, "Total amount should be the sum of the item subtotals");
+    }
+
+    @Test
+    public void testSetInvoiceItems() {
+        InvoiceItem item3 = Mockito.mock(InvoiceItem.class);
+        Mockito.when(item3.calculateInvoiceItemSubtotal()).thenReturn(300.0);
+
+        List<InvoiceItem> newItems = Arrays.asList(item3);
+        invoice.setInvoiceItems(newItems);
+
+        assertEquals(newItems, invoice.getInvoiceItems(), "Invoice items should match the new list");
+        assertEquals(300.0, invoice.getInvoiceTotalAmount(), "Total amount should be recalculated based on the new items");
     }
 
     @Test
