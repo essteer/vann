@@ -19,7 +19,6 @@ public class CustomerTest {
     @Test
     public void testCustomerDefaultConstructor() {
         Customer defaultCustomer = new Customer();
-        defaultCustomer.generateIdIfAbsent();
         assertNotNull(defaultCustomer.getCustomerId(), "UUID should be generated");
         assertNull(defaultCustomer.getCustomerName(), "Customer name should be null");
         assertNull(defaultCustomer.getCustomerEmail(), "Customer email should be null");
@@ -41,7 +40,6 @@ public class CustomerTest {
     @Test
     public void testEmptyNameAndEmail() {
         Customer customer = new Customer("", "");
-        customer.generateIdIfAbsent();
         assertNotNull(customer.getCustomerId(), "UUID should be generated");
         assertEquals("", customer.getCustomerName(), "Customer name should be empty");
         assertEquals("", customer.getCustomerEmail(), "Customer email should be empty");
