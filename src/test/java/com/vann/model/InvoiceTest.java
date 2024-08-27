@@ -63,6 +63,13 @@ public class InvoiceTest {
     }
 
     @Test
+    public void testGenerateIdIfAbsent() {
+        Invoice invoice = new Invoice();
+        invoice.generateIdIfAbsent();
+        assertNotNull(invoice.getInvoiceId(), "UUID should be generated");
+    }
+
+    @Test
     public void testSettersAndGetters() {
         UUID newId = UUID.randomUUID();
         invoice.setInvoiceId(newId);

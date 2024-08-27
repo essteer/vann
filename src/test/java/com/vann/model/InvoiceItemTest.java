@@ -19,7 +19,6 @@ public class InvoiceItemTest {
     @Test
     public void testInvoiceItemDefaultConstructor() {
         InvoiceItem defaultInvoiceItem = new InvoiceItem();
-        defaultInvoiceItem.generateIdIfAbsent();
         assertNotNull(defaultInvoiceItem.getInvoiceItemId(), "UUID should be generated");
         assertNull(defaultInvoiceItem.getInvoiceItemProductId(), "productId should be null");
         assertEquals(0, defaultInvoiceItem.getQuantity(), "quantity should be 0");
@@ -41,6 +40,13 @@ public class InvoiceItemTest {
         assertEquals(0.0, parameterizedInvoiceItem.calculateInvoiceItemSubtotal(), "subtotal should be 0.0");
         assertNull(item.getProductDetails(), "Product details should be null");
         assertEquals("InvoiceItem [id=" + parameterizedInvoiceItem.getInvoiceItemId() + ", unitprice=0.0, quantity=3, subtotal=0.0, Product=[null]]", parameterizedInvoiceItem.toString());
+    }
+
+    @Test
+    public void testGenerateIdIfAbsent() {
+        InvoiceItem invoiceItem = new InvoiceItem();
+        invoiceItem.generateIdIfAbsent();
+        assertNotNull(invoiceItem.getInvoiceItemId(), "UUID should be generated");
     }
 
     @Test
