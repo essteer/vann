@@ -10,6 +10,7 @@ public enum Colour {
     DEEP_SEA_GREEN,
     ELECTRIC_BLUE,
     EMERALD_GREEN,
+    FROST_BLUE,
     GREY_AND_MINT,
     HEATHER,
     LIGHT_BLUE,
