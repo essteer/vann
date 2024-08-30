@@ -57,7 +57,7 @@ public class Category {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) {
+    public void setCategoryType(CategoryType categoryType) throws IllegalArgumentException {
         if (categoryType == null) {
             LogHandler.nullAttributeWarning(Category.class, getCategoryId(), "CategoryType");
         }
@@ -67,6 +67,7 @@ public class Category {
             LogHandler.validAttributeOK(Category.class, getCategoryId(), "CategoryType", String.valueOf(categoryType));
         } catch (IllegalArgumentException e) {
             LogHandler.invalidAttributeError(Category.class, getCategoryId(), "CategoryType", String.valueOf(categoryType), e.getMessage());
+            throw e;
         }
     }
 
@@ -83,6 +84,7 @@ public class Category {
                 LogHandler.validAttributeOK(Category.class, getCategoryId(), "name", getCategoryName());
             } catch (Exception e) {
                 LogHandler.invalidAttributeError(Category.class, getCategoryId(), "name", categoryName, e.getMessage());
+                throw e;
             } 
         }
     }
