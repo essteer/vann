@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import com.vann.model.enums.Colour;
 import com.vann.model.enums.Size;
+import com.vann.utils.LogHandler;
 
 @Entity
 public class Product {
@@ -38,13 +39,19 @@ public class Product {
     }
 
     public Product(String name, double price, String image, Category category, Size size, Colour colour) {
-        generateIdIfAbsent();
-        this.productName = name.toUpperCase();
-        this.productPrice = price;
-        this.productImage = image;
-        this.category = category;
-        this.size = size;
-        this.colour = colour;
+        try {
+            generateIdIfAbsent();
+            this.productName = name.toUpperCase();
+            this.productPrice = price;
+            this.productImage = image;
+            this.category = category;
+            setColour(colour);
+            setSize(size);
+            LogHandler.createInstanceOK(Product.class, this.id, name, price, image, category, size, colour);
+        } catch (Exception e) {
+            LogHandler.createInstanceError(Product.class, name, price, image, category, size, colour);
+            throw e;
+        }
     }
 
     public void generateIdIfAbsent() {
@@ -98,16 +105,39 @@ public class Product {
         return size;
     }
 
-    public void setSize(Size size) {
-        this.size = size;
+    public void setSize(Size size) throws IllegalArgumentException {
+        if (size == null) {
+            this.size = size;
+        } else {
+            try {
+                Size.valueOf(size.name());
+                this.size = size;
+                LogHandler.validAttributeOK(Product.class, getProductId(), "Size", String.valueOf(size));
+            } catch (IllegalArgumentException e) {
+                LogHandler.invalidAttributeError(Product.class, getProductId(), "Size", String.valueOf(size), e.getMessage());
+                throw e;
+            }
+        }
     }
 
     public Colour getColour() {
         return colour;
     }
 
-    public void setColour(Colour colour) {
+    public void setColour(Colour colour) throws IllegalArgumentException {
         this.colour = colour;
+        if (colour == null) {
+            this.colour = colour;
+        } else {
+            try {
+                Colour.valueOf(colour.name());
+                this.colour = colour;
+                LogHandler.validAttributeOK(Product.class, getProductId(), "Colour", String.valueOf(colour));
+            } catch (IllegalArgumentException e) {
+                LogHandler.invalidAttributeError(Product.class, getProductId(), "Colour", String.valueOf(colour), e.getMessage());
+                throw e;
+            }
+        }
     }
 
     @Override
