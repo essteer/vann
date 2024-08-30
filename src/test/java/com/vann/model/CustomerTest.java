@@ -32,24 +32,29 @@ public class CustomerTest {
     }
 
     @Test
-    public void testEmailNormalisation() {
-        Customer customer = new Customer("Jane Doe", "JANE.DOE@EXAMPLE.COM");
-        assertEquals("jane.doe@example.com", customer.getCustomerEmail(), "Email should be normalised to lowercase");
+    public void testGenerateIdIfAbsent() {
+        Customer customer = new Customer();
+        customer.generateIdIfAbsent();
+        assertNotNull(customer.getCustomerId(), "UUID should be generated");
     }
 
     @Test
     public void testEmptyNameAndEmail() {
         Customer customer = new Customer("", "");
         assertNotNull(customer.getCustomerId(), "UUID should be generated");
-        assertEquals("", customer.getCustomerName(), "Customer name should be empty");
-        assertEquals("", customer.getCustomerEmail(), "Customer email should be empty");
+        assertNull(customer.getCustomerName(), "Empty customer name should be ignored (stays null)");
+        assertNull(customer.getCustomerEmail(), "Empty Customer email should be ignored (stays null)");
     }
 
     @Test
-    public void testGenerateIdIfAbsent() {
-        Customer customer = new Customer();
-        customer.generateIdIfAbsent();
-        assertNotNull(customer.getCustomerId(), "UUID should be generated");
+    public void testEmailNormalisation() {
+        Customer customer = new Customer("Jane Doe", "JANE.DOE@EXAMPLE.COM");
+        assertEquals("jane.doe@example.com", customer.getCustomerEmail(), "Email should be normalised to lowercase");
+    }
+
+    @Test
+    public void testInvalidEmail() {
+        assertThrows(IllegalArgumentException.class, () -> new Customer("John Doe", "invalid-email"));
     }
 
     @Test
