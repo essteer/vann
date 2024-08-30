@@ -3,11 +3,17 @@ package com.vann;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.vann.utils.LogHandler;
+
 @SpringBootApplication
 public class VannApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VannApplication.class, args);
+		try {
+			SpringApplication.run(VannApplication.class, args);
+        } catch (Exception e) {
+            LogHandler.applicationStartupError(e.getMessage());
+			throw e;
+        }
 	}
-
 }
