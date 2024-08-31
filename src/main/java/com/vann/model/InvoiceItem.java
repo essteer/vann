@@ -2,6 +2,8 @@ package com.vann.model;
 
 import java.util.UUID;
 
+import com.vann.utils.LogHandler;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -23,9 +25,15 @@ public class InvoiceItem {
     }
 
     public InvoiceItem(UUID productId, int quantity) {
-        generateIdIfAbsent();
-        this.productId = productId;
-        this.quantity = quantity;
+        try {
+            generateIdIfAbsent();
+            setInvoiceItemProductId(productId);
+            setQuantity(quantity);
+            LogHandler.createInstanceOK(InvoiceItem.class, this.id, String.valueOf(this.productId), String.valueOf(this.quantity));
+        } catch (Exception e) {
+            LogHandler.createInstanceError(InvoiceItem.class, productId, quantity);
+            throw e;
+        }
     }
 
     public void generateIdIfAbsent() {
@@ -40,7 +48,12 @@ public class InvoiceItem {
     }
 
     public void setInvoiceItemId(UUID id) {
-        this.id = id;
+        if (id == null) {
+            LogHandler.nullAttributeWarning(InvoiceItem.class, getInvoiceItemId(), "id");
+        } else {
+            this.id = id;
+            LogHandler.validAttributeOK(InvoiceItem.class, getInvoiceItemId(), "id", String.valueOf(getInvoiceItemId()));
+        }
     }
 
     public UUID getInvoiceItemProductId() {
@@ -48,15 +61,26 @@ public class InvoiceItem {
     }
 
     public void setInvoiceItemProductId(UUID productId) {
-        this.productId = productId;
+        if (productId == null) {
+            LogHandler.nullAttributeWarning(InvoiceItem.class, getInvoiceItemId(), "invoiceItemProductId");
+        } else {
+            this.productId = productId;
+            LogHandler.validAttributeOK(InvoiceItem.class, getInvoiceItemId(), "invoiceItemProductId", String.valueOf(getInvoiceItemProductId()));
+        }
     }
     
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setQuantity(int quantity) throws IllegalArgumentException {
+        if (quantity >= 0) {
+            this.quantity = quantity;
+            LogHandler.validAttributeOK(InvoiceItem.class, getInvoiceItemId(), "quantity", String.valueOf(getQuantity()));
+        } else {
+            LogHandler.invalidAttributeError(InvoiceItem.class, getInvoiceItemId(), "quantity", String.valueOf(getQuantity()), "Quantity cannot be negative");
+            throw new IllegalArgumentException("Quantity cannot be negative: " + quantity);
+        }
     }
 
     public double getUnitPrice() {
@@ -64,7 +88,7 @@ public class InvoiceItem {
     }
 
     public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
+        this.unitPrice = unitPrice;  // negative unitPrice permitted (discounts, refunds, etc)
     }
 
     public String getProductDetails() {
