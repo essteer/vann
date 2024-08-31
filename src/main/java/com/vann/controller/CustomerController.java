@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.vann.exceptions.FieldConflictException;
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Customer;
 import com.vann.service.CustomerService;
+import com.vann.utils.LogHandler;
 
 
 @RestController
@@ -32,30 +34,53 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<List<Customer>> getAllCustomers() {
-        List<Customer> customers = customerService.findAllCustomers();
-        if (customers.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        String methodName = "getAllCustomers()";
+        try {
+            List<Customer> customers = customerService.findAllCustomers();
+            if (customers.isEmpty()) {
+                LogHandler.status204NoContent("GET", CustomerController.class, methodName);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            LogHandler.status200OK("GET", CustomerController.class, methodName);
+            return ResponseEntity.ok(customers);
+        
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", CustomerController.class, methodName, e.getMessage());
+            throw e;
         }
-        return ResponseEntity.ok(customers);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCustomer(@PathVariable UUID id) {
+        String methodName = "getCustomer()";
         try {
             Customer customer = customerService.findCustomerById(id);
+            LogHandler.status200OK("GET", CustomerController.class, methodName);
             return ResponseEntity.ok(customer);
+        
         } catch (RecordNotFoundException e) {
+            LogHandler.status404NotFound("GET", CustomerController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", CustomerController.class, methodName, e.getMessage());
+            throw e;
         }
     }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getCustomerByEmail(@PathVariable String email) {
+        String methodName = "getCustomerByEmail()";
         try {
             Customer customer = customerService.findCustomerByEmail(email);
+            LogHandler.status200OK("GET", CustomerController.class, methodName);
             return ResponseEntity.ok(customer);
+        
         } catch (RecordNotFoundException e) {
+            LogHandler.status404NotFound("GET", CustomerController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", CustomerController.class, methodName, e.getMessage());
+            throw e;
         }
     }
 
@@ -64,6 +89,7 @@ public class CustomerController {
         @RequestParam String name,
         @RequestParam String email
     ) {
+        String methodName = "createCustomer()";
         try {
             Customer customer = customerService.createCustomer(name, email);
             URI location = ServletUriComponentsBuilder
@@ -72,23 +98,38 @@ public class CustomerController {
                 .buildAndExpand(customer.getCustomerId())
                 .toUri();
     
+            LogHandler.status201Created("POST", CustomerController.class, methodName);
             return ResponseEntity.created(location).body(customer);
         
+        } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
+            LogHandler.status400BadRequest("POST", CustomerController.class, methodName, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (FieldConflictException e) {
+            LogHandler.status409Conflict("POST", CustomerController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("POST", CustomerController.class, methodName, e.getMessage());
+            throw e;
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable UUID id, @RequestBody Customer customer) {
+        String methodName = "updateCustomer()";
         try {
             Customer updatedCustomer = customerService.updateCustomer(id, customer);
+            LogHandler.status200OK("PUT", CustomerController.class, methodName);
             return ResponseEntity.ok(updatedCustomer);
-        } catch (FieldConflictException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        
         } catch (RecordNotFoundException e) {
+            LogHandler.status404NotFound("PUT", CustomerController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (FieldConflictException e) {
+            LogHandler.status409Conflict("PUT", CustomerController.class, methodName, e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("PUT", CustomerController.class, methodName, e.getMessage());
+            throw e;
         }
     }
-
 }
