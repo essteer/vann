@@ -5,12 +5,13 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class LogHandler {
 
-    private static final Logger logger = LogManager.getLogger("com.vann");
+    private static final Logger logger = LogManager.getLogger(LogHandler.class);
 
     public static void applicationStartupError(String errorMessage) {
-        logger.fatal("Unexpected error during application startup: {}", errorMessage);
+        logger.error("Unexpected error during application startup: {}", errorMessage);
     }
 
     public static void serviceClassInitOK(String className) {
@@ -18,9 +19,8 @@ public class LogHandler {
     }
 
     public static void serviceClassInitError(String errorMessage) {
-        logger.fatal("Service class init error: {}", errorMessage);
+        logger.error("Service class init error: {}", errorMessage);
     }
-
 
     public static void createInstanceOK(Class<?> clazz, UUID id, Object... args) {
         String argsString = getArgsString(args);
@@ -29,7 +29,7 @@ public class LogHandler {
 
     public static void createInstanceError(Class<?> clazz, Object... args) {
         String argsString = getArgsString(args);
-        logger.error("Failed to create {} instance with args: ", clazz.getSimpleName(), argsString);
+        logger.error("Failed to create {} instance with args: [{}]", clazz.getSimpleName(), argsString);
     }
 
     private static String getArgsString(Object... args) {
@@ -48,7 +48,7 @@ public class LogHandler {
     }
 
     public static void nullAttributeWarning(Class<?> clazz, UUID id, String attributeName) {
-        logger.warn("{} (class: {}) {} cannot be null", attributeName, id, clazz.getSimpleName());
+        logger.warn("{} (class: {}) {} cannot be null", id, clazz.getSimpleName(), attributeName);
     }
 
     public static void validAttributeOK(Class<?> clazz, UUID id, String attributeName, String attributeValue) {
