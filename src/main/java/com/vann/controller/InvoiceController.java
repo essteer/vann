@@ -26,17 +26,18 @@ public class InvoiceController {
 
     @GetMapping
     public ResponseEntity<List<Invoice>> getAllInvoices() {
+        String methodName = "getAllInvoices()";
         try {
             List<Invoice> invoices = invoiceService.findAllInvoices();
             if (invoices.isEmpty()) {
-                LogHandler.status204NoContent("GET", InvoiceController.class, "getAllInvoices()");
+                LogHandler.status204NoContent("GET", InvoiceController.class, methodName);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
-            LogHandler.status200OK("GET", InvoiceController.class, "getAllInvoices()");
+            LogHandler.status200OK("GET", InvoiceController.class, methodName);
             return ResponseEntity.ok(invoices);
             
         } catch (Exception e) {
-            LogHandler.status500InternalServerError("GET", InvoiceController.class, "getAllInvoices()", e.getMessage());
+            LogHandler.status500InternalServerError("GET", InvoiceController.class, methodName, e.getMessage());
             throw e;
         }
     }
@@ -73,72 +74,76 @@ public class InvoiceController {
 
     @GetMapping("/customer-id/{id}")
     public ResponseEntity<?> getInvoicesByCustomerId(@PathVariable UUID id) {
+        String methodName = "getInvoicesByCustomerId()";
         try {
             List<Invoice> invoices = invoiceService.findInvoicesByCustomerId(id);
             if (invoices.isEmpty()) {
-                LogHandler.status204NoContent("GET", InvoiceController.class, "getInvoicesByCustomerId()");
+                LogHandler.status204NoContent("GET", InvoiceController.class, methodName);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
-            LogHandler.status200OK("GET", InvoiceController.class, "getInvoicesByCustomerId()");
+            LogHandler.status200OK("GET", InvoiceController.class, methodName);
             return ResponseEntity.ok(invoices);
         
         } catch (RecordNotFoundException e) {  // for customer ID not found
-            LogHandler.status404NotFound("GET", InvoiceController.class, "getInvoicesByCustomerId()", e.getMessage());
+            LogHandler.status404NotFound("GET", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            LogHandler.status500InternalServerError("GET", InvoiceController.class, "getInvoicesByCustomerId()", e.getMessage());
+            LogHandler.status500InternalServerError("GET", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/customer-email/{email}")
     public ResponseEntity<?> getInvoicesByCustomerEmail(@PathVariable String email) {
+        String methodName = "getInvoicesByCustomerEmail()";
         try {
             List<Invoice> invoices = invoiceService.findInvoicesByCustomerEmail(email);
             if (invoices.isEmpty()) {
-                LogHandler.status204NoContent("GET", InvoiceController.class, "getInvoicesByCustomerEmail()");
+                LogHandler.status204NoContent("GET", InvoiceController.class, methodName);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
-            LogHandler.status200OK("GET", InvoiceController.class, "getInvoicesByCustomerEmail()");
+            LogHandler.status200OK("GET", InvoiceController.class, methodName);
             return ResponseEntity.ok(invoices);
 
         } catch (RecordNotFoundException e) {  // for customer email not found
-            LogHandler.status404NotFound("GET", InvoiceController.class, "getInvoicesByCustomerEmail()", e.getMessage());
+            LogHandler.status404NotFound("GET", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            LogHandler.status500InternalServerError("GET", InvoiceController.class, "getInvoicesByCustomerEmail()", e.getMessage());
+            LogHandler.status500InternalServerError("GET", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getInvoice(@PathVariable UUID id) {
+        String methodName = "getInvoice()";
         try {
             Invoice invoice = invoiceService.findInvoiceById(id);
-            LogHandler.status200OK("GET", InvoiceController.class, "getInvoice()");
+            LogHandler.status200OK("GET", InvoiceController.class, methodName);
             return ResponseEntity.ok(invoice);
         
         } catch (RecordNotFoundException e) {
-            LogHandler.status404NotFound("GET", InvoiceController.class, "getInvoice()", e.getMessage());
+            LogHandler.status404NotFound("GET", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            LogHandler.status500InternalServerError("GET", InvoiceController.class, "getInvoice()", e.getMessage());
+            LogHandler.status500InternalServerError("GET", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInvoice(@PathVariable UUID id) {
+        String methodName = "deleteInvoice()";
         try {
             invoiceService.deleteInvoice(id);
-            LogHandler.status204NoContent("DELETE", InvoiceController.class, "deleteInvoice()");
+            LogHandler.status204NoContent("DELETE", InvoiceController.class, methodName);
             return ResponseEntity.status(HttpStatus.OK).build();
         
         } catch (RecordNotFoundException e) {
-            LogHandler.status404NotFound("DELETE", InvoiceController.class, "deleteInvoice()", e.getMessage());
+            LogHandler.status404NotFound("DELETE", InvoiceController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            LogHandler.status500InternalServerError("DELETE", InvoiceController.class, "deleteInvoice()", e.getMessage());
+            LogHandler.status500InternalServerError("DELETE", InvoiceController.class, methodName, e.getMessage());
             throw e;
         }
     }
