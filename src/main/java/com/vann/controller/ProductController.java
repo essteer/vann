@@ -61,7 +61,7 @@ public class ProductController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/name/{categoryName}")
-    public ResponseEntity<List<Product>> getProductsByCategoryName(@PathVariable String categoryName) {
+    public ResponseEntity<?> getProductsByCategoryName(@PathVariable String categoryName) {
         try {
             List<Product> products = productService.findProductsByCategoryName(categoryName);
             if (products.isEmpty()) {
@@ -70,6 +70,10 @@ public class ProductController {
             }
             LogHandler.status200OK("GET", ProductController.class, "getProductsByCategoryName()");
             return ResponseEntity.ok(products);
+        
+        } catch (RecordNotFoundException e) {  // for categoryName not found
+            LogHandler.status404NotFound("GET", ProductController.class, "getProductsByCategoryName()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, "getProductsByCategoryName()", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -78,7 +82,7 @@ public class ProductController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/type/{categoryType}")
-    public ResponseEntity<List<Product>> getProductsByCategoryType(@PathVariable CategoryType categoryType) {
+    public ResponseEntity<?> getProductsByCategoryType(@PathVariable CategoryType categoryType) {
         try {
             List<Product> products = productService.findProductsByCategoryType(categoryType);
             if (products.isEmpty()) {
