@@ -3,6 +3,9 @@ package com.vann.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
+import com.vann.utils.LogHandler;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -31,12 +34,18 @@ public class Invoice {
     }
 
     public Invoice(UUID customerId, String customerName, String customerEmail, String billAddress, String shipAddress) {
-        generateIdIfAbsent();
-        this.invoiceCustomerId = customerId;
-        this.invoiceCustomerName = customerName;
-        this.invoiceCustomerEmail = customerEmail;
-        this.invoiceBillAddress = billAddress;
-        this.invoiceShipAddress = shipAddress;
+        try {
+            generateIdIfAbsent();
+            setInvoiceCustomerId(customerId);
+            setInvoiceCustomerName(customerName);
+            setInvoiceCustomerEmail(customerEmail);
+            this.invoiceBillAddress = billAddress;
+            this.invoiceShipAddress = shipAddress;
+            LogHandler.createInstanceOK(Invoice.class, this.id, customerName, customerEmail, billAddress, shipAddress);
+        } catch (Exception e) {
+            LogHandler.createInstanceError(Invoice.class, customerName, customerEmail, billAddress, shipAddress);
+            throw e;
+        }
     }
 
     public Invoice(UUID customerId, String customerName, String customerEmail, String billAddress) {
@@ -55,7 +64,12 @@ public class Invoice {
     }
 
     public void setInvoiceId(UUID id) {
-        this.id = id;
+        if (id == null) {
+            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "id");
+        } else {
+            this.id = id;
+            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "id", String.valueOf(getInvoiceId()));
+        }
     }
 
     public UUID getInvoiceCustomerId() {
@@ -63,7 +77,12 @@ public class Invoice {
     }
 
     public void setInvoiceCustomerId(UUID invoiceCustomerId) {
-        this.invoiceCustomerId = invoiceCustomerId;
+        if (invoiceCustomerId == null) {
+            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceCustomerId");
+        } else {
+            this.invoiceCustomerId = invoiceCustomerId;
+            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceCustomerId", String.valueOf(invoiceCustomerId));
+        }
     }
 
     public String getInvoiceCustomerName() {
@@ -71,7 +90,12 @@ public class Invoice {
     }
 
     public void setInvoiceCustomerName(String invoiceCustomerName) {
-        this.invoiceCustomerName = invoiceCustomerName;
+        if (invoiceCustomerName == null || invoiceCustomerName.trim().isEmpty()) {
+            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceCustomerName");
+        } else {
+            this.invoiceCustomerName = invoiceCustomerName;
+            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceCustomerName", invoiceCustomerName);
+        }
     }
 
     public String getInvoiceCustomerEmail() {
@@ -79,7 +103,29 @@ public class Invoice {
     }
 
     public void setInvoiceCustomerEmail(String invoiceCustomerEmail) {
-        this.invoiceCustomerEmail = invoiceCustomerEmail;
+        String email = invoiceCustomerEmail.trim().toLowerCase();
+        try {
+            if (isValidEmail(email)) {
+                this.invoiceCustomerEmail = email;
+                LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "email", getInvoiceCustomerEmail());
+            }
+        } catch (Exception e) {
+            LogHandler.invalidAttributeError(Invoice.class, getInvoiceId(), "email", invoiceCustomerEmail, e.getMessage());
+            throw e;
+        }
+    }
+
+    private boolean isValidEmail(String email) throws IllegalArgumentException {
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$";
+        Pattern pattern = Pattern.compile(emailRegex, Pattern.CASE_INSENSITIVE);
+        if (email == null || email.trim().isEmpty()) {
+            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "email");
+            return false;
+        } else if (!pattern.matcher(email).matches()) {
+            LogHandler.invalidAttributeError(Invoice.class, getInvoiceId(), "email", email, "Invalid email format");
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
+        return true;
     }
 
     public String getInvoiceBillAddress() {
@@ -87,7 +133,12 @@ public class Invoice {
     }
 
     public void setInvoiceBillAddress(String invoiceBillAddress) {
-        this.invoiceBillAddress = invoiceBillAddress;
+        if (invoiceBillAddress == null) {
+            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceBillAddress");
+        } else {
+            this.invoiceBillAddress = invoiceBillAddress;
+            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceBillAddress", invoiceBillAddress);
+        }
     }
 
     public String getInvoiceShipAddress() {
@@ -95,7 +146,13 @@ public class Invoice {
     }
 
     public void setInvoiceShipAddress(String invoiceShipAddress) {
-        this.invoiceShipAddress = invoiceShipAddress;
+        if (invoiceShipAddress == null) {
+            this.invoiceShipAddress = getInvoiceBillAddress();
+            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceShipAddress");
+        } else {
+            this.invoiceShipAddress = invoiceShipAddress;
+            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceShipAddress", invoiceShipAddress);
+        }
     }
 
     public double getInvoiceTotalAmount() {
