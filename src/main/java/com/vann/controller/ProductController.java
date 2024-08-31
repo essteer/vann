@@ -123,6 +123,7 @@ public class ProductController {
             Product product = productService.findProductById(id);
             LogHandler.status200OK("GET", ProductController.class, "getProduct()");
             return ResponseEntity.ok(product);
+        
         } catch (RecordNotFoundException e) {
             LogHandler.status404NotFound("GET", ProductController.class, "getProduct()", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -175,6 +176,7 @@ public class ProductController {
             Product updated = productService.updateProduct(id, updatedProduct);
             LogHandler.status200OK("GET", ProductController.class, "updateProduct()");
             return ResponseEntity.ok(updated);
+        
         } catch (RecordNotFoundException e) {
             LogHandler.status404NotFound("PUT", ProductController.class, "updateProduct()", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
