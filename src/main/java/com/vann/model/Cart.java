@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.vann.utils.LogHandler;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -31,9 +33,15 @@ public class Cart {
     }
 
     public Cart(UUID customerId, Map<UUID, Integer> cartItems) {
-        generateIdIfAbsent();
-        this.customerId = customerId;
-        this.cartItems = cartItems;
+        try {
+            generateIdIfAbsent();
+            setCartCustomerId(customerId);
+            this.cartItems = cartItems;
+            LogHandler.createInstanceOK(Cart.class, this.id, String.valueOf(this.customerId), this.cartItems.toString());
+        } catch (Exception e) {
+            LogHandler.createInstanceError(Cart.class, customerId, cartItems.toString());
+            throw e;
+        }
     }
 
     public void generateIdIfAbsent() {
@@ -48,7 +56,12 @@ public class Cart {
     }
 
     public void setCartId(UUID id) {
-        this.id = id;
+        if (id == null) {
+            LogHandler.nullAttributeWarning(Cart.class, getCartId(), "id");
+        } else {
+            this.id = id;
+            LogHandler.validAttributeOK(Cart.class, getCartId(), "id", String.valueOf(getCartId()));
+        }
     }
 
     public UUID getCartCustomerId() {
@@ -56,7 +69,12 @@ public class Cart {
     }
 
     public void setCartCustomerId(UUID customerId) {
-        this.customerId = customerId;
+        if (customerId == null) {
+            LogHandler.nullAttributeWarning(Cart.class, getCartId(), "customerId");
+        } else {
+            this.customerId = customerId;
+            LogHandler.validAttributeOK(Cart.class, getCartId(), "customerId", String.valueOf(customerId));
+        }
     }
 
     public Map<UUID, Integer> getCartItems() {
