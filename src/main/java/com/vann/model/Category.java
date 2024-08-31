@@ -50,7 +50,12 @@ public class Category {
     }
 
     public void setCategoryId(UUID id) {
-        this.id = id;
+        if (id == null) {
+            LogHandler.nullAttributeWarning(Category.class, getCategoryId(), "id");
+        } else {
+            this.id = id;
+            LogHandler.validAttributeOK(Category.class, getCategoryId(), "id", String.valueOf(getCategoryId()));
+        }
     }
 
     public CategoryType getCategoryType() {
