@@ -13,11 +13,10 @@
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
 
-		<File name="FileAppender" filename="output.log">
+		<File name="FileAppender" filename="logs/output.log", append="true">
 			<!-- This pattern is the same pattern as the default logger. For more 
 				information on layouts and patterns, see the link here https://logging.apache.org/log4j/2.x/manual/layouts.html -->
-			<PatternLayout
-				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</File>
 	</Appenders>
 
@@ -25,8 +24,9 @@
 	<Loggers>
 		<!-- Since the root logger is appending to the console, all other loggers 
 			will inherit this appender. Thus, all loggers will append to the console. -->
-		<Root level="info">
-			<AppenderRef ref="StdOut" />
+		<Root level="all">
+			<AppenderRef ref="StdOut" level="trace" />
+			<AppenderRef ref="FileAppender" level="info" />
 		</Root>
 
 		<!-- Sometimes it makes more sense to configure logging for all classes 
