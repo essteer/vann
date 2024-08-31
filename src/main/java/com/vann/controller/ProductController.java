@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.vann.exceptions.FieldConflictException;
@@ -24,6 +25,8 @@ import com.vann.model.enums.Colour;
 import com.vann.model.enums.Size;
 import com.vann.service.CategoryService;
 import com.vann.service.ProductService;
+import com.vann.utils.LogHandler;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,32 +45,75 @@ public class ProductController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.findAllProducts();
-        if (products.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        try {
+            List<Product> products = productService.findAllProducts();
+            if (products.isEmpty()) {
+                LogHandler.status204NoContent("GET", ProductController.class, "getAllProducts()");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            LogHandler.status200OK("GET", ProductController.class, "getAllProducts()");
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", ProductController.class, "getAllProducts()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok(products);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/name/{categoryName}")
     public ResponseEntity<List<Product>> getProductsByCategoryName(@PathVariable String categoryName) {
-        List<Product> products = productService.findProductsByCategoryName(categoryName);
-        return ResponseEntity.ok(products);
+        try {
+            List<Product> products = productService.findProductsByCategoryName(categoryName);
+            if (products.isEmpty()) {
+                LogHandler.status204NoContent("GET", ProductController.class, "getProductsByCategoryName()");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            LogHandler.status200OK("GET", ProductController.class, "getProductsByCategoryName()");
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", ProductController.class, "getProductsByCategoryName()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/type/{categoryType}")
     public ResponseEntity<List<Product>> getProductsByCategoryType(@PathVariable CategoryType categoryType) {
-        List<Product> products = productService.findProductsByCategoryType(categoryType);
-        return ResponseEntity.ok(products);
+        try {
+            List<Product> products = productService.findProductsByCategoryType(categoryType);
+            if (products.isEmpty()) {
+                LogHandler.status204NoContent("GET", ProductController.class, "getProductsByCategoryType()");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            LogHandler.status200OK("GET", ProductController.class, "getProductsByCategoryType()");
+            return ResponseEntity.ok(products);
+        } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
+            LogHandler.status400BadRequest("GET", ProductController.class, "getProductsByCategoryType()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", ProductController.class, "getProductsByCategoryType()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/name/{productName}")
     public ResponseEntity<List<Product>> getProductsByName(@PathVariable String productName) {
-        List<Product> products = productService.findProductsByName(productName);
-        return ResponseEntity.ok(products);
+        try {
+            List<Product> products = productService.findProductsByName(productName);
+            if (products.isEmpty()) {
+                LogHandler.status204NoContent("GET", ProductController.class, "getProductsByName()");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            LogHandler.status200OK("GET", ProductController.class, "getProductsByName()");
+            return ResponseEntity.ok(products);
+        } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
+            LogHandler.status400BadRequest("GET", ProductController.class, "getProductsByName()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", ProductController.class, "getProductsByName()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -75,9 +121,14 @@ public class ProductController {
     public ResponseEntity<?> getProduct(@PathVariable UUID id) {
         try {    
             Product product = productService.findProductById(id);
+            LogHandler.status200OK("GET", ProductController.class, "getProduct()");
             return ResponseEntity.ok(product);
         } catch (RecordNotFoundException e) {
+            LogHandler.status404NotFound("GET", ProductController.class, "getProduct()", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("GET", ProductController.class, "getProduct()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -98,12 +149,23 @@ public class ProductController {
                 .path("/{id}")
                 .buildAndExpand(product.getProductId())
                 .toUri();
-    
+            
+            LogHandler.status201Created("POST", ProductController.class, "createProduct");
             return ResponseEntity.created(location).body(product);
         
+        } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
+            LogHandler.status400BadRequest("POST", ProductController.class, "createProduct()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (RecordNotFoundException e) {
             Exception elaboratedException = new RecordNotFoundException("Category with name '" + categoryName + "' not found");
+            LogHandler.status404NotFound("POST", ProductController.class, "createProduct()", elaboratedException.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(elaboratedException.getMessage());
+        } catch (FieldConflictException e) {
+            LogHandler.status409Conflict("POST", ProductController.class, "createProduct()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("POST", ProductController.class, "createProduct()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -111,11 +173,14 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(@PathVariable UUID id, @RequestBody Product updatedProduct) {
         try {
             Product updated = productService.updateProduct(id, updatedProduct);
+            LogHandler.status200OK("GET", ProductController.class, "updateProduct()");
             return ResponseEntity.ok(updated);
-        } catch (FieldConflictException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (RecordNotFoundException e) {
+            LogHandler.status404NotFound("PUT", ProductController.class, "updateProduct()", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (FieldConflictException e) {
+            LogHandler.status409Conflict("PUT", ProductController.class, "updateProduct()", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
