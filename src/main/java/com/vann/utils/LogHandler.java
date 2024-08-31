@@ -59,6 +59,32 @@ public class LogHandler {
         logger.error("{} (class: {}) {} cannot be set to {}: {}", id, clazz.getSimpleName(), attributeName, attributeValue, errorMessage);
     }
 
-    
-	
+    public static void status200OK(String requestMethod, Class<?> clazz, String callMethod) {
+        logger.info("200 OK: {} request to {} via {}", requestMethod, clazz, callMethod);
+    }
+
+    public static void status201Created(String requestMethod, Class<?> clazz, String callMethod) {
+        logger.info("201 Created: {} request to {} via {}", requestMethod, clazz, callMethod);
+    }
+
+    public static void status204NoContent(String requestMethod, Class<?> clazz, String callMethod) {
+        logger.info("204 No Content: {} request to {} via {}", requestMethod, clazz, callMethod);
+    }
+
+    public static void status400BadRequest(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
+        logger.error("400 Bad Request: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
+    }
+
+    public static void status404NotFound(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
+        logger.error("404 Not Found: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
+    }
+
+    public static void status409Conflict(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
+        logger.error("409 Conflict: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
+    }
+
+    public static void status500InternalServerError(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
+        logger.error("500 Internal Server Error: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
+    }
+
 }
