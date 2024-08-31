@@ -54,9 +54,10 @@ public class ProductController {
             }
             LogHandler.status200OK("GET", ProductController.class, methodName);
             return ResponseEntity.ok(products);
+        
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -78,7 +79,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -99,7 +100,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -120,7 +121,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -138,7 +139,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -176,7 +177,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             LogHandler.status500InternalServerError("POST", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -185,7 +186,7 @@ public class ProductController {
         String methodName = "updateProduct()";
         try {
             Product updated = productService.updateProduct(id, updatedProduct);
-            LogHandler.status200OK("GET", ProductController.class, methodName);
+            LogHandler.status200OK("PUT", ProductController.class, methodName);
             return ResponseEntity.ok(updated);
         
         } catch (RecordNotFoundException e) {
@@ -194,6 +195,9 @@ public class ProductController {
         } catch (FieldConflictException e) {
             LogHandler.status409Conflict("PUT", ProductController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("PUT", ProductController.class, methodName, e.getMessage());
+            throw e;
         }
     }
 

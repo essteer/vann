@@ -125,7 +125,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             LogHandler.status500InternalServerError("POST", CategoryController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
@@ -150,7 +150,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.OK).body(savedCategories);
         } catch (Exception e) {
             LogHandler.status500InternalServerError("POST", CategoryController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 
