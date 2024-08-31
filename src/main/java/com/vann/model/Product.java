@@ -66,7 +66,12 @@ public class Product {
     }
 
     public void setProductId(UUID id) {
-        this.id = id;
+        if (id == null) {
+            LogHandler.nullAttributeWarning(Product.class, getProductId(), "id");
+        } else {
+            this.id = id;
+            LogHandler.validAttributeOK(Product.class, getProductId(), "id", String.valueOf(getProductId()));
+        }
     }
 
     public String getProductName() {
