@@ -1,0 +1,1210 @@
+{
+	"info": {
+		"_postman_id": "126ce184-f2d4-4735-991c-fade0ee5582d",
+		"name": "postman-tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25067430"
+	},
+	"item": [
+		{
+			"name": "01 Category",
+			"item": [
+				{
+					"name": "TEST: create Category (bulk)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"categoryType\": \"BRACELET\",\r\n        \"categoryName\": \"bracelets\"\r\n    },\r\n    {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"earrings\"\r\n    },\r\n    {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"ear cuffs\"\r\n    },\r\n    {\r\n        \"categoryType\": \"NECKLACE\",\r\n        \"categoryName\": \"necklaces\"\r\n    },\r\n    {\r\n        \"categoryType\": \"RING\",\r\n        \"categoryName\": \"rings\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/categories/bulk",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02 Product",
+			"item": [
+				{
+					"name": "TEST: create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "productName",
+									"value": "DEMO PRODUCT ONE",
+									"type": "text"
+								},
+								{
+									"key": "productPrice",
+									"value": "575",
+									"type": "text"
+								},
+								{
+									"key": "productImage",
+									"value": "/DEMO_PRODUCT_ONE.jpg",
+									"type": "text"
+								},
+								{
+									"key": "categoryName",
+									"value": "earrings",
+									"type": "text"
+								},
+								{
+									"key": "colour",
+									"value": "SILVER",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: create Product 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "productName",
+									"value": "DEMO PRODUCT TWO",
+									"type": "text"
+								},
+								{
+									"key": "productPrice",
+									"value": "350\n",
+									"type": "text"
+								},
+								{
+									"key": "productImage",
+									"value": "/files/DEMO_PRODUCT_TWO.jpg",
+									"type": "text"
+								},
+								{
+									"key": "categoryName",
+									"value": "earrings",
+									"type": "text"
+								},
+								{
+									"key": "colour",
+									"value": "BLACK",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: update Product 2 price",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productName\": \"DEMO PRODUCT TWO\",\r\n    \"productPrice\": 225.0,\r\n    \"productImage\": \"/DEMO PRODUCT TWO.jpg\",\r\n    \"category\": {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"earrings\",\r\n        \"categoryId\": \"d82e387d-9307-4428-bdc8-ce79d850b6a6\"\r\n    },\r\n    \"size\": null,\r\n    \"colour\": \"BLACK\",\r\n    \"productId\": \"091c0432-a406-4fa3-bcef-ec1614bfd1f3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products/091c0432-a406-4fa3-bcef-ec1614bfd1f3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"091c0432-a406-4fa3-bcef-ec1614bfd1f3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Product (by Category name)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products/category/name/earrings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"category",
+								"name",
+								"earrings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Product (by Category type)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/categories/type/EARRING",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"type",
+								"EARRING"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Product by ID (update ID in URL first)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products/591ccb5d-b598-4c6e-826f-a5d28cfce837",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"591ccb5d-b598-4c6e-826f-a5d28cfce837"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Product by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/products/name/DEMO%20PRODUCT%20ONE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"name",
+								"DEMO%20PRODUCT%20ONE"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03 Customer",
+			"item": [
+				{
+					"name": "TEST: create Customer 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Customer One",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "customer-one@domain.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: create Customer 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Customer Two",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "cust-two@domain.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: create Customer 3",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Customer Three",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "customer-three@domain.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: create Customer 4",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Cust Four",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "customer-four@domain.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Customer (details for 2 and 4 should be updated)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Customer 1 by ID (update ID first)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Customer One",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "customer-one@domain.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers/9ccbad77-3b85-4196-af18-61b0f81071e6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"9ccbad77-3b85-4196-af18-61b0f81071e6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Customer 1 by email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers/email/customer-one@domain.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"email",
+								"customer-one@domain.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: update Customer 4 name (update ID in URL and Body first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerName\": \"Customer Four\",\r\n    \"customerEmail\": \"customer-four@domain.com\",\r\n    \"customerId\": \"1717987f-1626-43db-8454-8af2f2453f7f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers/1717987f-1626-43db-8454-8af2f2453f7f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"1717987f-1626-43db-8454-8af2f2453f7f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: update Customer 2 email (update ID in URL and Body first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerName\": \"Customer Two\",\r\n    \"customerEmail\": \"customer-two@domain.com\",\r\n    \"customerId\": \"42208b87-58ec-4585-9a31-42dfd6a257c7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/customers/42208b87-58ec-4585-9a31-42dfd6a257c7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"42208b87-58ec-4585-9a31-42dfd6a257c7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04 Cart",
+			"item": [
+				{
+					"name": "TEST: get all Cart (should be empty)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Cart by Customer 1 id (should return empty cart)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/customer-id/deed271c-6857-4a7f-b498-af1cecd33d98",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"customer-id",
+								"deed271c-6857-4a7f-b498-af1cecd33d98"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Cart by Customer 2 id (should return empty cart)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/customer-id/6d63b3a9-6f5f-48d9-8e4d-55ab7b9704ac",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"customer-id",
+								"6d63b3a9-6f5f-48d9-8e4d-55ab7b9704ac"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Cart by Customer 4 id (should return empty cart)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/customer-id/bb1a1460-e2d7-40a6-9dd4-02964ef08c2a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"customer-id",
+								"bb1a1460-e2d7-40a6-9dd4-02964ef08c2a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: update Cart for Customer 1 by Cart id (update Cart ID in URL and product IDs in Body first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"299e1107-7cab-468d-aed2-b70a0274e445\": 17,\r\n    \"df2804d4-c272-441a-b8e1-9e92596ace48\": 88\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/c0fa6a61-54a7-45aa-a3b1-a1fb9409cc86",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"c0fa6a61-54a7-45aa-a3b1-a1fb9409cc86"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: update Cart for Customer 2 by Cart id (update Cart ID in URL and product ID in Body first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"1dac8a37-2419-4ccf-a5bb-8ab58d900af9\": 42\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/c21f5f38-69eb-428c-91b4-2d0ae89faa40",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"c21f5f38-69eb-428c-91b4-2d0ae89faa40"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: update Cart for Customer 4 by Cart id (update Cart ID in URL and product IDs in Body first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"44061a20-3fe7-4cb8-bbc0-8882b33b73d7\": 20,\r\n    \"28419ac0-be62-4b17-9cf9-72a8e939c6ad\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/8cc237d5-2d7f-4cc8-a7a6-914ddd433015",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"8cc237d5-2d7f-4cc8-a7a6-914ddd433015"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Cart (3 carts should be returned with contents)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: checkout Cart for Customer 4 (update Cart ID in URL first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "billAddress",
+									"value": "10 Grand Canyon",
+									"type": "text"
+								},
+								{
+									"key": "shipAddress",
+									"value": "42 Arizona Road",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/checkout/8cc237d5-2d7f-4cc8-a7a6-914ddd433015",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"checkout",
+								"8cc237d5-2d7f-4cc8-a7a6-914ddd433015"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Cart (3 carts should be returned: 2 with contents, 1 empty (Customer 4))",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Cart by Customer 1 email (should contain contents)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/customer-email/customer-one@domain.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"customer-email",
+								"customer-one@domain.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get Cart by Customer 3 email (should be empty)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/customer-email/customer-three@domain.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"customer-email",
+								"customer-three@domain.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: checkout Cart for Customer 1 (update Cart ID in URL first)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "billAddress",
+									"value": "333 Cedar Grove",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/checkout/c0fa6a61-54a7-45aa-a3b1-a1fb9409cc86",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"checkout",
+								"c0fa6a61-54a7-45aa-a3b1-a1fb9409cc86"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: empty Cart for Customer 2 (update Cart ID in URL first)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts/97781bac-2784-42ca-82a0-14486d4ae3a9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"97781bac-2784-42ca-82a0-14486d4ae3a9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Cart (4 empty carts should be returned)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/carts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "05 Invoice",
+			"item": [
+				{
+					"name": "TEST: get all Invoice (should be 2: Customer 1 and Customer 4)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Invoice with total greater than X (adjust final URL segment)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices/gt/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices",
+								"gt",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Invoice with total less than X (adjust final URL segment)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices/lt/100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices",
+								"lt",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Invoice with total between X and Y (adjust final 2 URL segments)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices/bw/50/90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices",
+								"bw",
+								"50",
+								"90"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: create blank Invoice",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices/create/blank",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices",
+								"create",
+								"blank"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: delete Invoice by ID (update URL with Invoice ID first)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices/d7643110-12d0-4fac-9bf8-32d33ac3382e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices",
+								"d7643110-12d0-4fac-9bf8-32d33ac3382e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST: get all Invoice (deleted Invoice should not be present)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9001/api/v1/invoices",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"invoices"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
