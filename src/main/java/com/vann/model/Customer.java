@@ -49,7 +49,12 @@ public class Customer {
     }
 
     public void setCustomerId(UUID id) {
-        this.id = id;
+        if (id == null) {
+            LogHandler.nullAttributeWarning(Customer.class, getCustomerId(), "id");
+        } else {
+            this.id = id;
+            LogHandler.validAttributeOK(Customer.class, getCustomerId(), "id", String.valueOf(getCustomerId()));
+        }
     }
 
     public String getCustomerName() {
@@ -89,7 +94,7 @@ public class Customer {
             LogHandler.nullAttributeWarning(Customer.class, getCustomerId(), "email");
             return false;
         } else if (!pattern.matcher(email).matches()) {
-            LogHandler.invalidAttributeError(Customer.class, getCustomerId(), "email", customerEmail, "Invalid email format");
+            LogHandler.invalidAttributeError(Customer.class, getCustomerId(), "email", email, "Invalid email format");
             throw new IllegalArgumentException("Invalid email format: " + email);
         }
         return true;
