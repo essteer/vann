@@ -83,7 +83,6 @@ public class ProductController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/type/{categoryType}")
     public ResponseEntity<?> getProductsByCategoryType(@PathVariable CategoryType categoryType) {
         String methodName = "getProductsByCategoryType()";
@@ -104,7 +103,6 @@ public class ProductController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/name/{productName}")
     public ResponseEntity<List<Product>> getProductsByName(@PathVariable String productName) {
         String methodName = "getProductsByName()";

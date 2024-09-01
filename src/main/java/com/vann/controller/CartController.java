@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,7 @@ public class CartController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public ResponseEntity<?> getCart(@PathVariable UUID id) {
         String methodName = "getCart()";
@@ -66,6 +68,7 @@ public class CartController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/customer-id/{id}")
     public ResponseEntity<?> getCartByCustomerId(@PathVariable UUID id) {
         String methodName = "getCartByCustomerId()";
@@ -83,6 +86,7 @@ public class CartController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCartItems(
             @PathVariable UUID id,
@@ -105,6 +109,7 @@ public class CartController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/checkout/{id}")
     public ResponseEntity<?> checkoutCart(
             @PathVariable UUID id,
@@ -136,6 +141,7 @@ public class CartController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> emptyCart(@PathVariable UUID id) {
         String methodName = "emptyCart()";
