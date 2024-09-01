@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -113,10 +112,12 @@ public class CartController {
     @PutMapping("/checkout/{id}")
     public ResponseEntity<?> checkoutCart(
             @PathVariable UUID id,
-            @RequestParam String billAddress,
-            @RequestParam(required = false) String shipAddress) {
+            @RequestBody Map<String, String> addresses) {
         String methodName = "checkoutCart()";
         try {
+            String billAddress = addresses.get("billAddress");
+            String shipAddress = addresses.get("shipAddress");
+            
             if (shipAddress == null) {
                 Invoice invoice = cartService.checkoutCart(id, billAddress);
                 LogHandler.status200OK("PUT", CartController.class, methodName);
