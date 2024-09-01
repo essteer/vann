@@ -12,8 +12,12 @@ public class VannApplication {
 		try {
 			SpringApplication.run(VannApplication.class, args);
         } catch (Exception e) {
-            LogHandler.applicationStartupError(e.getMessage());
-			throw e;
-        }
+			if (e.getClass().getName().contains("SilentExitException")) {
+				LogHandler.silentExitException();
+			} else {
+				LogHandler.applicationStartupError(e.getMessage());
+				throw e;
+			}
+		}
 	}
 }

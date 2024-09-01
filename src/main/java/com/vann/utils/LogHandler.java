@@ -10,6 +10,10 @@ public class LogHandler {
 
     private static final Logger logger = LogManager.getLogger(LogHandler.class);
 
+    public static void silentExitException() {
+        logger.debug("Spring is restarting the main thread - See spring-boot-devtools");
+    }
+
     public static void applicationStartupError(String errorMessage) {
         logger.error("Unexpected error during application startup: {}", errorMessage);
     }
