@@ -3,42 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backend Landing Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 50px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            font-size: 36px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        p {
-            font-size: 18px;
-            color: #666;
-        }
-    </style>
+    <title>Backend Server</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <div class="container">
-        <h1>Hi!</h1>
-        <p>This is the application backend &mdash; view the docs <a href="https://github.com/essteer/vann">here</a>.</p>
-        <p>Since you can see this, the backend server is running successfully.</p>
-        <p>To use the application access it via the <a href="https://github.com/essteer/vann-app">frontend</a>.</p>
+        <h1>Hi from the backend!</h1>
+        <p>View the docs <a href="https://github.com/essteer/vann" target="_blank">here</a>.</p>
+        <p>Run the <a href="https://github.com/essteer/vann-app" target="_blank">frontend</a> app, or try these endpoints now if the database has content:</p>
+        <p>categories: <a href="http://localhost:9001/api/v1/categories" target="_blank">http://localhost:9001/api/v1/categories</a></p>
+        <p>products: <a href="http://localhost:9001/api/v1/products" target="_blank">http://localhost:9001/api/v1/products</a></p>
     </div>
 </body>
 </html>

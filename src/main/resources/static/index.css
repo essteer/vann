@@ -1,0 +1,29 @@
+body {
+    font-family: 'Courier New', Courier, monospace, sans-serif;
+    background-color: #00000d;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    max-width: 500px;
+    text-align: center;
+    background: #2b292d;
+    padding: 50px;
+    border-radius: 8px;
+}
+h1 {
+    font-size: 36px;
+    color: #fecdb2;
+    margin-bottom: 10px;
+}
+p {
+    font-size: 18px;
+    color: #D1D1E0;
+}
+a {
+    color: #e06b75;
+}
