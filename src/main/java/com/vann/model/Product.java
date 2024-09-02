@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.util.UUID;
 
@@ -19,13 +17,13 @@ public class Product {
 
     @Id
     private UUID id;
+
+    @Column(name = "FK_category_id", nullable = false)
+    private UUID categoryId;
+
     private String productName;
     private double productPrice;
     private String productImage;
-
-    @ManyToOne
-    @JoinColumn(name = "FK_category_id", referencedColumnName = "id")
-    private Category category;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
@@ -38,18 +36,18 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, double price, String image, Category category, Size size, Colour colour) {
+    public Product(UUID categoryId, String name, double price, String image, Size size, Colour colour) {
         try {
             generateIdIfAbsent();
+            this.categoryId = categoryId;
             this.productName = name.toUpperCase();
             this.productPrice = price;
             this.productImage = image;
-            this.category = category;
             setColour(colour);
             setSize(size);
-            LogHandler.createInstanceOK(Product.class, this.id, name, price, image, category, size, colour);
+            LogHandler.createInstanceOK(Product.class, this.id, categoryId, name, price, image, size, colour);
         } catch (Exception e) {
-            LogHandler.createInstanceError(Product.class, name, price, image, category, size, colour);
+            LogHandler.createInstanceError(Product.class, categoryId, name, price, image, size, colour);
             throw e;
         }
     }
@@ -98,12 +96,12 @@ public class Product {
         this.productImage = productImage;
     }
 
-    public Category getCategory() {
-        return category;
+    public UUID getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(UUID categoryId) {
+        this.categoryId = categoryId;
     }
 
     public Size getSize() {
@@ -147,7 +145,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", name=" + productName + ", unitprice=" + productPrice + ", category=" + category
+        return "Product [id=" + id + ", categoryId=" + categoryId + ", name=" + productName + ", unitprice=" + productPrice
                 + ", size=" + size + ", colour=" + colour + "]";
     }
 

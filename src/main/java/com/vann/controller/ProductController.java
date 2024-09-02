@@ -1,6 +1,7 @@
 package com.vann.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,9 +20,6 @@ import com.vann.exceptions.FieldConflictException;
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Category;
 import com.vann.model.Product;
-import com.vann.model.enums.CategoryType;
-import com.vann.model.enums.Colour;
-import com.vann.model.enums.Size;
 import com.vann.service.CategoryService;
 import com.vann.service.ProductService;
 import com.vann.utils.LogHandler;
@@ -66,7 +63,8 @@ public class ProductController {
     public ResponseEntity<?> getProductsByCategoryName(@PathVariable String categoryName) {
         String methodName = "getProductsByCategoryName()";
         try {
-            List<Product> products = productService.findProductsByCategoryName(categoryName);
+            Category category = categoryService.findCategoryByName(categoryName);
+            List<Product> products = productService.findProductsByCategoryId(category.getCategoryId());
             if (products.isEmpty()) {
                 LogHandler.status204NoContent("GET", ProductController.class, methodName);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -77,26 +75,6 @@ public class ProductController {
         } catch (RecordNotFoundException e) {  // for categoryName not found
             LogHandler.status404NotFound("GET", ProductController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
-            throw e;
-        }
-    }
-
-    @GetMapping("/category/type/{categoryType}")
-    public ResponseEntity<?> getProductsByCategoryType(@PathVariable CategoryType categoryType) {
-        String methodName = "getProductsByCategoryType()";
-        try {
-            List<Product> products = productService.findProductsByCategoryType(categoryType);
-            if (products.isEmpty()) {
-                LogHandler.status204NoContent("GET", ProductController.class, methodName);
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
-            LogHandler.status200OK("GET", ProductController.class, methodName);
-            return ResponseEntity.ok(products);
-        } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
-            LogHandler.status400BadRequest("GET", ProductController.class, methodName, e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             LogHandler.status500InternalServerError("GET", ProductController.class, methodName, e.getMessage());
             throw e;
@@ -142,37 +120,64 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createProduct(
-        @RequestParam String productName,
-        @RequestParam double productPrice,
-        @RequestParam String productImage,
-        @RequestParam String categoryName,
-        @RequestParam(required = false) Colour colour,
-        @RequestParam(required = false) Size size
-    ) {
+    public ResponseEntity<?> createProduct(@RequestBody Product product) {
         String methodName = "createProduct()";
         try {
-            Category category = categoryService.findCategoryByName(categoryName);
-            Product product = productService.createProduct(productName, productPrice, productImage, category, size, colour);
+            Product savedProduct = productService.createProduct(
+                product.getCategoryId(),
+                product.getProductName(),
+                product.getProductPrice(),
+                product.getProductImage(),
+                product.getSize(),
+                product.getColour()
+            );
+    
             URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(product.getProductId())
+                .buildAndExpand(savedProduct.getProductId())
                 .toUri();
-            
+
             LogHandler.status201Created("POST", ProductController.class, methodName);
-            return ResponseEntity.created(location).body(product);
-        
+            return ResponseEntity.created(location).body(savedProduct);
         } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
             LogHandler.status400BadRequest("POST", ProductController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (RecordNotFoundException e) {
-            Exception elaboratedException = new RecordNotFoundException("Category with name '" + categoryName + "' not found");
-            LogHandler.status404NotFound("POST", ProductController.class, methodName, elaboratedException.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(elaboratedException.getMessage());
         } catch (FieldConflictException e) {
             LogHandler.status409Conflict("POST", ProductController.class, methodName, e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            LogHandler.status500InternalServerError("POST", ProductController.class, methodName, e.getMessage());
+            throw e;
+        }
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<?> createProducts(@RequestBody List<Product> products) {
+        String methodName = "createProducts()";
+        try {
+            List<Product> savedProducts = new ArrayList<>();
+            for (Product product : products) {
+                try {
+                    Product savedProduct = productService.createProduct(
+                        product.getCategoryId(),
+                        product.getProductName(),
+                        product.getProductPrice(),
+                        product.getProductImage(),
+                        product.getSize(),
+                        product.getColour()
+                    );
+                    savedProducts.add(savedProduct);
+                } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
+                    LogHandler.status400BadRequest("POST", ProductController.class, methodName, e.getMessage());
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                } catch (FieldConflictException e) {
+                    LogHandler.status409Conflict("POST", ProductController.class, methodName, e.getMessage());
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+                }
+            }
+            LogHandler.status201Created("POST", ProductController.class, methodName);
+            return ResponseEntity.status(HttpStatus.OK).body(savedProducts);
         } catch (Exception e) {
             LogHandler.status500InternalServerError("POST", ProductController.class, methodName, e.getMessage());
             throw e;
@@ -198,5 +203,4 @@ public class ProductController {
             throw e;
         }
     }
-
 }

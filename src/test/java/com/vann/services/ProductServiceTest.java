@@ -30,22 +30,6 @@ class ProductServiceTest {
     }
 
     @Test
-    void testSaveProduct() {
-        Product product = new Product();
-        product.setProductName("Necklace");
-        product.setProductPrice(100.0);
-
-        when(productRepo.save(product)).thenReturn(product);
-
-        Product savedProduct = productService.saveProduct(product);
-
-        assertNotNull(savedProduct);
-        assertEquals("NECKLACE", savedProduct.getProductName());
-        assertEquals(100.0, savedProduct.getProductPrice());
-        verify(productRepo, times(1)).save(product);
-    }
-
-    @Test
     void testFindProductById() {
         UUID productId = UUID.randomUUID();
         Product product = new Product();

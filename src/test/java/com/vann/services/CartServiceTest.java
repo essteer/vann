@@ -2,6 +2,7 @@ package com.vann.services;
 
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.model.Cart;
+import com.vann.model.Category;
 import com.vann.model.Customer;
 import com.vann.model.Product;
 import com.vann.repositories.CartRepo;
@@ -62,8 +63,8 @@ public class CartServiceTest {
         productId2 = UUID.randomUUID();
         cartId = UUID.randomUUID();
         customer = new Customer("John Doe", "john.doe@example.com");
-        product1 = new Product("Product 1", 10.0, "image1.png", null, null, null);
-        product2 = new Product("Product 2", 20.0, "image2.png", null, null, null);
+        product1 = new Product(new Category().getCategoryId(), "Product 1", 10.0, "image1.png", null, null);
+        product2 = new Product(new Category().getCategoryId(), "Product 2", 20.0, "image2.png", null, null);
         cart = new Cart(customerId, new HashMap<>());
 
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
