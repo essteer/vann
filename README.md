@@ -13,6 +13,22 @@ It is a work in progress: it does not feature authentication functionality for e
 
 The corresponding frontend is under development with JavaScript and React and is located [here](https://github.com/essteer/vann-app).
 
+## Contents
+
+- [Model overview](#model-overview)
+  - [Entity layer](#entity-layer)
+  - [Repository layer](#repository-layer)
+  - [Service layer](#service-layer)
+  - [Controller layer](#controller-layer)
+- [Setup and installation](#setup-and-installation)
+  - [Codebase](#codebase)
+  - [SQL database](#sql-database)
+- [Operation](#operation)
+  - [Endpoints](#endpoints)
+  - [Frontend](#frontend)
+- [Tests](#tests)
+- [Logs](#logs)
+
 ## Model overview
 
 The core layers of this backend server are organised as entities, repositories, services and controllers. Each layer is organised as a subdirectory of `src/main/java/com/vann/`.
