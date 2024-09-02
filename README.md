@@ -43,7 +43,7 @@ Several of these are currently in a simplified form and will be expanded upon in
 
 The `Customer` in its current form has only name and email attributes, with the sole constraint that the email must be unique to that customer.
 
-The `Category` entity is constrained by the `CategoryType` enum under `com/vann/model/enums/CategoryType.java`. Each `Product` has optional `Colour` and `Size` enum attributes, and a mandatory `Category`.
+The `Category` entity is constrained by the `CategoryType` enum under `com/vann/model/enums/CategoryType.java`. Each `Product` has a foreign key of a `Category` instance ID, and optional `Colour` and `Size` enum attributes.
 
 Instances of the `Cart` entity have a one-to-one relationship with a `Customer` instance. A `Cart` holds `Product` instances, and upon checkout an `Invoice` is created that consists of `InvoiceItems` — these are essentially snapshots of the state of their corresponding `Product` instance at the time of checkout, with additional details such as quantity.
 
