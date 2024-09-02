@@ -35,7 +35,7 @@ public class DataLoader implements ApplicationRunner {
             CategoryService categoryService = new CategoryService(this.categoryRepo);
             LogHandler.serviceClassInitOK(categoryService.getClass().getName());
             
-            ProductService productService = new ProductService(this.productRepo);
+            ProductService productService = new ProductService(this.productRepo, categoryService);
             LogHandler.serviceClassInitOK(productService.getClass().getName());
             
             CustomerService customerService = new CustomerService(this.customerRepo);
