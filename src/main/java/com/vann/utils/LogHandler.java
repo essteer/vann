@@ -55,6 +55,14 @@ public class LogHandler {
         logger.warn("{} (class: {}) {} cannot be null", id, clazz.getSimpleName(), attributeName);
     }
 
+    public static void validIdOK(Class<?> clazz, UUID id, String classOfValidatedId) {
+        logger.info("{} (class: {}) validated by {}", id, classOfValidatedId, clazz.getSimpleName());
+    }
+
+    public static void invalidIdNotFound(Class<?> clazz, UUID id, String classOfInvalidatedId) {
+        logger.warn("{} (class: {}) not found by {}", id, classOfInvalidatedId, clazz.getSimpleName());
+    }
+
     public static void validAttributeOK(Class<?> clazz, UUID id, String attributeName, String attributeValue) {
         logger.info("{} (class: {}) {} set to {}", id, clazz.getSimpleName(), attributeName, attributeValue);
     }
