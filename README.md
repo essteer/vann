@@ -110,7 +110,13 @@ The `CREATE DATABASE` response indicates that the database was successfully crea
 
 From then on database interactions can be handled entirely via Spring.
 
-If preferred, the database can be run MySQL or H2 instead. Suggested settings indicated below — I haven't tested these myself, but these are what the working Postgres config is based on:
+If preferred, the database can be run MySQL or H2 instead. Suggested settings indicated below — I haven't tested these myself, but these are what the working Postgres config is based on.
+
+#### MySQL
+
+To use MySQL replace the Postgres content in `application.properties` and `pom.xml` as indicated below.
+
+In `application.properties`:
 
  ```properties
  ### MYSQL DATABASE ###
@@ -120,7 +126,23 @@ spring.datasource.username=${MYSQL_USERNAME}
 spring.datasource.password=${MYSQL_PASSWORD}
 spring.jpa.database=mysql
 spring.jpa.hibernate.ddl-auto=create-drop
+```
 
+In `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
+#### H2 database
+
+In `application.properties`:
+
+```properties
 ### H2 DATABASE ###
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.url=jdbc:h2:file:./h2/rest;AUTO_SERVER=true
@@ -130,6 +152,16 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2
 spring.jpa.hibernate.ddl-auto=update
+```
+
+In `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
 ```
 
 ## Operation
