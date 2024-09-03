@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n    {\r\n        \"categoryType\": \"BRACELET\",\r\n        \"categoryName\": \"bracelets\"\r\n    },\r\n    {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"earrings\"\r\n    },\r\n    {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"ear cuffs\"\r\n    },\r\n    {\r\n        \"categoryType\": \"NECKLACE\",\r\n        \"categoryName\": \"necklaces\"\r\n    },\r\n    {\r\n        \"categoryType\": \"RING\",\r\n        \"categoryName\": \"rings\"\r\n    }\r\n]",
+							"raw": "[\r\n    {\r\n        \"categoryType\": \"BRACELET\",\r\n        \"categoryName\": \"bracelets\"\r\n    },\r\n    {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"ear cuffs\"\r\n    },\r\n    {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"earrings\"\r\n    },\r\n    {\r\n        \"categoryType\": \"NECKLACE\",\r\n        \"categoryName\": \"necklaces\"\r\n    },\r\n    {\r\n        \"categoryType\": \"RING\",\r\n        \"categoryName\": \"rings\"\r\n    }\r\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -67,39 +67,18 @@
 			"name": "02 Product",
 			"item": [
 				{
-					"name": "TEST: create Product",
+					"name": "TEST: create Product (update categoryId first)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "productName",
-									"value": "DEMO PRODUCT ONE",
-									"type": "text"
-								},
-								{
-									"key": "productPrice",
-									"value": "575",
-									"type": "text"
-								},
-								{
-									"key": "productImage",
-									"value": "/DEMO_PRODUCT_ONE.jpg",
-									"type": "text"
-								},
-								{
-									"key": "categoryName",
-									"value": "earrings",
-									"type": "text"
-								},
-								{
-									"key": "colour",
-									"value": "SILVER",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryId\": \"ADD_ID_AFTER_CREATING_CATEGORIES\",\r\n    \"productName\": \"DEMO PRODUCT ONE\",\r\n    \"productPrice\": 575,\r\n    \"productImage\": \"/DEMO_PRODUCT_ONE.jpg\",\r\n    \"colour\": \"SILVER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "http://localhost:9001/api/v1/products",
@@ -118,39 +97,18 @@
 					"response": []
 				},
 				{
-					"name": "TEST: create Product 2",
+					"name": "TEST: create Product 2 (update categoryId first)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "productName",
-									"value": "DEMO PRODUCT TWO",
-									"type": "text"
-								},
-								{
-									"key": "productPrice",
-									"value": "350\n",
-									"type": "text"
-								},
-								{
-									"key": "productImage",
-									"value": "/files/DEMO_PRODUCT_TWO.jpg",
-									"type": "text"
-								},
-								{
-									"key": "categoryName",
-									"value": "earrings",
-									"type": "text"
-								},
-								{
-									"key": "colour",
-									"value": "BLACK",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryId\": \"ADD_ID_AFTER_CREATING_CATEGORIES\",\r\n    \"productName\": \"DEMO PRODUCT TWO\",\r\n    \"productPrice\": 350,\r\n    \"productImage\": \"/files/DEMO_PRODUCT_TWO.jpg\",\r\n    \"colour\": \"BLACK\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "http://localhost:9001/api/v1/products",
@@ -175,7 +133,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productName\": \"DEMO PRODUCT TWO\",\r\n    \"productPrice\": 225.0,\r\n    \"productImage\": \"/DEMO PRODUCT TWO.jpg\",\r\n    \"category\": {\r\n        \"categoryType\": \"EARRING\",\r\n        \"categoryName\": \"earrings\",\r\n        \"categoryId\": \"d82e387d-9307-4428-bdc8-ce79d850b6a6\"\r\n    },\r\n    \"size\": null,\r\n    \"colour\": \"BLACK\",\r\n    \"productId\": \"091c0432-a406-4fa3-bcef-ec1614bfd1f3\"\r\n}",
+							"raw": "{\r\n    \"categoryId\": \"ADD_ID_AFTER_CREATING_CATEGORIES\",\r\n    \"productName\": \"DEMO PRODUCT TWO\",\r\n    \"productPrice\": 225.0,\r\n    \"productImage\": \"/DEMO PRODUCT TWO.jpg\",\r\n    \"size\": null,\r\n    \"colour\": \"BLACK\",\r\n    \"productId\": \"ADD_ID_AFTER_CREATING_PRODUCT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -222,9 +180,21 @@
 				},
 				{
 					"name": "TEST: get all Product (by Category name)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:9001/api/v1/products/category/name/earrings",
 							"protocol": "http",
@@ -239,29 +209,6 @@
 								"category",
 								"name",
 								"earrings"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "TEST: get all Product (by Category type)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9001/api/v1/categories/type/EARRING",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9001",
-							"path": [
-								"api",
-								"v1",
-								"categories",
-								"type",
-								"EARRING"
 							]
 						}
 					},
@@ -327,12 +274,12 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Customer One",
+									"value": "Bugs Bunny",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "customer-one@domain.com",
+									"value": "bugs@warnerbros.com",
 									"type": "text"
 								}
 							]
@@ -363,12 +310,12 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Customer Two",
+									"value": "Road Runner",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "cust-two@domain.com",
+									"value": "road@warnerbros.com",
 									"type": "text"
 								}
 							]
@@ -399,12 +346,12 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Customer Three",
+									"value": "Daffy Duck",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "customer-three@domain.com",
+									"value": "daffy@warnerbros.com",
 									"type": "text"
 								}
 							]
@@ -435,12 +382,12 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Cust Four",
+									"value": "Wile Coyote",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "customer-four@domain.com",
+									"value": "wile@warnerbros.com",
 									"type": "text"
 								}
 							]
@@ -516,12 +463,12 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Customer One",
+									"value": "Bugs Bunny",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "customer-one@domain.com",
+									"value": "bugs@warnerbros.com",
 									"type": "text"
 								}
 							]
@@ -561,7 +508,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers/email/customer-one@domain.com",
+							"raw": "http://localhost:9001/api/v1/customers/email/bugs@warnerbros.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -572,7 +519,7 @@
 								"v1",
 								"customers",
 								"email",
-								"customer-one@domain.com"
+								"bugs@warnerbros.com"
 							]
 						}
 					},
@@ -585,7 +532,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customerName\": \"Customer Four\",\r\n    \"customerEmail\": \"customer-four@domain.com\",\r\n    \"customerId\": \"1717987f-1626-43db-8454-8af2f2453f7f\"\r\n}",
+							"raw": "{\r\n    \"customerName\": \"Wile E Coyote\",\r\n    \"customerEmail\": \"wile@warnerbros.com\",\r\n    \"customerId\": \"1717987f-1626-43db-8454-8af2f2453f7f\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -616,7 +563,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customerName\": \"Customer Two\",\r\n    \"customerEmail\": \"customer-two@domain.com\",\r\n    \"customerId\": \"42208b87-58ec-4585-9a31-42dfd6a257c7\"\r\n}",
+							"raw": "{\r\n    \"customerName\": \"Road Runner\",\r\n    \"customerEmail\": \"roadrunner@warnerbros.com\",\r\n    \"customerId\": \"42208b87-58ec-4585-9a31-42dfd6a257c7\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -926,7 +873,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-email/customer-one@domain.com",
+							"raw": "http://localhost:9001/api/v1/carts/customer-email/bugs@warnerbros.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -937,7 +884,7 @@
 								"v1",
 								"carts",
 								"customer-email",
-								"customer-one@domain.com"
+								"bugs@warnerbros.com"
 							]
 						}
 					},
@@ -949,7 +896,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-email/customer-three@domain.com",
+							"raw": "http://localhost:9001/api/v1/carts/customer-email/daffy@warnerbros.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -960,7 +907,7 @@
 								"v1",
 								"carts",
 								"customer-email",
-								"customer-three@domain.com"
+								"daffy@warnerbros.com"
 							]
 						}
 					},
