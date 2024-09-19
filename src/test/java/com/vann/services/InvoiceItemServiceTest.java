@@ -35,7 +35,7 @@ public class InvoiceItemServiceTest {
     void testCreateInvoiceItem() throws RecordNotFoundException {
         UUID productId = UUID.randomUUID();
         int quantity = 5;
-        Product product = new Product(new Category().getId(), "Product Name", 10.0, "image.jpg", Size.SMALL, Colour.BLACK);
+        Product product = new Product(new Category(), "Product Name", 10.0, "image.jpg", Size.SMALL, Colour.BLACK);
         product.setId(productId);
         
         when(productService.findProductById(productId)).thenReturn(product);

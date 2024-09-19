@@ -11,7 +11,7 @@ import com.vann.models.enums.CategoryType;
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, UUID> {
     
-    List<Category> findByCategoryType(CategoryType categoryType);
+    List<Category> findByType(CategoryType type);
     Optional<Category> findByName(String name);
 
 }

@@ -23,7 +23,7 @@ public class CategoryService {
     }
 
     public List<Category> findCategoriesByType(CategoryType categoryType) {
-        return categoryRepo.findByCategoryType(categoryType);
+        return categoryRepo.findByType(categoryType);
     }
 
     public Category findCategoryById(UUID categoryId) throws RecordNotFoundException {

@@ -15,7 +15,7 @@ public class Category {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    private CategoryType categoryType;
+    private CategoryType type;
 
     @Column(unique = true, nullable = false)
     private String name;
@@ -23,9 +23,9 @@ public class Category {
     public Category() {
     }
 
-    public Category(CategoryType categoryType, String name) {
+    public Category(CategoryType type, String name) {
         generateIdIfAbsent();
-        setType(categoryType);
+        setType(type);
         setName(name);
     }
 
@@ -47,12 +47,12 @@ public class Category {
     }
 
     public CategoryType getType() {
-        return categoryType;
+        return type;
     }
 
-    public void setType(CategoryType categoryType) {
-        if (categoryType != null) {
-            this.categoryType = categoryType;
+    public void setType(CategoryType type) {
+        if (type != null) {
+            this.type = type;
         }
     }
 
@@ -68,7 +68,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category [id=" + id + ", categoryType=" + categoryType + ", name="
+        return "Category [id=" + id + ", type=" + type + ", name="
                 + name + "]";
     }
 

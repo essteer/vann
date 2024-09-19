@@ -79,14 +79,14 @@ class CategoryServiceTest {
             new Category(categoryType, "Silver Earring")
         );
     
-        when(categoryRepo.findByCategoryType(categoryType)).thenReturn(categories);
+        when(categoryRepo.findByType(categoryType)).thenReturn(categories);
     
         List<Category> foundCategories = categoryService.findCategoriesByType(categoryType);
     
         assertNotNull(foundCategories);
         assertEquals(2, foundCategories.size());
         assertEquals(categoryType, foundCategories.get(0).getType());
-        verify(categoryRepo, times(1)).findByCategoryType(categoryType);
+        verify(categoryRepo, times(1)).findByType(categoryType);
     }
 
     @Test

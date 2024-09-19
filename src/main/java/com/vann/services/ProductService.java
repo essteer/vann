@@ -1,14 +1,15 @@
 package com.vann.services;
 
+import java.util.*;
+
+import org.springframework.stereotype.Service;
+
 import com.vann.exceptions.RecordNotFoundException;
-import com.vann.models.Product;
+import com.vann.models.*;
 import com.vann.models.enums.*;
 import com.vann.repositories.ProductRepo;
 import com.vann.utils.LogHandler;
 
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class ProductService {
@@ -21,13 +22,14 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
-    public Product createProduct(UUID categoryId, String name, double price, String image, Size size, Colour colour) throws RecordNotFoundException {
-        Product product = new Product(categoryId, name, price, image, size, colour);
+    public Product createProduct(Category partialCategory, String name, double price, String image, Size size, Colour colour) throws RecordNotFoundException {
+        Category category = categoryService.findCategoryByName(partialCategory.getName());
+        Product product = new Product(category, name, price, image, size, colour);
         return saveProduct(product);
     }
 
     private Product saveProduct(Product product) throws RecordNotFoundException {
-        isValidCategoryId(product.getCategoryId());
+        isValidCategoryId(product.getCategory().getId());
         product.generateIdIfAbsent();
         return productRepo.save(product);
     }
@@ -50,28 +52,30 @@ public class ProductService {
         return productRepo.findByCategoryId(categoryId);
     }
 
-    public List<Product> findProductsByName(String productName) {
-        return productRepo.findByName(productName.toUpperCase());
+    public List<Product> findProductsByName(String name) {
+        return productRepo.findByName(name.toUpperCase());
     }
 
-    public Product findProductById(UUID productId) throws RecordNotFoundException {
-        Optional<Product> productOptional = productRepo.findById(productId);
+    public Product findProductById(UUID id) throws RecordNotFoundException {
+        Optional<Product> productOptional = productRepo.findById(id);
         return productOptional.orElseThrow(() -> 
-            new RecordNotFoundException("Product with ID '" + productId + "' not found"));
+            new RecordNotFoundException("Product with ID '" + id + "' not found"));
     }
 
-    public Product updateProduct(UUID productId, Product updatedProduct) throws RecordNotFoundException {
-        if (!productRepo.existsById(productId)) {
-            throw new RecordNotFoundException("Product with ID '" + productId + "' not found");
+    public Product updateProduct(UUID id, Product updatedProduct) throws RecordNotFoundException {
+        if (!productRepo.existsById(id)) {
+            throw new RecordNotFoundException("Product with ID '" + id + "' not found");
         }
-        isValidCategoryId(updatedProduct.getCategoryId());
-        updatedProduct.setId(productId);
+        Category partialCategory = updatedProduct.getCategory();
+        Category category = categoryService.findCategoryByName(partialCategory.getName());
+        updatedProduct.setId(id);
+        updatedProduct.setCategory(category);
         updatedProduct.setName(updatedProduct.getName());
         return productRepo.save(updatedProduct);
     }
 
-    public void deleteProduct(UUID productId) {
-        productRepo.deleteById(productId);
+    public void deleteProduct(UUID id) {
+        productRepo.deleteById(id);
     }
 
 }

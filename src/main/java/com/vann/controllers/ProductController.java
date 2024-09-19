@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.vann.exceptions.FieldConflictException;
-import com.vann.exceptions.RecordNotFoundException;
+import com.vann.exceptions.*;
 import com.vann.models.*;
 import com.vann.services.*;
 import com.vann.utils.LogHandler;
@@ -47,8 +46,8 @@ public class ProductController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/name/{categoryName}")
-    public ResponseEntity<?> getsByCategoryName(@PathVariable String categoryName) {
-        String methodName = "getsByCategoryName()";
+    public ResponseEntity<?> getByCategoryName(@PathVariable String categoryName) {
+        String methodName = "getByCategoryName()";
         try {
             Category category = categoryService.findCategoryByName(categoryName);
             List<Product> products = productService.findProductsByCategoryId(category.getId());
@@ -69,8 +68,8 @@ public class ProductController {
     }
 
     @GetMapping("/name/{productName}")
-    public ResponseEntity<List<Product>> getsByName(@PathVariable String productName) {
-        String methodName = "getsByName()";
+    public ResponseEntity<List<Product>> getByName(@PathVariable String productName) {
+        String methodName = "getByName()";
         try {
             List<Product> products = productService.findProductsByName(productName);
             if (products.isEmpty()) {
@@ -111,7 +110,7 @@ public class ProductController {
         String methodName = "createProduct()";
         try {
             Product savedProduct = productService.createProduct(
-                product.getCategoryId(),
+                product.getCategory(),
                 product.getName(),
                 product.getPrice(),
                 product.getImageURI(),
@@ -147,7 +146,7 @@ public class ProductController {
             for (Product product : products) {
                 try {
                     Product savedProduct = productService.createProduct(
-                        product.getCategoryId(),
+                        product.getCategory(),
                         product.getName(),
                         product.getPrice(),
                         product.getImageURI(),

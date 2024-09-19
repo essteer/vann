@@ -18,8 +18,9 @@ public class Product {
     @Id
     private UUID id;
 
-    @Column(name = "FK_category_id", nullable = false)
-    private UUID categoryId;
+    @ManyToOne
+    @JoinColumn(name = "FK_category_id", nullable = false)
+    private Category category;
 
     private String name;
     private double price;
@@ -42,20 +43,14 @@ public class Product {
     public Product() {
     }
 
-    public Product(UUID categoryId, String name, double price, String image, Size size, Colour colour) {
-        try {
-            generateIdIfAbsent();
-            this.categoryId = categoryId;
-            this.name = name.toUpperCase();
-            this.price = price;
-            this.imageURI = image;
-            setColour(colour);
-            setSize(size);
-            LogHandler.createInstanceOK(Product.class, this.id, categoryId, name, price, image, size, colour);
-        } catch (Exception e) {
-            LogHandler.createInstanceError(Product.class, categoryId, name, price, image, size, colour);
-            throw e;
-        }
+    public Product(Category category, String name, double price, String image, Size size, Colour colour) {
+        generateIdIfAbsent();
+        this.category = category;
+        this.name = name.toUpperCase();
+        this.price = price;
+        this.imageURI = image;
+        setColour(colour);
+        setSize(size);
     }
 
     public void generateIdIfAbsent() {
@@ -104,12 +99,14 @@ public class Product {
         this.imageURI = imageURI;
     }
 
-    public UUID getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(UUID categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        if (category != null) {
+            this.category = category;
+        }
     }
 
     public Size getSize() {
@@ -157,7 +154,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", categoryId=" + categoryId + ", name=" + name + ", unitprice=" + price
+        return "Product [id=" + id + ", category_name=" + category.getName() + ", name=" + name + ", unitprice=" + price
                 + ", size=" + size + ", colour=" + colour + "]";
     }
 

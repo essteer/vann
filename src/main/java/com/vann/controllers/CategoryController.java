@@ -41,11 +41,11 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/type/{categoryType}")
-    public ResponseEntity<List<Category>> getCategoriesByType(@PathVariable CategoryType categoryType) {
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<Category>> getCategoriesByType(@PathVariable CategoryType type) {
         String methodName = "getCategoriesByType()";
         try {
-            List<Category> categories = categoryService.findCategoriesByType(categoryType);
+            List<Category> categories = categoryService.findCategoriesByType(type);
             if (categories.isEmpty()) {
                 LogHandler.status204NoContent("GET", CategoryController.class, methodName);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -78,11 +78,11 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/category/{categoryName}")
-    public ResponseEntity<?> getCategoryByName(@PathVariable String categoryName) {
+    @GetMapping("/category/{name}")
+    public ResponseEntity<?> getCategoryByName(@PathVariable String name) {
         String methodName = "getCategoryByName()";
         try {
-            Category category = categoryService.findCategoryByName(categoryName);
+            Category category = categoryService.findCategoryByName(name);
             return ResponseEntity.ok(category);
         } catch (RecordNotFoundException e) {
             LogHandler.status404NotFound("GET", CategoryController.class, methodName, e.getMessage());
