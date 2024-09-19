@@ -5,7 +5,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import com.vann.repositories.*;
-import com.vann.service.*;
+import com.vann.services.*;
 import com.vann.utils.LogHandler;
 
 @Component

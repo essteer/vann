@@ -1,12 +1,10 @@
-package com.vann.model;
+package com.vann.models;
 
 import java.util.UUID;
 
 import com.vann.utils.LogHandler;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 
 @Entity
 public class InvoiceItem {

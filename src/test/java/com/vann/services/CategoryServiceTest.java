@@ -1,23 +1,17 @@
 package com.vann.services;
 
-import com.vann.model.Category;
-import com.vann.model.enums.CategoryType;
-import com.vann.repositories.CategoryRepo;
-import com.vann.service.CategoryService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import java.util.*;
+
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+
+import com.vann.models.Category;
+import com.vann.models.enums.CategoryType;
+import com.vann.repositories.CategoryRepo;
+
 
 class CategoryServiceTest {
 

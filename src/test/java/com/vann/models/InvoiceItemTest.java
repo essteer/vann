@@ -1,11 +1,10 @@
-package com.vann.model;
+package com.vann.models;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InvoiceItemTest {
 

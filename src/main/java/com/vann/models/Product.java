@@ -1,15 +1,10 @@
-package com.vann.model;
+package com.vann.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
-import com.vann.model.enums.Colour;
-import com.vann.model.enums.Size;
+import com.vann.models.enums.*;
 import com.vann.utils.LogHandler;
 
 @Entity

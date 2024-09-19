@@ -1,23 +1,17 @@
 package com.vann.services;
 
-import com.vann.exceptions.FieldConflictException;
-import com.vann.exceptions.RecordNotFoundException;
-import com.vann.model.Customer;
-import com.vann.repositories.CustomerRepo;
-import com.vann.service.CustomerService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import java.util.*;
+
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+
+import com.vann.exceptions.*;
+import com.vann.models.Customer;
+import com.vann.repositories.CustomerRepo;
+
 
 class CustomerServiceTest {
 

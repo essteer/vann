@@ -1,17 +1,14 @@
-package com.vann.service;
+package com.vann.services;
 
 import com.vann.exceptions.RecordNotFoundException;
-import com.vann.model.Product;
-import com.vann.model.enums.Colour;
-import com.vann.model.enums.Size;
+import com.vann.models.Product;
+import com.vann.models.enums.*;
 import com.vann.repositories.ProductRepo;
 import com.vann.utils.LogHandler;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProductService {

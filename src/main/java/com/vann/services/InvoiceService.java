@@ -1,18 +1,12 @@
-package com.vann.service;
+package com.vann.services;
 
 import com.vann.exceptions.RecordNotFoundException;
-import com.vann.model.Customer;
-import com.vann.model.Invoice;
-import com.vann.model.InvoiceItem;
+import com.vann.models.*;
 import com.vann.repositories.InvoiceRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class InvoiceService {

@@ -1,13 +1,11 @@
-package com.vann.model;
+package com.vann.models;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import com.vann.utils.LogHandler;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
 @Entity

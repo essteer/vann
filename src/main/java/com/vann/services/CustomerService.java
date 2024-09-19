@@ -1,14 +1,12 @@
-package com.vann.service;
+package com.vann.services;
 
-import com.vann.exceptions.FieldConflictException;
-import com.vann.exceptions.RecordNotFoundException;
-import com.vann.model.Customer;
+import java.util.*;
+
+import com.vann.exceptions.*;
+import com.vann.models.Customer;
 import com.vann.repositories.CustomerRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CustomerService {

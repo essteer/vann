@@ -1,15 +1,13 @@
-package com.vann.model;
+package com.vann.models;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.vann.model.enums.CategoryType;
-import com.vann.model.enums.Colour;
-import com.vann.model.enums.Size;
-
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.vann.models.enums.*;
+
 
 public class ProductTest {
 

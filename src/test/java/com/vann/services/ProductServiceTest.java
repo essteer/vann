@@ -1,8 +1,7 @@
 package com.vann.services;
 
-import com.vann.model.Product;
+import com.vann.models.Product;
 import com.vann.repositories.ProductRepo;
-import com.vann.service.ProductService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

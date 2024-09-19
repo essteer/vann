@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.vann.model.InvoiceItem;
+import com.vann.models.InvoiceItem;
 
 public interface InvoiceItemRepo extends JpaRepository<InvoiceItem, UUID> {
 

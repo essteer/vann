@@ -1,4 +1,4 @@
-package com.vann.model.enums;
+package com.vann.models.enums;
 
 public enum Colour {
 
