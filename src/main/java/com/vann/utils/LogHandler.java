@@ -67,6 +67,10 @@ public class LogHandler {
         logger.info("{} (class: {}) {} set to {}", id, clazz.getSimpleName(), attributeName, attributeValue);
     }
 
+    public static void invalidAttributeError(Class<?> clazz, String attributeName, String attributeValue, String errorMessage) {
+        logger.error("(class: {}) {} cannot be set to {}: {}", clazz.getSimpleName(), attributeName, attributeValue, errorMessage);
+    }
+
     public static void invalidAttributeError(Class<?> clazz, UUID id, String attributeName, String attributeValue, String errorMessage) {
         logger.error("{} (class: {}) {} cannot be set to {}: {}", id, clazz.getSimpleName(), attributeName, attributeValue, errorMessage);
     }

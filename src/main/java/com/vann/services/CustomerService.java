@@ -1,10 +1,13 @@
 package com.vann.services;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import com.vann.exceptions.*;
 import com.vann.models.Customer;
 import com.vann.repositories.CustomerRepo;
+import com.vann.utils.LogHandler;
+
 import org.springframework.stereotype.Service;
 
 
@@ -17,25 +20,25 @@ public class CustomerService {
         this.customerRepo = customerRepo;
     }
 
-    public Customer createCustomer(String name, String email) {
-        Customer customer = new Customer(name, email);
-        return saveCustomer(customer);
+    public Customer createCustomer(String name, String email) throws IllegalArgumentException {
+        String formattedEmail = email.trim().toLowerCase();
+        if (isValidEmail(formattedEmail)) {
+            Customer customer = new Customer(name, email);
+            return saveCustomer(customer);
+        } else {
+            LogHandler.invalidAttributeError(Customer.class, "email", email, "Invalid email format");
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
     }
 
-    public List<Customer> findAllCustomers() {
-        return customerRepo.findAll();
-    }
-
-    public Customer findCustomerById(UUID customerId) throws RecordNotFoundException {
-        Optional<Customer> customerOptional = customerRepo.findById(customerId);
-        return customerOptional.orElseThrow(() -> 
-            new RecordNotFoundException("Customer with ID '" + customerId + "'' not found"));
-    }
-
-    public Customer findCustomerByEmail(String email) throws RecordNotFoundException {
-        Optional<Customer> customerOptional = customerRepo.findByCustomerEmail(email.toLowerCase());
-        return customerOptional.orElseThrow(() -> 
-            new RecordNotFoundException("Customer with email '" + email + "'' not found"));
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$";
+        Pattern pattern = Pattern.compile(emailRegex, Pattern.CASE_INSENSITIVE);
+        if (pattern.matcher(email).matches()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Customer saveCustomer(Customer customer) {
@@ -44,25 +47,45 @@ public class CustomerService {
         return customerRepo.save(customer);
     }
 
-    public Customer updateCustomer(UUID customerId, Customer updatedCustomer) throws RecordNotFoundException {
-        if (!customerRepo.existsById(customerId)) {
-            throw new RecordNotFoundException("Customer with ID '" + customerId + "' not found");
+    private void checkForEmailConflict(Customer customer) throws FieldConflictException {
+        Optional<Customer> existingCustomerOptional = customerRepo.findByEmail(customer.getEmail().toLowerCase());
+    
+        if (existingCustomerOptional.isPresent() && 
+            !existingCustomerOptional.get().getId().equals(customer.getId())) {
+            throw new FieldConflictException("Customer with email '" + customer.getEmail() + "' already exists");
         }
-        updatedCustomer.setCustomerId(customerId);
-        updatedCustomer.setCustomerEmail(updatedCustomer.getCustomerEmail());
+    }
+
+    public List<Customer> findAllCustomers() {
+        return customerRepo.findAll();
+    }
+
+    public Customer findCustomerById(UUID id) throws RecordNotFoundException {
+        Optional<Customer> customerOptional = customerRepo.findById(id);
+        return customerOptional.orElseThrow(() -> 
+            new RecordNotFoundException("Customer with ID '" + id + "'' not found"));
+    }
+
+    public Customer findCustomerByEmail(String email) throws RecordNotFoundException {
+        Optional<Customer> customerOptional = customerRepo.findByEmail(email.toLowerCase());
+        return customerOptional.orElseThrow(() -> 
+            new RecordNotFoundException("Customer with email '" + email + "'' not found"));
+    }
+
+    
+
+    public Customer updateCustomer(UUID id, Customer updatedCustomer) throws RecordNotFoundException {
+        if (!customerRepo.existsById(id)) {
+            throw new RecordNotFoundException("Customer with ID '" + id + "' not found");
+        }
+        updatedCustomer.setId(id);
+        updatedCustomer.setEmail(updatedCustomer.getEmail());
         return customerRepo.save(updatedCustomer);
     }
 
-    private void checkForEmailConflict(Customer customer) throws FieldConflictException {
-        Optional<Customer> existingCustomerOptional = customerRepo.findByCustomerEmail(customer.getCustomerEmail().toLowerCase());
     
-        if (existingCustomerOptional.isPresent() && 
-            !existingCustomerOptional.get().getCustomerId().equals(customer.getCustomerId())) {
-            throw new FieldConflictException("Customer with email '" + customer.getCustomerEmail() + "' already exists");
-        }
-    }
 
-    public void deleteCustomer(UUID customerId) {
-        customerRepo.deleteById(customerId);
+    public void deleteCustomer(UUID id) {
+        customerRepo.deleteById(id);
     }
 }

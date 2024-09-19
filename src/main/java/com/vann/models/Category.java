@@ -5,9 +5,10 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 import com.vann.models.enums.CategoryType;
-import com.vann.utils.LogHandler;
+
 
 @Entity
+@Table(name = "categories")
 public class Category {
 
     @Id
@@ -16,22 +17,16 @@ public class Category {
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
 
-    @Column(unique = true)
-    private String categoryName;
+    @Column(unique = true, nullable = false)
+    private String name;
 
     public Category() {
     }
 
     public Category(CategoryType categoryType, String name) {
-        try {
-            generateIdIfAbsent();
-            setCategoryType(categoryType);
-            setCategoryName(name);
-            LogHandler.createInstanceOK(Category.class, this.id, String.valueOf(this.categoryType), this.categoryName);
-        } catch (Exception e) {
-            LogHandler.createInstanceError(Category.class, String.valueOf(this.categoryType), this.categoryName);
-            throw e;
-        }
+        generateIdIfAbsent();
+        setType(categoryType);
+        setName(name);
     }
 
     public void generateIdIfAbsent() {
@@ -40,60 +35,41 @@ public class Category {
         }
     }
 
-    public UUID getCategoryId() {
+    public UUID getId() {
         generateIdIfAbsent();
         return id;
     }
 
-    public void setCategoryId(UUID id) {
-        if (id == null) {
-            LogHandler.nullAttributeWarning(Category.class, getCategoryId(), "id");
-        } else {
+    public void setId(UUID id) {
+        if (id != null) {
             this.id = id;
-            LogHandler.validAttributeOK(Category.class, getCategoryId(), "id", String.valueOf(getCategoryId()));
         }
     }
 
-    public CategoryType getCategoryType() {
+    public CategoryType getType() {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) throws IllegalArgumentException {
-        if (categoryType == null) {
-            LogHandler.nullAttributeWarning(Category.class, getCategoryId(), "CategoryType");
-        }
-        try {
-            CategoryType.valueOf(categoryType.name());
+    public void setType(CategoryType categoryType) {
+        if (categoryType != null) {
             this.categoryType = categoryType;
-            LogHandler.validAttributeOK(Category.class, getCategoryId(), "CategoryType", String.valueOf(categoryType));
-        } catch (IllegalArgumentException e) {
-            LogHandler.invalidAttributeError(Category.class, getCategoryId(), "CategoryType", String.valueOf(categoryType), e.getMessage());
-            throw e;
         }
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryName(String categoryName) {
-        if (categoryName == null || categoryName.trim().isEmpty()) {
-            LogHandler.nullAttributeWarning(Category.class, getCategoryId(), "name");
-        } else {
-            try{
-                this.categoryName = categoryName.toLowerCase();
-                LogHandler.validAttributeOK(Category.class, getCategoryId(), "name", getCategoryName());
-            } catch (Exception e) {
-                LogHandler.invalidAttributeError(Category.class, getCategoryId(), "name", categoryName, e.getMessage());
-                throw e;
-            } 
+    public void setName(String name) {
+        if (name != null && !(name.trim().isEmpty())) {
+            this.name = name.toLowerCase();
         }
     }
 
     @Override
     public String toString() {
-        return "Category [id=" + id + ", type=" + categoryType + ", name="
-                + categoryName + "]";
+        return "Category [id=" + id + ", categoryType=" + categoryType + ", name="
+                + name + "]";
     }
 
 }

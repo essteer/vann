@@ -35,17 +35,17 @@ public class InvoiceItemServiceTest {
     void testCreateInvoiceItem() throws RecordNotFoundException {
         UUID productId = UUID.randomUUID();
         int quantity = 5;
-        Product product = new Product(new Category().getCategoryId(), "Product Name", 10.0, "image.jpg", Size.SMALL, Colour.BLACK);
-        product.setProductId(productId);
+        Product product = new Product(new Category().getId(), "Product Name", 10.0, "image.jpg", Size.SMALL, Colour.BLACK);
+        product.setId(productId);
         
         when(productService.findProductById(productId)).thenReturn(product);
         when(invoiceItemRepo.save(any(InvoiceItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
         InvoiceItem invoiceItem = invoiceItemService.createInvoiceItem(productId, quantity);
     
         assertNotNull(invoiceItem);
-        assertEquals(productId, invoiceItem.getInvoiceItemProductId());
+        assertEquals(productId, invoiceItem.getProductId());
         assertEquals(quantity, invoiceItem.getQuantity());
-        assertEquals(product.getProductPrice(), invoiceItem.getUnitPrice());
+        assertEquals(product.getPrice(), invoiceItem.getUnitPrice());
         assertEquals(product.toString(), invoiceItem.getProductDetails());
         verify(productService, times(1)).findProductById(productId);
         verify(invoiceItemRepo, times(1)).save(any(InvoiceItem.class));
@@ -55,14 +55,14 @@ public class InvoiceItemServiceTest {
     void testFindInvoiceItemById_Success() {
         UUID invoiceItemId = UUID.randomUUID();
         InvoiceItem invoiceItem = new InvoiceItem();
-        invoiceItem.setInvoiceItemId(invoiceItemId);
+        invoiceItem.setId(invoiceItemId);
         
         when(invoiceItemRepo.findById(invoiceItemId)).thenReturn(Optional.of(invoiceItem));
         
         Optional<InvoiceItem> foundInvoiceItem = invoiceItemService.findInvoiceItemById(invoiceItemId);
         
         assertTrue(foundInvoiceItem.isPresent());
-        assertEquals(invoiceItemId, foundInvoiceItem.get().getInvoiceItemId());
+        assertEquals(invoiceItemId, foundInvoiceItem.get().getId());
         verify(invoiceItemRepo, times(1)).findById(invoiceItemId);
     }
 
@@ -82,7 +82,7 @@ public class InvoiceItemServiceTest {
     void testUpdateInvoiceItem_Success() throws RecordNotFoundException {
         UUID invoiceItemId = UUID.randomUUID();
         InvoiceItem existingInvoiceItem = new InvoiceItem();
-        existingInvoiceItem.setInvoiceItemId(invoiceItemId);
+        existingInvoiceItem.setId(invoiceItemId);
         
         InvoiceItem updatedInvoiceItem = new InvoiceItem(UUID.randomUUID(), 10);
         
@@ -92,7 +92,7 @@ public class InvoiceItemServiceTest {
         InvoiceItem result = invoiceItemService.updateInvoiceItem(invoiceItemId, updatedInvoiceItem);
         
         assertNotNull(result);
-        assertEquals(invoiceItemId, result.getInvoiceItemId());
+        assertEquals(invoiceItemId, result.getId());
         assertEquals(updatedInvoiceItem.getQuantity(), result.getQuantity());
         verify(invoiceItemRepo, times(1)).existsById(invoiceItemId);
         verify(invoiceItemRepo, times(1)).save(updatedInvoiceItem);

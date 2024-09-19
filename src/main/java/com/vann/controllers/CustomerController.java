@@ -86,7 +86,7 @@ public class CustomerController {
             URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(customer.getCustomerId())
+                .buildAndExpand(customer.getId())
                 .toUri();
     
             LogHandler.status201Created("POST", CustomerController.class, methodName);

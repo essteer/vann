@@ -33,7 +33,7 @@ public class CategoryService {
     }
 
     public Category findCategoryByName(String categoryName) throws RecordNotFoundException {
-        Optional<Category> categoryOptional = categoryRepo.findByCategoryName(categoryName);
+        Optional<Category> categoryOptional = categoryRepo.findByName(categoryName);
         return categoryOptional.orElseThrow(() -> 
             new RecordNotFoundException("Category with name '" + categoryName + "'' not found"));
     }
@@ -48,17 +48,17 @@ public class CategoryService {
         if (!categoryRepo.existsById(categoryId)) {
             throw new RecordNotFoundException("Category with ID '" + categoryId + "' not found");
         }
-        updatedCategory.setCategoryId(categoryId);
-        updatedCategory.setCategoryName(updatedCategory.getCategoryName());
+        updatedCategory.setId(categoryId);
+        updatedCategory.setName(updatedCategory.getName());
         return saveCategory(updatedCategory);
     }
     
     private void checkForNameConflict(Category category) throws FieldConflictException {
-        Optional<Category> existingCategoryOptional = categoryRepo.findByCategoryName(category.getCategoryName().toLowerCase());
+        Optional<Category> existingCategoryOptional = categoryRepo.findByName(category.getName().toLowerCase());
     
         if (existingCategoryOptional.isPresent() && 
-            !existingCategoryOptional.get().getCategoryId().equals(category.getCategoryId())) {
-            throw new FieldConflictException("Category with name '" + category.getCategoryName() + "' already exists");
+            !existingCategoryOptional.get().getId().equals(category.getId())) {
+            throw new FieldConflictException("Category with name '" + category.getName() + "' already exists");
         }
     }
 

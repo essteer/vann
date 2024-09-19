@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.models.*;
 import com.vann.repositories.CartRepo;
+import com.vann.utils.LogHandler;
 
 
 @Service
@@ -41,6 +42,7 @@ public class CartService {
             return cart;
         } catch (RecordNotFoundException e) {
             Cart newCart = new Cart(customerId, new HashMap<>());
+            LogHandler.createInstanceOK(Cart.class, newCart.getId(), String.valueOf(customerId));
             return cartRepo.save(newCart);
         }
     }
@@ -116,7 +118,7 @@ public class CartService {
             throw new IllegalArgumentException("Cart with ID '" + cartId + "' is empty and cannot be checked out");
         }
         Invoice invoiceTemplate = getInvoiceCustomerTemplate(cart.getCartCustomerId(), billAddress, shipAddress);
-        Invoice invoice = addCartItemsToInvoiceTemplate(invoiceTemplate.getInvoiceId(), cart.getCartItems());
+        Invoice invoice = addCartItemsToInvoiceTemplate(invoiceTemplate.getId(), cart.getCartItems());
         emptyCart(cartId);
 
         return invoice;

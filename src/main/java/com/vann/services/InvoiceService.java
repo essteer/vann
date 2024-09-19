@@ -26,14 +26,14 @@ public class InvoiceService {
         return invoice;
     }
 
-    public Invoice createCustomerInvoice(UUID customerId, String billAddress, String shipAddress) throws RecordNotFoundException {
+    public Invoice createCustomerInvoice(UUID customerId, String billingAddress, String shippingAddress) throws RecordNotFoundException {
         Customer customer = customerService.findCustomerById(customerId);
         Invoice invoice = createBlankInvoice();
-        invoice.setInvoiceCustomerId(customerId);
-        invoice.setInvoiceCustomerName(customer.getCustomerName());
-        invoice.setInvoiceCustomerEmail(customer.getCustomerEmail());
-        invoice.setInvoiceBillAddress(billAddress);
-        invoice.setInvoiceShipAddress(shipAddress);
+        invoice.setCustomerId(customerId);
+        invoice.setCustomerName(customer.getName());
+        invoice.setCustomerEmail(customer.getEmail());
+        invoice.setBillingAddress(billingAddress);
+        invoice.setShippingAddress(shippingAddress);
         return saveInvoice(invoice);
     }
 
@@ -42,23 +42,23 @@ public class InvoiceService {
     }
 
     public List<Invoice> findInvoicesByTotalAmountBetween(double minAmount, double maxAmount) {
-        return invoiceRepo.findByInvoiceTotalAmountBetween(minAmount, maxAmount);
+        return invoiceRepo.findByTotalAmountBetween(minAmount, maxAmount);
     }
 
     public List<Invoice> findInvoicesByTotalAmountGreaterThan(double amount) {
-        return invoiceRepo.findByInvoiceTotalAmountGreaterThan(amount);
+        return invoiceRepo.findByTotalAmountGreaterThan(amount);
     }
 
     public List<Invoice> findInvoicesByTotalAmountLessThan(double amount) {
-        return invoiceRepo.findByInvoiceTotalAmountLessThan(amount);
+        return invoiceRepo.findByTotalAmountLessThan(amount);
     }
 
     public List<Invoice> findInvoicesByCustomerId(UUID customerId) {
-        return invoiceRepo.findByInvoiceCustomerId(customerId);
+        return invoiceRepo.findByCustomerId(customerId);
     }
 
     public List<Invoice> findInvoicesByCustomerEmail(String email) {
-        return invoiceRepo.findByInvoiceCustomerEmail(email);
+        return invoiceRepo.findByCustomerEmail(email);
     }
 
     public Invoice findInvoiceById(UUID invoiceId) throws RecordNotFoundException {
@@ -101,7 +101,7 @@ public class InvoiceService {
         Invoice invoice = findInvoiceById(invoiceId);
         List<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
         for (InvoiceItem item : invoiceItems) {
-            invoiceItemService.deleteInvoiceItem(item.getInvoiceItemId());
+            invoiceItemService.deleteInvoiceItem(item.getId());
         }
         invoiceRepo.deleteById(invoiceId);
     }

@@ -17,52 +17,52 @@ public class ProductTest {
     @BeforeEach
     public void setUp() {
         category = new Category(CategoryType.RING, "Jewellery");
-        product = new Product(category.getCategoryId(), "Ring", 499.99, "image.png", Size.US_07, Colour.YELLOW_GOLD);
+        product = new Product(category.getId(), "Ring", 499.99, "image.png", Size.US_07, Colour.YELLOW_GOLD);
     }
 
     @Test
     public void testProductDefaultConstructor() {
         Product defaultProduct = new Product();
         defaultProduct.generateIdIfAbsent();
-        assertNotNull(defaultProduct.getProductId(), "UUID should be generated");
+        assertNotNull(defaultProduct.getId(), "UUID should be generated");
         assertNull(defaultProduct.getCategoryId(), "Category ID should be null");
-        assertNull(defaultProduct.getProductName(), "Product name should be null");
-        assertEquals(0.0, defaultProduct.getProductPrice(), "Product price should be 0.0");
-        assertNull(defaultProduct.getProductImage(), "Product image should be null");
+        assertNull(defaultProduct.getName(), "Product name should be null");
+        assertEquals(0.0, defaultProduct.getPrice(), "Product price should be 0.0");
+        assertNull(defaultProduct.getImageURI(), "Product image should be null");
     }
 
     @Test
     public void testProductParameterizedConstructor() {
-        assertNotNull(product.getProductId(), "UUID should be generated");
-        assertEquals(category.getCategoryId(), product.getCategoryId(), "Category ID should match");
-        assertEquals("RING", product.getProductName(), "Product name should match");
-        assertEquals(499.99, product.getProductPrice(), "Product price should match");
-        assertEquals("image.png", product.getProductImage(), "Product image should match");
+        assertNotNull(product.getId(), "UUID should be generated");
+        assertEquals(category.getId(), product.getCategoryId(), "Category ID should match");
+        assertEquals("RING", product.getName(), "Product name should match");
+        assertEquals(499.99, product.getPrice(), "Product price should match");
+        assertEquals("image.png", product.getImageURI(), "Product image should match");
     }
 
     @Test
     public void testSettersAndGetters() {
         UUID newUuid = UUID.randomUUID();
-        product.setProductId(newUuid);
+        product.setId(newUuid);
 
         Category newCategory = new Category(CategoryType.NECKLACE, "Accessories");
-        product.setCategoryId(newCategory.getCategoryId());
+        product.setCategoryId(newCategory.getId());
 
-        product.setProductName("Necklace");
-        product.setProductPrice(299.99);
-        product.setProductImage("necklace.png");
+        product.setName("Necklace");
+        product.setPrice(299.99);
+        product.setImageURI("necklace.png");
 
-        assertEquals(newUuid, product.getProductId(), "UUID should match");
-        assertEquals(newCategory.getCategoryId(), product.getCategoryId(), "Category ID should match");
-        assertEquals("NECKLACE", product.getProductName(), "Product name should match");
-        assertEquals(299.99, product.getProductPrice(), "Product price should match");
-        assertEquals("necklace.png", product.getProductImage(), "Product image should match");
+        assertEquals(newUuid, product.getId(), "UUID should match");
+        assertEquals(newCategory.getId(), product.getCategoryId(), "Category ID should match");
+        assertEquals("NECKLACE", product.getName(), "Product name should match");
+        assertEquals(299.99, product.getPrice(), "Product price should match");
+        assertEquals("necklace.png", product.getImageURI(), "Product image should match");
     }
 
     @Test
     public void testToString() {
-        String expectedString = "Product [id=" + product.getProductId() +
-                ", categoryId=" + category.getCategoryId() + ", name=RING, unitprice=499.99, size=" + 
+        String expectedString = "Product [id=" + product.getId() +
+                ", categoryId=" + category.getId() + ", name=RING, unitprice=499.99, size=" + 
                 product.getSize() + ", colour=" + product.getColour() + "]";
 
         assertEquals(expectedString, product.toString(), "toString should match the expected output");

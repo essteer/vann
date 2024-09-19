@@ -1,38 +1,41 @@
 package com.vann.models;
 
 import java.util.*;
-import java.util.regex.Pattern;
-
-import com.vann.utils.LogHandler;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 @Entity
+@Table(name = "customers")
 public class Customer {
 
     @Id
     private UUID id;
 
-    private String customerName;
+    private String name;
 
     @Column(unique = true)
     @Email
-    private String customerEmail;
+    private String email;
+
+    @Column(nullable = false, updatable = false)
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonIgnore
+	private Date creationDate;
 
     public Customer() {
     }
 
     public Customer(String name, String email) {
-        try {
-            generateIdIfAbsent();
-            setCustomerName(name);
-            setCustomerEmail(email);
-            LogHandler.createInstanceOK(Customer.class, this.id, name, email);
-        } catch (Exception e) {
-            LogHandler.createInstanceError(Customer.class, name, email);
-            throw e;
-        }
+        generateIdIfAbsent();
+        setName(name);
+        setEmail(email);
     }
 
     public void generateIdIfAbsent() {
@@ -41,67 +44,46 @@ public class Customer {
         }
     }
 
-    public UUID getCustomerId() {
+    public UUID getId() {
         generateIdIfAbsent();
         return id;
     }
 
-    public void setCustomerId(UUID id) {
-        if (id == null) {
-            LogHandler.nullAttributeWarning(Customer.class, getCustomerId(), "id");
-        } else {
+    public void setId(UUID id) {
+        if (id != null) {
             this.id = id;
-            LogHandler.validAttributeOK(Customer.class, getCustomerId(), "id", String.valueOf(getCustomerId()));
         }
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getName() {
+        return name;
     }
 
-    public void setCustomerName(String customerName) {
-        if (customerName == null || customerName.trim().isEmpty()) {
-            LogHandler.nullAttributeWarning(Customer.class, getCustomerId(), "name");
-        } else {
-            this.customerName = customerName;
-            LogHandler.validAttributeOK(Customer.class, getCustomerId(), "name", getCustomerName());
+    public void setName(String name) {
+        if (name != null && !(name.trim().isEmpty())) {
+            this.name = name;
         }
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCustomerEmail(String customerEmail) throws IllegalArgumentException {
-        String email = customerEmail.trim().toLowerCase();
-        try {
-            if (isValidEmail(email)) {
-                this.customerEmail = email;
-                LogHandler.validAttributeOK(Customer.class, getCustomerId(), "email", getCustomerEmail());
-            }
-        } catch (Exception e) {
-            LogHandler.invalidAttributeError(Customer.class, getCustomerId(), "email", customerEmail, e.getMessage());
-            throw e;
+    public void setEmail(String email) {
+        String formattedEmail = email.trim().toLowerCase();
+        if (formattedEmail != null && !(formattedEmail.trim().isEmpty())) {
+            this.email = formattedEmail;
         }
     }
 
-    private boolean isValidEmail(String email) throws IllegalArgumentException {
-        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$";
-        Pattern pattern = Pattern.compile(emailRegex, Pattern.CASE_INSENSITIVE);
-        if (email == null || email.trim().isEmpty()) {
-            LogHandler.nullAttributeWarning(Customer.class, getCustomerId(), "email");
-            return false;
-        } else if (!pattern.matcher(email).matches()) {
-            LogHandler.invalidAttributeError(Customer.class, getCustomerId(), "email", email, "Invalid email format");
-            throw new IllegalArgumentException("Invalid email format: " + email);
-        }
-        return true;
+    public Date getCreationDate() {
+        return this.creationDate;
     }
 
     @Override
     public String toString() {
-        return "Customer [id=" + id + ", name=" + customerName + ", email="
-                + customerEmail + "]";
+        return "Customer [id=" + id + ", name=" + name + ", email="
+                + email + "]";
     }
 
 }

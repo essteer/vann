@@ -32,13 +32,13 @@ class ProductServiceTest {
     void testFindProductById() {
         UUID productId = UUID.randomUUID();
         Product product = new Product();
-        product.setProductId(productId);
-        product.setProductName("Necklace");
+        product.setId(productId);
+        product.setName("Necklace");
 
         when(productRepo.findById(productId)).thenReturn(Optional.of(product));
 
         Product foundProduct = productService.findProductById(productId);
-        assertEquals("NECKLACE", foundProduct.getProductName());
+        assertEquals("NECKLACE", foundProduct.getName());
         verify(productRepo, times(1)).findById(productId);
     }
 

@@ -102,7 +102,7 @@ public class CategoryController {
             URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedCategory.getCategoryId())
+                .buildAndExpand(savedCategory.getId())
                 .toUri();
 
             LogHandler.status201Created("POST", CategoryController.class, methodName);

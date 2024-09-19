@@ -1,12 +1,12 @@
 package com.vann.models;
 
-import java.util.UUID;
-
-import com.vann.utils.LogHandler;
+import java.util.*;
 
 import jakarta.persistence.*;
 
+
 @Entity
+@Table(name = "invoice_items")
 public class InvoiceItem {
 
     @Id
@@ -23,15 +23,9 @@ public class InvoiceItem {
     }
 
     public InvoiceItem(UUID productId, int quantity) {
-        try {
-            generateIdIfAbsent();
-            setInvoiceItemProductId(productId);
-            setQuantity(quantity);
-            LogHandler.createInstanceOK(InvoiceItem.class, this.id, String.valueOf(this.productId), String.valueOf(this.quantity));
-        } catch (Exception e) {
-            LogHandler.createInstanceError(InvoiceItem.class, productId, quantity);
-            throw e;
-        }
+        generateIdIfAbsent();
+        setProductId(productId);
+        setQuantity(quantity);
     }
 
     public void generateIdIfAbsent() {
@@ -40,30 +34,24 @@ public class InvoiceItem {
         }
     }
 
-    public UUID getInvoiceItemId() {
+    public UUID getId() {
         generateIdIfAbsent();
         return id;
     }
 
-    public void setInvoiceItemId(UUID id) {
-        if (id == null) {
-            LogHandler.nullAttributeWarning(InvoiceItem.class, getInvoiceItemId(), "id");
-        } else {
+    public void setId(UUID id) {
+        if (id != null) {
             this.id = id;
-            LogHandler.validAttributeOK(InvoiceItem.class, getInvoiceItemId(), "id", String.valueOf(getInvoiceItemId()));
         }
     }
 
-    public UUID getInvoiceItemProductId() {
+    public UUID getProductId() {
         return productId;
     }
 
-    public void setInvoiceItemProductId(UUID productId) {
-        if (productId == null) {
-            LogHandler.nullAttributeWarning(InvoiceItem.class, getInvoiceItemId(), "invoiceItemProductId");
-        } else {
+    public void setProductId(UUID productId) {
+        if (productId != null) {
             this.productId = productId;
-            LogHandler.validAttributeOK(InvoiceItem.class, getInvoiceItemId(), "invoiceItemProductId", String.valueOf(getInvoiceItemProductId()));
         }
     }
     
@@ -71,13 +59,9 @@ public class InvoiceItem {
         return quantity;
     }
 
-    public void setQuantity(int quantity) throws IllegalArgumentException {
+    public void setQuantity(int quantity) {
         if (quantity >= 0) {
             this.quantity = quantity;
-            LogHandler.validAttributeOK(InvoiceItem.class, getInvoiceItemId(), "quantity", String.valueOf(getQuantity()));
-        } else {
-            LogHandler.invalidAttributeError(InvoiceItem.class, getInvoiceItemId(), "quantity", String.valueOf(getQuantity()), "Quantity cannot be negative");
-            throw new IllegalArgumentException("Quantity cannot be negative: " + quantity);
         }
     }
 

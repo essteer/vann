@@ -2,11 +2,11 @@ package com.vann.models;
 
 import java.util.*;
 
-import com.vann.utils.LogHandler;
-
 import jakarta.persistence.*;
 
+
 @Entity
+@Table(name = "carts")
 public class Cart {
 
     @Id
@@ -25,15 +25,9 @@ public class Cart {
     }
 
     public Cart(UUID customerId, Map<UUID, Integer> cartItems) {
-        try {
-            generateIdIfAbsent();
-            setCartCustomerId(customerId);
-            this.cartItems = cartItems;
-            LogHandler.createInstanceOK(Cart.class, this.id, String.valueOf(this.customerId), this.cartItems.toString());
-        } catch (Exception e) {
-            LogHandler.createInstanceError(Cart.class, customerId, cartItems.toString());
-            throw e;
-        }
+        generateIdIfAbsent();
+        setCartCustomerId(customerId);
+        this.cartItems = cartItems;
     }
 
     public void generateIdIfAbsent() {
@@ -42,17 +36,14 @@ public class Cart {
         }
     }
 
-    public UUID getCartId() {
+    public UUID getId() {
         generateIdIfAbsent();
         return id;
     }
 
-    public void setCartId(UUID id) {
-        if (id == null) {
-            LogHandler.nullAttributeWarning(Cart.class, getCartId(), "id");
-        } else {
+    public void setId(UUID id) {
+        if (id != null) {
             this.id = id;
-            LogHandler.validAttributeOK(Cart.class, getCartId(), "id", String.valueOf(getCartId()));
         }
     }
 
@@ -61,11 +52,8 @@ public class Cart {
     }
 
     public void setCartCustomerId(UUID customerId) {
-        if (customerId == null) {
-            LogHandler.nullAttributeWarning(Cart.class, getCartId(), "customerId");
-        } else {
+        if (customerId != null) {
             this.customerId = customerId;
-            LogHandler.validAttributeOK(Cart.class, getCartId(), "customerId", String.valueOf(customerId));
         }
     }
 

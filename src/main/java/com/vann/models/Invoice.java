@@ -1,50 +1,56 @@
 package com.vann.models;
 
 import java.util.*;
-import java.util.regex.Pattern;
-
-import com.vann.utils.LogHandler;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
+@Table(name = "invoices")
 public class Invoice {
 
     @Id
     private UUID id;
 
-    private UUID invoiceCustomerId;
-    private String invoiceCustomerName;
-    private String invoiceCustomerEmail;
+    private UUID customerId;
+    private String customerName;
 
-    private String invoiceBillAddress;
-    private String invoiceShipAddress;
+    @Email
+    private String customerEmail;
 
-    private double invoiceTotalAmount;
+    private String billingAddress;
+    private String shippingAddress;
+
+    private double totalAmount;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<InvoiceItem> invoiceItems = new ArrayList<>();
 
+    @Column(nullable = false, updatable = false)
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonIgnore
+	private Date creationDate;
+
     public Invoice() {
     }
 
-    public Invoice(UUID customerId, String customerName, String customerEmail, String billAddress, String shipAddress) {
-        try {
-            generateIdIfAbsent();
-            setInvoiceCustomerId(customerId);
-            setInvoiceCustomerName(customerName);
-            setInvoiceCustomerEmail(customerEmail);
-            this.invoiceBillAddress = billAddress;
-            this.invoiceShipAddress = shipAddress;
-            LogHandler.createInstanceOK(Invoice.class, this.id, customerName, customerEmail, billAddress, shipAddress);
-        } catch (Exception e) {
-            LogHandler.createInstanceError(Invoice.class, customerName, customerEmail, billAddress, shipAddress);
-            throw e;
-        }
+    public Invoice(UUID customerId, String customerName, String customerEmail, String billingAddress, String shippingAddress) {
+        generateIdIfAbsent();
+        setCustomerId(customerId);
+        setCustomerName(customerName);
+        setCustomerEmail(customerEmail);
+        this.billingAddress = billingAddress;
+        this.shippingAddress = shippingAddress;
     }
 
-    public Invoice(UUID customerId, String customerName, String customerEmail, String billAddress) {
-        this(customerId, customerName, customerEmail, billAddress, billAddress);
+    public Invoice(UUID customerId, String customerName, String customerEmail, String billingAddress) {
+        this(customerId, customerName, customerEmail, billingAddress, billingAddress);
     }
 
     public void generateIdIfAbsent() {
@@ -53,106 +59,73 @@ public class Invoice {
         }
     }
 
-    public UUID getInvoiceId() {
+    public UUID getId() {
         generateIdIfAbsent();
         return id;
     }
 
-    public void setInvoiceId(UUID id) {
-        if (id == null) {
-            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "id");
-        } else {
+    public void setId(UUID id) {
+        if (id != null) {
             this.id = id;
-            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "id", String.valueOf(getInvoiceId()));
         }
     }
 
-    public UUID getInvoiceCustomerId() {
-        return invoiceCustomerId;
+    public UUID getCustomerId() {
+        return customerId;
     }
 
-    public void setInvoiceCustomerId(UUID invoiceCustomerId) {
-        if (invoiceCustomerId == null) {
-            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceCustomerId");
+    public void setCustomerId(UUID customerId) {
+        if (customerId != null) {
+            this.customerId = customerId;
+        }
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        if (customerName != null && !(customerName.trim().isEmpty())) {
+            this.customerName = customerName;
+        }
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String email) {
+        String formattedEmail = email.trim().toLowerCase();
+        if (formattedEmail != null && !(formattedEmail.trim().isEmpty())) {
+            this.customerEmail = formattedEmail;
+        }
+    }
+
+    public String getBillingAddress() {
+        return billingAddress;
+    }
+
+    public void setBillingAddress(String billingAddress) {
+        if (billingAddress != null) {
+            this.billingAddress = billingAddress;
+        }
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        if (shippingAddress == null) {
+            this.shippingAddress = getBillingAddress();
         } else {
-            this.invoiceCustomerId = invoiceCustomerId;
-            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceCustomerId", String.valueOf(invoiceCustomerId));
+            this.shippingAddress = shippingAddress;
         }
     }
 
-    public String getInvoiceCustomerName() {
-        return invoiceCustomerName;
-    }
-
-    public void setInvoiceCustomerName(String invoiceCustomerName) {
-        if (invoiceCustomerName == null || invoiceCustomerName.trim().isEmpty()) {
-            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceCustomerName");
-        } else {
-            this.invoiceCustomerName = invoiceCustomerName;
-            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceCustomerName", invoiceCustomerName);
-        }
-    }
-
-    public String getInvoiceCustomerEmail() {
-        return invoiceCustomerEmail;
-    }
-
-    public void setInvoiceCustomerEmail(String invoiceCustomerEmail) {
-        String email = invoiceCustomerEmail.trim().toLowerCase();
-        try {
-            if (isValidEmail(email)) {
-                this.invoiceCustomerEmail = email;
-                LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "email", getInvoiceCustomerEmail());
-            }
-        } catch (Exception e) {
-            LogHandler.invalidAttributeError(Invoice.class, getInvoiceId(), "email", invoiceCustomerEmail, e.getMessage());
-            throw e;
-        }
-    }
-
-    private boolean isValidEmail(String email) throws IllegalArgumentException {
-        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$";
-        Pattern pattern = Pattern.compile(emailRegex, Pattern.CASE_INSENSITIVE);
-        if (email == null || email.trim().isEmpty()) {
-            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "email");
-            return false;
-        } else if (!pattern.matcher(email).matches()) {
-            LogHandler.invalidAttributeError(Invoice.class, getInvoiceId(), "email", email, "Invalid email format");
-            throw new IllegalArgumentException("Invalid email format: " + email);
-        }
-        return true;
-    }
-
-    public String getInvoiceBillAddress() {
-        return invoiceBillAddress;
-    }
-
-    public void setInvoiceBillAddress(String invoiceBillAddress) {
-        if (invoiceBillAddress == null) {
-            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceBillAddress");
-        } else {
-            this.invoiceBillAddress = invoiceBillAddress;
-            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceBillAddress", invoiceBillAddress);
-        }
-    }
-
-    public String getInvoiceShipAddress() {
-        return invoiceShipAddress;
-    }
-
-    public void setInvoiceShipAddress(String invoiceShipAddress) {
-        if (invoiceShipAddress == null) {
-            this.invoiceShipAddress = getInvoiceBillAddress();
-            LogHandler.nullAttributeWarning(Invoice.class, getInvoiceId(), "invoiceShipAddress");
-        } else {
-            this.invoiceShipAddress = invoiceShipAddress;
-            LogHandler.validAttributeOK(Invoice.class, getInvoiceId(), "invoiceShipAddress", invoiceShipAddress);
-        }
-    }
-
-    public double getInvoiceTotalAmount() {
-        this.invoiceTotalAmount = calculateTotalAmount();
-        return invoiceTotalAmount;
+    public double getTotalAmount() {
+        this.totalAmount = calculateTotalAmount();
+        return totalAmount;
     }
 
     public double calculateTotalAmount() {
@@ -170,13 +143,17 @@ public class Invoice {
 
     public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
         this.invoiceItems = invoiceItems;
-        this.invoiceTotalAmount = calculateTotalAmount();
+        this.totalAmount = calculateTotalAmount();
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
     }
 
     @Override
     public String toString() {
-        return "Invoice [id=" + id + ", customer=" + invoiceCustomerName + ", email=" + invoiceCustomerEmail + ", billAddress=" + invoiceBillAddress
-                + ", shipAddress=" + invoiceShipAddress + ", totalAmount=" + calculateTotalAmount() + "]";
+        return "Invoice [id=" + id + ", customer=" + customerName + ", email=" + customerEmail + ", billingAddress=" + billingAddress
+                + ", shippingAddress=" + shippingAddress + ", totalAmount=" + calculateTotalAmount() + "]";
     }
 
 }

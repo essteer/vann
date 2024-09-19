@@ -45,14 +45,14 @@ class CustomerServiceTest {
     void testFindCustomerById() {
         UUID customerId = UUID.randomUUID();
         Customer customer = new Customer();
-        customer.setCustomerId(customerId);
-        customer.setCustomerName("John Doe");
+        customer.setId(customerId);
+        customer.setName("John Doe");
 
         when(customerRepo.findById(customerId)).thenReturn(Optional.of(customer));
 
         Customer foundCustomer = customerService.findCustomerById(customerId);
 
-        assertEquals("John Doe", foundCustomer.getCustomerName());
+        assertEquals("John Doe", foundCustomer.getName());
         verify(customerRepo, times(1)).findById(customerId);
     }
 
@@ -67,37 +67,37 @@ class CustomerServiceTest {
     void testFindCustomerByEmail() {
         String email = "john.doe@example.com";
         Customer customer = new Customer();
-        customer.setCustomerEmail(email);
-        customer.setCustomerName("John Doe");
+        customer.setEmail(email);
+        customer.setName("John Doe");
     
-        when(customerRepo.findByCustomerEmail(email)).thenReturn(Optional.of(customer));
+        when(customerRepo.findByEmail(email)).thenReturn(Optional.of(customer));
     
         Customer foundCustomer = customerService.findCustomerByEmail(email);
     
-        assertEquals("John Doe", foundCustomer.getCustomerName());
-        assertEquals(email, foundCustomer.getCustomerEmail());
-        verify(customerRepo, times(1)).findByCustomerEmail(email);
+        assertEquals("John Doe", foundCustomer.getName());
+        assertEquals(email, foundCustomer.getEmail());
+        verify(customerRepo, times(1)).findByEmail(email);
     }
 
     @Test
     void testFindCustomerByEmailNotFound() {
         String email = "nonexistent@example.com";
-        when(customerRepo.findByCustomerEmail(email)).thenReturn(Optional.empty());
+        when(customerRepo.findByEmail(email)).thenReturn(Optional.empty());
         assertThrows(RecordNotFoundException.class, () -> customerService.findCustomerByEmail(email));
     }
 
     @Test
     void testSaveCustomer() {
         Customer customer = new Customer();
-        customer.setCustomerName("John Doe");
-        customer.setCustomerEmail("john.doe@example.com");
+        customer.setName("John Doe");
+        customer.setEmail("john.doe@example.com");
 
         when(customerRepo.save(customer)).thenReturn(customer);
 
         Customer savedCustomer = customerService.saveCustomer(customer);
 
         assertNotNull(savedCustomer);
-        assertEquals("John Doe", savedCustomer.getCustomerName());
+        assertEquals("John Doe", savedCustomer.getName());
         verify(customerRepo, times(1)).save(customer);
     }
 
@@ -105,40 +105,40 @@ class CustomerServiceTest {
     void testEmailConflict() {
         UUID existingCustomerId = UUID.randomUUID();
         Customer existingCustomer = new Customer("John Doe", "john.doe@example.com");
-        existingCustomer.setCustomerId(existingCustomerId);
+        existingCustomer.setId(existingCustomerId);
     
         Customer newCustomer = new Customer("Jane Doe", "john.doe@example.com");
         newCustomer.generateIdIfAbsent();
     
-        when(customerRepo.findByCustomerEmail("john.doe@example.com")).thenReturn(Optional.of(existingCustomer));
+        when(customerRepo.findByEmail("john.doe@example.com")).thenReturn(Optional.of(existingCustomer));
     
         assertThrows(FieldConflictException.class, () -> {
             customerService.saveCustomer(newCustomer);
         });
     
-        verify(customerRepo, times(1)).findByCustomerEmail("john.doe@example.com");
+        verify(customerRepo, times(1)).findByEmail("john.doe@example.com");
     }
 
     @Test
     void testUpdateCustomer() {
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer();
-        existingCustomer.setCustomerId(customerId);
-        existingCustomer.setCustomerName("John Doe");
-        existingCustomer.setCustomerEmail("john.doe@example.com");
+        existingCustomer.setId(customerId);
+        existingCustomer.setName("John Doe");
+        existingCustomer.setEmail("john.doe@example.com");
     
         Customer updatedCustomer = new Customer();
-        updatedCustomer.setCustomerName("Jane Doe");
-        updatedCustomer.setCustomerEmail("jane.doe@example.com");
+        updatedCustomer.setName("Jane Doe");
+        updatedCustomer.setEmail("jane.doe@example.com");
     
         when(customerRepo.existsById(customerId)).thenReturn(true);
         when(customerRepo.save(updatedCustomer)).thenReturn(updatedCustomer);
     
         Customer result = customerService.updateCustomer(customerId, updatedCustomer);
     
-        assertEquals(customerId, result.getCustomerId());
-        assertEquals("Jane Doe", result.getCustomerName());
-        assertEquals("jane.doe@example.com", result.getCustomerEmail());
+        assertEquals(customerId, result.getId());
+        assertEquals("Jane Doe", result.getName());
+        assertEquals("jane.doe@example.com", result.getEmail());
         verify(customerRepo, times(1)).existsById(customerId);
         verify(customerRepo, times(1)).save(updatedCustomer);
     }

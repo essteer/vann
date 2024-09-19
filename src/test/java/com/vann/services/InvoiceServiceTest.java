@@ -46,26 +46,26 @@ public class InvoiceServiceTest {
         String shipAddress = "15 Elm Street";
     
         Customer customer = new Customer("John Doe", "john@example.com");
-        customer.setCustomerId(customerId);
+        customer.setId(customerId);
         when(customerService.findCustomerById(customerId)).thenReturn(customer);
         
         Invoice invoice = new Invoice();
-        invoice.setInvoiceCustomerId(customerId);
-        invoice.setInvoiceCustomerName("John Doe");
-        invoice.setInvoiceCustomerEmail("john@example.com");
-        invoice.setInvoiceBillAddress(billAddress);
-        invoice.setInvoiceShipAddress(shipAddress);
+        invoice.setCustomerId(customerId);
+        invoice.setCustomerName("John Doe");
+        invoice.setCustomerEmail("john@example.com");
+        invoice.setBillingAddress(billAddress);
+        invoice.setShippingAddress(shipAddress);
         
         when(invoiceRepo.save(any(Invoice.class))).thenReturn(invoice);
         
         Invoice result = invoiceService.createCustomerInvoice(customerId, billAddress, shipAddress);
     
         assertNotNull(result);
-        assertEquals(customerId, result.getInvoiceCustomerId());
-        assertEquals("John Doe", result.getInvoiceCustomerName());
-        assertEquals("john@example.com", result.getInvoiceCustomerEmail());
-        assertEquals(billAddress, result.getInvoiceBillAddress());
-        assertEquals(shipAddress, result.getInvoiceShipAddress());
+        assertEquals(customerId, result.getCustomerId());
+        assertEquals("John Doe", result.getCustomerName());
+        assertEquals("john@example.com", result.getCustomerEmail());
+        assertEquals(billAddress, result.getBillingAddress());
+        assertEquals(shipAddress, result.getShippingAddress());
         verify(invoiceRepo, times(1)).save(any(Invoice.class));
     }
 
@@ -93,7 +93,7 @@ public class InvoiceServiceTest {
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceTotalAmountBetween(minAmount, maxAmount))
+        when(invoiceRepo.findByTotalAmountBetween(minAmount, maxAmount))
             .thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByTotalAmountBetween(minAmount, maxAmount);
@@ -101,7 +101,7 @@ public class InvoiceServiceTest {
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceTotalAmountBetween(minAmount, maxAmount);
+        verify(invoiceRepo, times(1)).findByTotalAmountBetween(minAmount, maxAmount);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class InvoiceServiceTest {
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceTotalAmountGreaterThan(amount))
+        when(invoiceRepo.findByTotalAmountGreaterThan(amount))
             .thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByTotalAmountGreaterThan(amount);
@@ -119,7 +119,7 @@ public class InvoiceServiceTest {
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceTotalAmountGreaterThan(amount);
+        verify(invoiceRepo, times(1)).findByTotalAmountGreaterThan(amount);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class InvoiceServiceTest {
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceTotalAmountLessThan(amount))
+        when(invoiceRepo.findByTotalAmountLessThan(amount))
             .thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByTotalAmountLessThan(amount);
@@ -137,7 +137,7 @@ public class InvoiceServiceTest {
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceTotalAmountLessThan(amount);
+        verify(invoiceRepo, times(1)).findByTotalAmountLessThan(amount);
     }
 
     @Test
@@ -146,14 +146,14 @@ public class InvoiceServiceTest {
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceCustomerId(customerId)).thenReturn(Arrays.asList(invoice1, invoice2));
+        when(invoiceRepo.findByCustomerId(customerId)).thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByCustomerId(customerId);
 
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceCustomerId(customerId);
+        verify(invoiceRepo, times(1)).findByCustomerId(customerId);
     }
 
     @Test
@@ -162,27 +162,27 @@ public class InvoiceServiceTest {
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByInvoiceCustomerEmail(email)).thenReturn(Arrays.asList(invoice1, invoice2));
+        when(invoiceRepo.findByCustomerEmail(email)).thenReturn(Arrays.asList(invoice1, invoice2));
 
         List<Invoice> invoices = invoiceService.findInvoicesByCustomerEmail(email);
 
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByInvoiceCustomerEmail(email);
+        verify(invoiceRepo, times(1)).findByCustomerEmail(email);
     }
 
     @Test
     void testFindInvoiceById() throws RecordNotFoundException {
         UUID invoiceId = UUID.randomUUID();
         Invoice invoice = new Invoice();
-        invoice.setInvoiceId(invoiceId);
+        invoice.setId(invoiceId);
 
         when(invoiceRepo.findById(invoiceId)).thenReturn(Optional.of(invoice));
 
         Invoice foundInvoice = invoiceService.findInvoiceById(invoiceId);
         assertNotNull(foundInvoice);
-        assertEquals(invoiceId, foundInvoice.getInvoiceId());
+        assertEquals(invoiceId, foundInvoice.getId());
         verify(invoiceRepo, times(1)).findById(invoiceId);
     }
 
@@ -204,7 +204,7 @@ public class InvoiceServiceTest {
     void testUpdateInvoice_Success() throws RecordNotFoundException {
         UUID invoiceId = UUID.randomUUID();
         Invoice existingInvoice = new Invoice();
-        existingInvoice.setInvoiceId(invoiceId);
+        existingInvoice.setId(invoiceId);
     
         Map<UUID, Integer> items = new HashMap<>();
         items.put(UUID.randomUUID(), 2);
@@ -213,7 +213,7 @@ public class InvoiceServiceTest {
         List<InvoiceItem> invoiceTable = new ArrayList<>();
         for (Map.Entry<UUID, Integer> entry : items.entrySet()) {
             InvoiceItem invoiceItem = new InvoiceItem();
-            invoiceItem.setInvoiceItemProductId(entry.getKey());
+            invoiceItem.setProductId(entry.getKey());
             invoiceItem.setQuantity(entry.getValue());
             invoiceTable.add(invoiceItem);
         }
@@ -224,7 +224,7 @@ public class InvoiceServiceTest {
             UUID productId = invocation.getArgument(0);
             Integer quantity = invocation.getArgument(1);
             InvoiceItem invoiceItem = new InvoiceItem();
-            invoiceItem.setInvoiceItemProductId(productId);
+            invoiceItem.setProductId(productId);
             invoiceItem.setQuantity(quantity);
             return invoiceItem;
         });
@@ -238,7 +238,7 @@ public class InvoiceServiceTest {
         assertNotNull(updatedInvoice);
         assertEquals(invoiceTable.size(), updatedInvoice.getInvoiceItems().size());
         for (int i = 0; i < invoiceTable.size(); i++) {
-            assertEquals(invoiceTable.get(i).getInvoiceItemProductId(), updatedInvoice.getInvoiceItems().get(i).getInvoiceItemProductId());
+            assertEquals(invoiceTable.get(i).getProductId(), updatedInvoice.getInvoiceItems().get(i).getProductId());
             assertEquals(invoiceTable.get(i).getQuantity(), updatedInvoice.getInvoiceItems().get(i).getQuantity());
         }
         verify(invoiceRepo, times(1)).existsById(invoiceId);
@@ -270,7 +270,7 @@ public class InvoiceServiceTest {
     void testDeleteInvoice() throws RecordNotFoundException {
         UUID invoiceId = UUID.randomUUID();
         Invoice invoice = new Invoice();
-        invoice.setInvoiceId(invoiceId);
+        invoice.setId(invoiceId);
         invoice.setInvoiceItems(new ArrayList<>());
         
         when(invoiceRepo.findById(invoiceId)).thenReturn(Optional.of(invoice));

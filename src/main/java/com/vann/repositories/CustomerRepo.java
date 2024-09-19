@@ -9,7 +9,7 @@ import com.vann.models.Customer;
 
 @Repository
 public interface CustomerRepo extends JpaRepository<Customer, UUID> {
-    Optional<Customer> findByCustomerEmail(String email);
+    Optional<Customer> findByEmail(String email);
 }
 
 

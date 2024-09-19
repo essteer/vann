@@ -49,8 +49,8 @@ public class CartServiceTest {
         productId2 = UUID.randomUUID();
         cartId = UUID.randomUUID();
         customer = new Customer("John Doe", "john.doe@example.com");
-        product1 = new Product(new Category().getCategoryId(), "Product 1", 10.0, "image1.png", null, null);
-        product2 = new Product(new Category().getCategoryId(), "Product 2", 20.0, "image2.png", null, null);
+        product1 = new Product(new Category().getId(), "Product 1", 10.0, "image1.png", null, null);
+        product2 = new Product(new Category().getId(), "Product 2", 20.0, "image2.png", null, null);
         cart = new Cart(customerId, new HashMap<>());
 
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
@@ -97,7 +97,7 @@ public class CartServiceTest {
     @Test
     void testCreateOrFindCartByCustomerId_CartDoesNotExist() {
         Customer newCustomer = new Customer("New Customer", "new@customer.com");
-        UUID newCustomerId = newCustomer.getCustomerId();
+        UUID newCustomerId = newCustomer.getId();
     
         when(customerService.findCustomerById(newCustomerId)).thenReturn(newCustomer);
         when(cartRepo.findByCustomerId(newCustomerId)).thenReturn(Optional.empty());

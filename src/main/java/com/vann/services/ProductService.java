@@ -51,7 +51,7 @@ public class ProductService {
     }
 
     public List<Product> findProductsByName(String productName) {
-        return productRepo.findByProductName(productName.toUpperCase());
+        return productRepo.findByName(productName.toUpperCase());
     }
 
     public Product findProductById(UUID productId) throws RecordNotFoundException {
@@ -65,8 +65,8 @@ public class ProductService {
             throw new RecordNotFoundException("Product with ID '" + productId + "' not found");
         }
         isValidCategoryId(updatedProduct.getCategoryId());
-        updatedProduct.setProductId(productId);
-        updatedProduct.setProductName(updatedProduct.getProductName());
+        updatedProduct.setId(productId);
+        updatedProduct.setName(updatedProduct.getName());
         return productRepo.save(updatedProduct);
     }
 

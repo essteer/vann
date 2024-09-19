@@ -47,11 +47,11 @@ public class ProductController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/category/name/{categoryName}")
-    public ResponseEntity<?> getProductsByCategoryName(@PathVariable String categoryName) {
-        String methodName = "getProductsByCategoryName()";
+    public ResponseEntity<?> getsByCategoryName(@PathVariable String categoryName) {
+        String methodName = "getsByCategoryName()";
         try {
             Category category = categoryService.findCategoryByName(categoryName);
-            List<Product> products = productService.findProductsByCategoryId(category.getCategoryId());
+            List<Product> products = productService.findProductsByCategoryId(category.getId());
             if (products.isEmpty()) {
                 LogHandler.status204NoContent("GET", ProductController.class, methodName);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -69,8 +69,8 @@ public class ProductController {
     }
 
     @GetMapping("/name/{productName}")
-    public ResponseEntity<List<Product>> getProductsByName(@PathVariable String productName) {
-        String methodName = "getProductsByName()";
+    public ResponseEntity<List<Product>> getsByName(@PathVariable String productName) {
+        String methodName = "getsByName()";
         try {
             List<Product> products = productService.findProductsByName(productName);
             if (products.isEmpty()) {
@@ -90,8 +90,8 @@ public class ProductController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProduct(@PathVariable UUID id) {
-        String methodName = "getProduct()";
+    public ResponseEntity<?> get(@PathVariable UUID id) {
+        String methodName = "get()";
         try {    
             Product product = productService.findProductById(id);
             LogHandler.status200OK("GET", ProductController.class, methodName);
@@ -112,9 +112,9 @@ public class ProductController {
         try {
             Product savedProduct = productService.createProduct(
                 product.getCategoryId(),
-                product.getProductName(),
-                product.getProductPrice(),
-                product.getProductImage(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageURI(),
                 product.getSize(),
                 product.getColour()
             );
@@ -122,7 +122,7 @@ public class ProductController {
             URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedProduct.getProductId())
+                .buildAndExpand(savedProduct.getId())
                 .toUri();
 
             LogHandler.status201Created("POST", ProductController.class, methodName);
@@ -148,9 +148,9 @@ public class ProductController {
                 try {
                     Product savedProduct = productService.createProduct(
                         product.getCategoryId(),
-                        product.getProductName(),
-                        product.getProductPrice(),
-                        product.getProductImage(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getImageURI(),
                         product.getSize(),
                         product.getColour()
                     );
