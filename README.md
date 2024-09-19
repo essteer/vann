@@ -103,26 +103,16 @@ The required dependencies are included in `pom.xml`. Modern IDEs with Java and S
 
 <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-4169E1.svg?style=flat&labelColor=555&logo=PostgreSQL&logoColor=white"></a>
 
-This backend server is built on a [PostgreSQL](https://www.postgresql.org/) database with configuration in `application.properties` as follows:
+This backend server is built on a [PostgreSQL](https://www.postgresql.org/) database. The values used by `application.properties` are stored in the `.env` file &mdash; for Postgres the relevant values are provided in this project's `.env.example`.
 
-```properties
-### POSTGRESQL DATABASE ###
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url="jdbc:postgresql://localhost:5432/${DATABASE_NAME}"
-spring.datasource.username=${POSTGRESQL_USERNAME}
-spring.datasource.password=${POSTGRESQL_PASSWORD}
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-```
-
-The PostgreSQL username and password indicated above should be for a user with write permissions to the database indicated as `DATABASE_NAME` at the end of the `datasource.url` line. First log into Postgres and create the database: 
+The PostgreSQL username and password provided should be for a user with write permissions to the database. First log into Postgres and create the database: 
 
 ```ssl
-postgres=> CREATE DATABASE database_name;
+postgres=> CREATE DATABASE example_database;
 CREATE DATABASE
 ```
 
-The `CREATE DATABASE` response indicates that the database was successfully created, but you can enter `\l` to see a list of databases. To delete the database, run `DROP DATABASE database_name;`.
+The `CREATE DATABASE` response indicates that the database was successfully created, but you can enter `\l` to see a list of databases. To delete the database, run `DROP DATABASE example_database;`.
 
 From then on database interactions can be handled entirely via Spring.
 
@@ -130,18 +120,17 @@ If preferred, the database can be run MySQL or H2 instead. Suggested settings in
 
 #### MySQL
 
-To use MySQL replace the Postgres content in `application.properties` and `pom.xml` as indicated below.
+To use MySQL replace the Postgres content in `.env` and `pom.xml` as indicated below.
 
-In `application.properties`:
+In `.env`:
 
- ```properties
- ### MYSQL DATABASE ###
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.url=jdbc:mysql://localhost:3306/${DATABASE_NAME}
-spring.datasource.username=${MYSQL_USERNAME}
-spring.datasource.password=${MYSQL_PASSWORD}
-spring.jpa.database=mysql
-spring.jpa.hibernate.ddl-auto=create-drop
+```properties
+### MySQL database setup
+# ...
+DATASOURCE_DRIVER=com.mysql.cj.jdbc.Driver
+DATASOURCE_URL=jdbc:mysql://localhost:3306/example_database
+# ...
+DATASOURCE_BRAND=MYSQL
 ```
 
 In `pom.xml`:
@@ -156,18 +145,15 @@ In `pom.xml`:
 
 #### H2 database
 
-In `application.properties`:
+In `.env`:
 
 ```properties
-### H2 DATABASE ###
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.url=jdbc:h2:file:./h2/rest;AUTO_SERVER=true
-spring.datasource.username=${H2_USERNAME}
-spring.datasource.password=${H2_PASSWORD}
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2
-spring.jpa.hibernate.ddl-auto=update
+### H2 database setup
+# ...
+DATASOURCE_DRIVER=org.h2.Driver
+DATASOURCE_URL=jdbc:h2:file:./h2/rest;AUTO_SERVER=true
+# ...
+DATASOURCE_BRAND=H2
 ```
 
 In `pom.xml`:
@@ -180,19 +166,33 @@ In `pom.xml`:
 </dependency>
 ```
 
+Additionally, add the following parameters to the `application.properties` file:
+
+```properties
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2
+```
+
 ## Operation
 
 <a href="https://spring.io/projects/spring-framework"><img src="https://img.shields.io/badge/Spring-6DB33F.svg?style=flat&labelColor=555&logo=Spring&logoColor=white"></a>
 
 The entrypoint of the application is `VannApplication.java`, located at `src/main/java/com/vann/VannApplication.java`. Additional runtime logic is contained in `DataLoader.java` at the same directory level.
 
-Run `VannApplication.java` to launch the program: to run using an IDE, open that file and click run. To run from the terminal, navigate to the project root directory and enter this command:
+When running the app for the first time &mdash; or after dependency updates &mdash; navigate to the project root directory and create a clean build as follows:
 
 ```console
-$ mvn spring-boot: run
+$ mvn clean install
 ```
 
-The `application.properties` file (in `src/main/resources/application.properties`) is configured to run the application on port 9001. Amend the value of the line `server.port=9001` to use a different port — but be sure to also change this in the frontend config as well if using that along with this.
+To run the application, enter this command from the project root directory:
+
+```console
+$ mvn spring-boot:run
+```
+
+The `application.properties` file (in `src/main/resources/application.properties`) is configured to run the application on port 9001. Amend the value of the line `SERVER_PORT=9001` in the `.env` file to use a different port — but be sure to also change this in the frontend config as well if using that along with this.
 
 ### Endpoints
 
