@@ -1,23 +1,17 @@
 package com.vann.services;
 
-import com.vann.model.Category;
-import com.vann.model.enums.CategoryType;
-import com.vann.repositories.CategoryRepo;
-import com.vann.service.CategoryService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import java.util.*;
+
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+
+import com.vann.models.Category;
+import com.vann.models.enums.CategoryType;
+import com.vann.repositories.CategoryRepo;
+
 
 class CategoryServiceTest {
 
@@ -35,14 +29,14 @@ class CategoryServiceTest {
     @Test
     void testSaveCategory() {
         Category category = new Category();
-        category.setCategoryName("Earring");
+        category.setName("Earring");
 
         when(categoryRepo.save(category)).thenReturn(category);
 
         Category savedCategory = categoryService.saveCategory(category);
 
         assertNotNull(savedCategory);
-        assertEquals("earring", savedCategory.getCategoryName());
+        assertEquals("earring", savedCategory.getName());
         verify(categoryRepo, times(1)).save(category);
     }
 
@@ -64,17 +58,16 @@ class CategoryServiceTest {
 
     @Test
     void testFindCategoryById() {
-        UUID categoryId = UUID.randomUUID();
+        UUID id = UUID.randomUUID();
         Category category = new Category();
-        category.setCategoryId(categoryId);
-        category.setCategoryName("earring");
+        category.setName("earring");
 
-        when(categoryRepo.findById(categoryId)).thenReturn(Optional.of(category));
+        when(categoryRepo.findById(id)).thenReturn(Optional.of(category));
 
-        Category foundCategory = categoryService.findCategoryById(categoryId);
+        Category foundCategory = categoryService.findCategoryById(id);
 
-        assertEquals("earring", foundCategory.getCategoryName());
-        verify(categoryRepo, times(1)).findById(categoryId);
+        assertEquals("earring", foundCategory.getName());
+        verify(categoryRepo, times(1)).findById(id);
     }
 
     @Test
@@ -85,54 +78,52 @@ class CategoryServiceTest {
             new Category(categoryType, "Silver Earring")
         );
     
-        when(categoryRepo.findByCategoryType(categoryType)).thenReturn(categories);
+        when(categoryRepo.findByType(categoryType)).thenReturn(categories);
     
         List<Category> foundCategories = categoryService.findCategoriesByType(categoryType);
     
         assertNotNull(foundCategories);
         assertEquals(2, foundCategories.size());
-        assertEquals(categoryType, foundCategories.get(0).getCategoryType());
-        verify(categoryRepo, times(1)).findByCategoryType(categoryType);
+        assertEquals(categoryType, foundCategories.get(0).getType());
+        verify(categoryRepo, times(1)).findByType(categoryType);
     }
 
     @Test
     void testFindCategoryByName() {
-        String categoryName = "earring";
-        Category category = new Category(CategoryType.EARRING, categoryName);
+        String name = "earring";
+        Category category = new Category(CategoryType.EARRING, name);
     
-        when(categoryRepo.findByCategoryName(categoryName)).thenReturn(Optional.of(category));
-        Category foundCategory = categoryService.findCategoryByName(categoryName);
+        when(categoryRepo.findByName(name)).thenReturn(Optional.of(category));
+        Category foundCategory = categoryService.findCategoryByName(name);
     
-        assertEquals(categoryName, foundCategory.getCategoryName());
-        verify(categoryRepo, times(1)).findByCategoryName(categoryName);
+        assertEquals(name, foundCategory.getName());
+        verify(categoryRepo, times(1)).findByName(name);
     }
 
     @Test
     void testUpdateCategory() {
-        UUID categoryId = UUID.randomUUID();
-        Category existingCategory = new Category(CategoryType.EARRING, "earring");
-        existingCategory.setCategoryId(categoryId);
-    
+        UUID id = UUID.randomUUID();
+        Category existingCategory = new Category(CategoryType.RING, "ring");
         Category updatedCategory = new Category(CategoryType.NECKLACE, "necklace");
     
-        when(categoryRepo.existsById(categoryId)).thenReturn(true);
-        when(categoryRepo.save(updatedCategory)).thenReturn(updatedCategory);
+        when(categoryRepo.findById(id)).thenReturn(Optional.of(existingCategory));
+        when(categoryRepo.save(existingCategory)).thenReturn(updatedCategory);
     
-        Category result = categoryService.updateCategory(categoryId, updatedCategory);
+        Category result = categoryService.updateCategory(id, updatedCategory);
     
         assertNotNull(result);
-        assertEquals(categoryId, result.getCategoryId());
-        assertEquals("necklace", result.getCategoryName());
-        verify(categoryRepo, times(1)).existsById(categoryId);
-        verify(categoryRepo, times(1)).save(updatedCategory);
+        assertEquals("necklace", result.getName());
+        verify(categoryRepo, times(1)).findById(id);
+        verify(categoryRepo, times(1)).save(existingCategory);
     }
 
     @Test
     void testDeleteCategory() {
-        UUID categoryId = UUID.randomUUID();
-        doNothing().when(categoryRepo).deleteById(categoryId);
-        categoryService.deleteCategory(categoryId);
-        verify(categoryRepo, times(1)).deleteById(categoryId);
+        UUID id = UUID.randomUUID();
+        when(categoryRepo.existsById(id)).thenReturn(true);
+        doNothing().when(categoryRepo).deleteById(id);
+        categoryService.deleteCategory(id);
+        verify(categoryRepo, times(1)).deleteById(id);
     }
 
 }

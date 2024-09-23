@@ -1,32 +1,18 @@
 package com.vann.services;
 
-import com.vann.exceptions.RecordNotFoundException;
-import com.vann.model.Cart;
-import com.vann.model.Category;
-import com.vann.model.Customer;
-import com.vann.model.Product;
-import com.vann.repositories.CartRepo;
-import com.vann.repositories.CustomerRepo;
-import com.vann.service.CartService;
-import com.vann.service.CustomerService;
-import com.vann.service.ProductService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
+import java.util.*;
+
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+
+import com.vann.exceptions.*;
+import com.vann.models.*;
+import com.vann.repositories.*;
+
 
 public class CartServiceTest {
 
@@ -45,38 +31,27 @@ public class CartServiceTest {
     @InjectMocks
     private CartService cartService;
 
-    private Customer customer;
-    private Product product1;
-    private Product product2;
     private Cart cart;
+    private Customer customer;
+    private UUID cartId;
     private UUID customerId;
     private UUID productId1;
     private UUID productId2;
-    private UUID cartId;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
         customerId = UUID.randomUUID();
         productId1 = UUID.randomUUID();
         productId2 = UUID.randomUUID();
         cartId = UUID.randomUUID();
         customer = new Customer("John Doe", "john.doe@example.com");
-        product1 = new Product(new Category().getCategoryId(), "Product 1", 10.0, "image1.png", null, null);
-        product2 = new Product(new Category().getCategoryId(), "Product 2", 20.0, "image2.png", null, null);
-        cart = new Cart(customerId, new HashMap<>());
-
-        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cartRepo.findByCustomerId(customerId)).thenReturn(Optional.of(cart));
-        when(productService.findProductById(productId1)).thenReturn(product1);
-        when(productService.findProductById(productId2)).thenReturn(product2);
-        when(customerService.findCustomerById(customerId)).thenReturn(customer);
+        cart = new Cart(customer, new HashMap<>());
     }
 
     @Test
     void testFindAllCarts() {
-        List<Cart> carts = Arrays.asList(cart, new Cart(UUID.randomUUID(), new HashMap<>()));
+        List<Cart> carts = Arrays.asList(cart, new Cart(customer, new HashMap<>()));
         when(cartRepo.findAll()).thenReturn(carts);
         List<Cart> result = cartService.findAllCarts();
         assertEquals(2, result.size());
@@ -85,6 +60,7 @@ public class CartServiceTest {
 
     @Test
     void testFindCartById_CartExists() {
+        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
         Cart result = cartService.findCartById(cartId);
         assertEquals(cart, result);
     }
@@ -97,12 +73,12 @@ public class CartServiceTest {
         RecordNotFoundException thrown = assertThrows(RecordNotFoundException.class, () -> {
             cartService.findCartById(nonExistentCartId);
         });
-
-        assertEquals("Cart with ID '" + nonExistentCartId + "' not found", thrown.getMessage());
+        assertEquals(CartService.class + " | record not found | id=" + nonExistentCartId, thrown.getMessage());
     }
 
     @Test
     void testCreateOrFindCartByCustomerId_CartExists() {
+        when(cartRepo.findByCustomer_Id(customerId)).thenReturn(Optional.of(cart));
         Cart result = cartService.createOrFindCartByCustomerId(customerId);
         assertEquals(cart, result);
         verify(cartRepo, never()).save(any(Cart.class));
@@ -111,18 +87,18 @@ public class CartServiceTest {
     @Test
     void testCreateOrFindCartByCustomerId_CartDoesNotExist() {
         Customer newCustomer = new Customer("New Customer", "new@customer.com");
-        UUID newCustomerId = newCustomer.getCustomerId();
+        UUID newCustomerId = newCustomer.getId();
     
         when(customerService.findCustomerById(newCustomerId)).thenReturn(newCustomer);
-        when(cartRepo.findByCustomerId(newCustomerId)).thenReturn(Optional.empty());
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+        when(cartRepo.findByCustomer_Id(newCustomerId)).thenReturn(Optional.empty());
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
         Cart result = cartService.createOrFindCartByCustomerId(newCustomerId);
     
         assertNotNull(result, "Cart should not be null");
-        assertEquals(newCustomerId, result.getCartCustomerId(), "Cart should have the correct customer ID");
+        assertEquals(newCustomer, result.getCustomer(), "Cart should have the correct customer");
         assertTrue(result.getCartItems().isEmpty(), "New cart should be empty");
         verify(customerService).findCustomerById(newCustomerId);
-        verify(cartRepo).findByCustomerId(newCustomerId);
+        verify(cartRepo).findByCustomer_Id(newCustomerId);
         verify(cartRepo).save(result);
     }
 
@@ -131,7 +107,7 @@ public class CartServiceTest {
         cart.getCartItems().clear();
         
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
     
         Map<UUID, Integer> items = new HashMap<>();
         items.put(productId1, 2);
@@ -154,6 +130,8 @@ public class CartServiceTest {
         Map<UUID, Integer> items = new HashMap<>();
         items.put(productId1, 2);
 
+        when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
         Cart result = cartService.addOrUpdateCartItems(cartId, items);
 
         assertEquals(1, result.getCartItems().size());
@@ -170,13 +148,13 @@ public class CartServiceTest {
         items.put(invalidProductId, 1);
     
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
     
-        RecordNotFoundException thrown = assertThrows(RecordNotFoundException.class, () -> {
+        BulkOperationException thrown = assertThrows(BulkOperationException.class, () -> {
             cartService.addOrUpdateCartItems(cartId, items);
         });
     
-        assertEquals("Products with invalid IDs not updated: [" + invalidProductId.toString() + "]", thrown.getMessage());
+        assertEquals("Bulk operation failed with errors: Product not found", thrown.getMessage());
     
         Cart result = cartService.findCartById(cartId);
         assertNotNull(result, "Cart should not be null");
@@ -184,7 +162,6 @@ public class CartServiceTest {
         assertEquals(2, result.getCartItems().get(productId1), "Cart should have the correct quantity for the valid product");
     
         verify(cartRepo, times(2)).findById(cartId);
-        verify(cartRepo).save(result);
         verify(productService).findProductById(productId1);
         verify(productService).findProductById(invalidProductId);
     }
@@ -193,7 +170,7 @@ public class CartServiceTest {
     public void testEmptyCart_RemovesAllItems() {
         cart.getCartItems().put(productId1, 2);
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));  // Return the cart being saved
+        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Cart result = cartService.emptyCart(cartId);
 
