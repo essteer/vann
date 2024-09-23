@@ -64,9 +64,10 @@ public class ProductService {
         String imageURI = potentialProduct.getImageURI();
         Size size = potentialProduct.getSize();
         Colour colour = potentialProduct.getColour();
+        boolean featuredStatus = potentialProduct.getFeaturedStatus();
 
         validateProductAttributes(name, price, imageURI);
-        Product product = new Product(category, name, price, imageURI, size, colour);
+        Product product = new Product(category, name, price, imageURI, size, colour, featuredStatus);
         return saveProduct(product);
     }
 
@@ -113,6 +114,12 @@ public class ProductService {
         List<Product> products =  productRepo.findByName(name.toUpperCase());
         logBulkFindOperation(products, "name=" + name);
         return products;
+    }
+
+    public List<Product> findProductsByFeaturedStatus(boolean featuredStatus) {
+        List<Product> featuredProducts = productRepo.findByFeaturedStatus(true);
+        logBulkFindOperation(featuredProducts, "featuredStatus=" + featuredStatus);
+        return featuredProducts;
     }
 
     private void logBulkFindOperation(List<Product> products, String details) {

@@ -43,6 +43,16 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @CrossOrigin(origins = "https://localhost:3000")
+    @GetMapping("/featured")
+    public ResponseEntity<List<Product>> getFeaturedProducts() {
+        List<Product> products = productService.findProductsByFeaturedStatus(true);
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/name/{productName}")
     public ResponseEntity<List<Product>> getProductsByName(@PathVariable String productName) {
         List<Product> products = productService.findProductsByName(productName);

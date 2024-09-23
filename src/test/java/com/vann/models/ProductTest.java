@@ -14,7 +14,7 @@ public class ProductTest {
     @BeforeEach
     public void setUp() {
         category = new Category(CategoryType.RING, "Jewellery");
-        product = new Product(category, "Ring", 499.99, "image.png", Size.US_07, Colour.YELLOW_GOLD);
+        product = new Product(category, "Ring", 499.99, "image.png", Size.US_07, Colour.YELLOW_GOLD, true);
     }
 
     @Test
@@ -24,6 +24,7 @@ public class ProductTest {
         assertNull(defaultProduct.getName(), "Product name should be null");
         assertEquals(0.0, defaultProduct.getPrice(), "Product price should be 0.0");
         assertNull(defaultProduct.getImageURI(), "Product image should be null");
+        assertFalse(defaultProduct.getFeaturedStatus(), "Default featured status should be false");
     }
 
     @Test
@@ -34,6 +35,7 @@ public class ProductTest {
         assertEquals("image.png", product.getImageURI(), "Product imageURI should match");
         assertEquals(Size.US_07, product.getSize(), "Size should match");
         assertEquals(Colour.YELLOW_GOLD, product.getColour(), "Colour should match");
+        assertTrue(product.getFeaturedStatus(), "Featured status should be true");
     }
 
     @Test
@@ -46,6 +48,7 @@ public class ProductTest {
         product.setImageURI("necklace.png");
         product.setSize(Size.US_08);
         product.setColour(Colour.WHITE_GOLD);
+        product.setFeaturedStatus(false);
 
         assertEquals(newCategory, product.getCategory(), "Category ID should match");
         assertEquals("NECKLACE", product.getName(), "Product name should match");
@@ -53,13 +56,14 @@ public class ProductTest {
         assertEquals("necklace.png", product.getImageURI(), "Product imageURI should match");
         assertEquals(Size.US_08, product.getSize(), "Size should match");
         assertEquals(Colour.WHITE_GOLD, product.getColour(), "Colour should match");
+        assertEquals(false, product.getFeaturedStatus(), "Featured status should be false");
     }
 
     @Test
     public void testToString() {
         String expectedString = "Product [id=" + product.getId() +
                 ", category_name=" + category.getName() + ", name=RING, unitprice=499.99, size=" + 
-                product.getSize() + ", colour=" + product.getColour() + "]";
+                product.getSize() + ", colour=" + product.getColour() + ", featuredStatus=" + product.getFeaturedStatus() + "]";
 
         assertEquals(expectedString, product.toString(), "toString should match the expected output");
     }

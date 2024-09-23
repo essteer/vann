@@ -47,16 +47,24 @@ public class Product {
 	@JsonIgnore
 	private Date creationDate;
 
+    @Column(nullable = false)
+    private boolean featuredStatus = false;
+
     public Product() {
     }
 
-    public Product(Category category, String name, double price, String image, Size size, Colour colour) {
+    public Product(Category category, String name, double price, String imageURI, Size size, Colour colour) {
         this.category = category;
         this.name = (name != null) ? name.toUpperCase() : null;
         this.price = price;
-        this.imageURI = image;
+        this.imageURI = imageURI;
         this.size = size;
         this.colour = colour;
+    }
+
+    public Product(Category category, String name, double price, String imageURI, Size size, Colour colour, boolean featuredStatus) {
+        this(category, name, price, imageURI, size, colour);
+        this.featuredStatus = featuredStatus;
     }
 
     public UUID getId() {
@@ -117,10 +125,18 @@ public class Product {
         return this.creationDate;
     }
 
+    public boolean getFeaturedStatus() {
+        return this.featuredStatus;
+    }
+
+    public void setFeaturedStatus(boolean featuredStatus) {
+        this.featuredStatus = featuredStatus;
+    }
+
     @Override
     public String toString() {
         return "Product [id=" + id + ", category_name=" + category.getName() + ", name=" + name + ", unitprice=" + price
-                + ", size=" + size + ", colour=" + colour + "]";
+                + ", size=" + size + ", colour=" + colour + ", featuredStatus=" + featuredStatus +  "]";
     }
 
 }
