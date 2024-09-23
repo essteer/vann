@@ -43,7 +43,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @CrossOrigin(origins = "https://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/featured")
     public ResponseEntity<List<Product>> getFeaturedProducts() {
         List<Product> products = productService.findProductsByFeaturedStatus(true);
