@@ -3,6 +3,8 @@ package com.vann.services;
 import com.vann.exceptions.RecordNotFoundException;
 import com.vann.models.*;
 import com.vann.repositories.InvoiceRepo;
+import com.vann.utils.LogHandler;
+
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,63 +23,81 @@ public class InvoiceService {
         this.invoiceRepo = invoiceRepo;
     }
 
+    public Invoice createInvoice(Customer customer, Map<UUID, Integer> cartItems, String billingAddress, String shippingAddress) {
+        Invoice invoiceTemplate = createCustomerInvoice(customer, billingAddress, shippingAddress);
+        Invoice invoice = updateInvoice(invoiceTemplate, cartItems);
+
+        return invoice;
+    }
+
+    public Invoice createCustomerInvoice(Customer potentialCustomer, String billingAddress, String shippingAddress) throws RecordNotFoundException {
+        Invoice invoice = createBlankInvoice();
+        Customer customer = customerService.findCustomerById(potentialCustomer.getId());
+        invoice.setCustomer(customer);
+        invoice.setBillingAddress(billingAddress);
+        invoice.setShippingAddress(shippingAddress);
+
+        Invoice savedInvoice = saveInvoice(invoice);
+        LogHandler.status201Created(InvoiceService.class + " | 1 record created | id=" + invoice.getId());
+
+        return savedInvoice;
+    }
+
     public Invoice createBlankInvoice() {
         Invoice invoice = new Invoice();
         return invoice;
     }
 
-    public Invoice createCustomerInvoice(UUID customerId, String billingAddress, String shippingAddress) throws RecordNotFoundException {
-        Customer customer = customerService.findCustomerById(customerId);
-        Invoice invoice = createBlankInvoice();
-        invoice.setCustomerId(customerId);
-        invoice.setCustomerName(customer.getName());
-        invoice.setCustomerEmail(customer.getEmail());
-        invoice.setBillingAddress(billingAddress);
-        invoice.setShippingAddress(shippingAddress);
-        return saveInvoice(invoice);
+    public Invoice findInvoiceById(UUID id) throws RecordNotFoundException {
+        Optional<Invoice> invoiceOptional = invoiceRepo.findById(id);
+
+        if (invoiceOptional.isPresent()) {
+            LogHandler.status200OK(InvoiceService.class + " | record found | id=" + id);
+            return invoiceOptional.get();
+        } else {
+            throw new RecordNotFoundException(InvoiceService.class + " | record not found | id=" + id);
+        }
     }
 
     public List<Invoice> findAllInvoices() {
-        return invoiceRepo.findAll();
+        List<Invoice> invoices = invoiceRepo.findAll();
+        logBulkFindOperation(invoices, "findAll()");
+        return invoices;
     }
 
-    public List<Invoice> findInvoicesByTotalAmountBetween(double minAmount, double maxAmount) {
-        return invoiceRepo.findByTotalAmountBetween(minAmount, maxAmount);
+    private void logBulkFindOperation(List<Invoice> invoices, String details) {
+        if (invoices.isEmpty()) {
+            LogHandler.status204NoContent(InvoiceService.class + " | 0 records | " + details);
+        } else {
+            LogHandler.status200OK(InvoiceService.class + " | " + invoices.size() + " records | " + details);
+        }
     }
 
-    public List<Invoice> findInvoicesByTotalAmountGreaterThan(double amount) {
-        return invoiceRepo.findByTotalAmountGreaterThan(amount);
-    }
-
-    public List<Invoice> findInvoicesByTotalAmountLessThan(double amount) {
-        return invoiceRepo.findByTotalAmountLessThan(amount);
-    }
-
-    public List<Invoice> findInvoicesByCustomerId(UUID customerId) {
-        return invoiceRepo.findByCustomerId(customerId);
+    public List<Invoice> findInvoicesByCustomerId(UUID id) {
+        List<Invoice> invoices = invoiceRepo.findByCustomer_Id(id);
+        logBulkFindOperation(invoices, "findInvoicesByCustomer_Id()");
+        return invoices;
     }
 
     public List<Invoice> findInvoicesByCustomerEmail(String email) {
-        return invoiceRepo.findByCustomerEmail(email);
+        List<Invoice> invoices = invoiceRepo.findByCustomer_Email(email);
+        logBulkFindOperation(invoices, "findByCustomer_Email()");
+        return invoices;
     }
 
-    public Invoice findInvoiceById(UUID invoiceId) throws RecordNotFoundException {
-        Optional<Invoice> invoiceOptional = invoiceRepo.findById(invoiceId);
-        return invoiceOptional.orElseThrow(() -> 
-            new RecordNotFoundException("Invoice with ID '" + invoiceId + "'' not found"));
-    }
+    public Invoice updateInvoice(Invoice invoice, Map<UUID, Integer> items) throws RecordNotFoundException {
+        if ((invoiceRepo.existsById(invoice.getId()))) {
+            List<InvoiceItem> invoiceTable = createInvoiceTable(items);
+            invoice.setInvoiceItems(invoiceTable);
+            invoice.calculateTotalAmount();
 
-    public Invoice updateInvoice(UUID invoiceId, Map<UUID, Integer> items) throws RecordNotFoundException {
-        if (!invoiceRepo.existsById(invoiceId)) {
-            throw new RecordNotFoundException("Invoice with ID '" + invoiceId + "'' not found");
+            Invoice updatedInvoice = saveInvoice(invoice);
+            LogHandler.status200OK(InvoiceService.class + " | record updated | id=" + invoice.getId());
+            
+            return updatedInvoice;
+        } else {
+            throw new RecordNotFoundException(InvoiceService.class + " | record not found | id=" + invoice.getId());
         }
-        Invoice invoice = findInvoiceById(invoiceId);
-
-        List<InvoiceItem> invoiceTable = createInvoiceTable(items);
-        invoice.setInvoiceItems(invoiceTable);
-
-        invoice.calculateTotalAmount();
-        return saveInvoice(invoice);
     }
 
     private List<InvoiceItem> createInvoiceTable(Map<UUID, Integer> items) {
@@ -93,16 +113,16 @@ public class InvoiceService {
     }
 
     public Invoice saveInvoice(Invoice invoice) {
-        invoice.generateIdIfAbsent();
         return invoiceRepo.save(invoice);
     }
 
-    public void deleteInvoice(UUID invoiceId) {
-        Invoice invoice = findInvoiceById(invoiceId);
+    public void deleteInvoice(UUID id) {
+        Invoice invoice = findInvoiceById(id);
         List<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
         for (InvoiceItem item : invoiceItems) {
             invoiceItemService.deleteInvoiceItem(item.getId());
         }
-        invoiceRepo.deleteById(invoiceId);
+        invoiceRepo.deleteById(id);
+        LogHandler.status204NoContent(InvoiceService.class + " | record deleted | id=" + id);
     }
 }

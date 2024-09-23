@@ -9,6 +9,7 @@ import com.vann.repositories.CustomerRepo;
 import com.vann.utils.LogHandler;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -20,15 +21,31 @@ public class CustomerService {
         this.customerRepo = customerRepo;
     }
 
-    public Customer createCustomer(String name, String email) throws IllegalArgumentException {
-        String formattedEmail = email.trim().toLowerCase();
-        if (isValidEmail(formattedEmail)) {
-            Customer customer = new Customer(name, email);
-            return saveCustomer(customer);
-        } else {
-            LogHandler.invalidAttributeError(Customer.class, "email", email, "Invalid email format");
-            throw new IllegalArgumentException("Invalid email format: " + email);
+    @Transactional
+    public Customer createOne(Customer potentialCustomer) {
+        Customer customer = create(potentialCustomer);
+        LogHandler.status201Created(CustomerService.class + " | 1 record created");
+        return customer;
+    }
+
+    @Transactional
+    private Customer create(Customer potentialCustomer) {
+        String formattedEmail = potentialCustomer.getEmail().trim().toLowerCase();
+        potentialCustomer.setEmail(formattedEmail);
+        validateCustomerAttributes(potentialCustomer);
+        return saveCustomer(potentialCustomer);
+    }
+
+    private void validateCustomerAttributes(Customer customer) throws IllegalArgumentException {
+        String name = customer.getName();
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException(CustomerService.class + " | invalid name | cannot be null or empty");
         }
+        String email = customer.getEmail();
+        if (!isValidEmail(email)) {
+            throw new IllegalArgumentException(CustomerService.class + " | invalid email | email=" + email);
+        }
+        checkForEmailConflict(customer);
     }
 
     private boolean isValidEmail(String email) {
@@ -41,9 +58,9 @@ public class CustomerService {
         }
     }
 
+    @Transactional
     public Customer saveCustomer(Customer customer) {
         checkForEmailConflict(customer);
-        customer.generateIdIfAbsent();
         return customerRepo.save(customer);
     }
 
@@ -52,40 +69,55 @@ public class CustomerService {
     
         if (existingCustomerOptional.isPresent() && 
             !existingCustomerOptional.get().getId().equals(customer.getId())) {
-            throw new FieldConflictException("Customer with email '" + customer.getEmail() + "' already exists");
+            throw new FieldConflictException(CustomerService.class + " | record already exists | email=" + customer.getEmail());
         }
     }
 
     public List<Customer> findAllCustomers() {
-        return customerRepo.findAll();
+        List<Customer> customers = customerRepo.findAll();
+        logBulkFindOperation(customers, "findAll()");
+        return customers;
+    }
+
+    private void logBulkFindOperation(List<Customer> customers, String details) {
+        if (customers.isEmpty()) {
+            LogHandler.status204NoContent(CustomerService.class + " | 0 records | " + details);    
+        } else {
+            LogHandler.status200OK(CustomerService.class + " | " + customers.size() + " records | " + details);
+        }
     }
 
     public Customer findCustomerById(UUID id) throws RecordNotFoundException {
         Optional<Customer> customerOptional = customerRepo.findById(id);
         return customerOptional.orElseThrow(() -> 
-            new RecordNotFoundException("Customer with ID '" + id + "'' not found"));
+            new RecordNotFoundException(CustomerService.class + " | record not found | id=" + id));
     }
 
     public Customer findCustomerByEmail(String email) throws RecordNotFoundException {
         Optional<Customer> customerOptional = customerRepo.findByEmail(email.toLowerCase());
         return customerOptional.orElseThrow(() -> 
-            new RecordNotFoundException("Customer with email '" + email + "'' not found"));
+            new RecordNotFoundException(CustomerService.class + " | record not found | email=" + email));
     }
 
-    
-
+    @Transactional
     public Customer updateCustomer(UUID id, Customer updatedCustomer) throws RecordNotFoundException {
-        if (!customerRepo.existsById(id)) {
-            throw new RecordNotFoundException("Customer with ID '" + id + "' not found");
-        }
-        updatedCustomer.setId(id);
-        updatedCustomer.setEmail(updatedCustomer.getEmail());
-        return customerRepo.save(updatedCustomer);
+        Customer existingCustomer = customerRepo.findById(id).orElseThrow(() -> 
+            new RecordNotFoundException(CustomerService.class + " | record not found | id=" + id)
+        );
+        validateCustomerAttributes(updatedCustomer);
+        existingCustomer.setName(updatedCustomer.getName());
+        existingCustomer.setEmail(updatedCustomer.getEmail());
+        Customer savedCustomer = saveCustomer(existingCustomer);
+        LogHandler.status200OK(CustomerService.class + " | record updated | id=" + id);
+
+        return savedCustomer;
     }
 
-    
-
+    @Transactional
     public void deleteCustomer(UUID id) {
-        customerRepo.deleteById(id);
+        if (customerRepo.existsById(id)) {
+            customerRepo.deleteById(id);
+            LogHandler.status204NoContent(CustomerService.class + " | record deleted | id=" + id);
+        }
     }
 }

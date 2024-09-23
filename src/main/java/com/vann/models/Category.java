@@ -12,6 +12,7 @@ import com.vann.models.enums.CategoryType;
 public class Category {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
@@ -24,26 +25,12 @@ public class Category {
     }
 
     public Category(CategoryType type, String name) {
-        generateIdIfAbsent();
-        setType(type);
-        setName(name);
-    }
-
-    public void generateIdIfAbsent() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        this.type = type;
+        this.name = name;
     }
 
     public UUID getId() {
-        generateIdIfAbsent();
         return id;
-    }
-
-    public void setId(UUID id) {
-        if (id != null) {
-            this.id = id;
-        }
     }
 
     public CategoryType getType() {

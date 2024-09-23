@@ -10,10 +10,12 @@ import jakarta.persistence.*;
 public class Cart {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @JoinColumn(name = "FK_customer_id", referencedColumnName = "id", nullable = false)
-    private UUID customerId;
+    @OneToOne
+    @JoinColumn(name = "fk_customer_id", referencedColumnName = "id", nullable = false)
+    private Customer customer;
 
     @ElementCollection
     @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
@@ -24,37 +26,17 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(UUID customerId, Map<UUID, Integer> cartItems) {
-        generateIdIfAbsent();
-        setCartCustomerId(customerId);
+    public Cart(Customer customer, Map<UUID, Integer> cartItems) {
+        this.customer = customer;
         this.cartItems = cartItems;
     }
 
-    public void generateIdIfAbsent() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
-    }
-
     public UUID getId() {
-        generateIdIfAbsent();
         return id;
     }
 
-    public void setId(UUID id) {
-        if (id != null) {
-            this.id = id;
-        }
-    }
-
-    public UUID getCartCustomerId() {
-        return customerId;
-    }
-
-    public void setCartCustomerId(UUID customerId) {
-        if (customerId != null) {
-            this.customerId = customerId;
-        }
+    public Customer getCustomer() {
+        return customer;
     }
 
     public Map<UUID, Integer> getCartItems() {
@@ -70,7 +52,7 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart [id=" + id + ", customerId=" + customerId + "]";
+        return "Cart [id=" + id + ", customerId=" + customer.getId() + "]";
     }
 
 }

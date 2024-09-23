@@ -1,14 +1,15 @@
 package com.vann.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vann.models.enums.*;
-import com.vann.utils.LogHandler;
+import com.vann.models.enums.Colour;
+import com.vann.models.enums.Size;
 
 
 @Entity
@@ -16,14 +17,20 @@ import com.vann.utils.LogHandler;
 public class Product {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "FK_category_id", nullable = false)
+    @JoinColumn(name = "fk_category_id", nullable = false)
+    @NotNull(message = "Category cannot be null")
     private Category category;
 
+    @NotBlank(message = "Name cannot be null or empty")
     private String name;
+
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private double price;
+
     private String imageURI;
 
     @Enumerated(EnumType.STRING)
@@ -44,33 +51,16 @@ public class Product {
     }
 
     public Product(Category category, String name, double price, String image, Size size, Colour colour) {
-        generateIdIfAbsent();
         this.category = category;
-        this.name = name.toUpperCase();
+        this.name = (name != null) ? name.toUpperCase() : null;
         this.price = price;
         this.imageURI = image;
-        setColour(colour);
-        setSize(size);
-    }
-
-    public void generateIdIfAbsent() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        this.size = size;
+        this.colour = colour;
     }
 
     public UUID getId() {
-        generateIdIfAbsent();
         return id;
-    }
-
-    public void setId(UUID id) {
-        if (id == null) {
-            LogHandler.nullAttributeWarning(Product.class, getId(), "id");
-        } else {
-            this.id = id;
-            LogHandler.validAttributeOK(Product.class, getId(), "id", String.valueOf(getId()));
-        }
     }
 
     public String getName() {
@@ -104,48 +94,23 @@ public class Product {
     }
 
     public void setCategory(Category category) {
-        if (category != null) {
-            this.category = category;
-        }
+        this.category = category;
     }
 
     public Size getSize() {
         return size;
     }
 
-    public void setSize(Size size) throws IllegalArgumentException {
-        if (size == null) {
-            this.size = size;
-        } else {
-            try {
-                Size.valueOf(size.name());
-                this.size = size;
-                LogHandler.validAttributeOK(Product.class, getId(), "Size", String.valueOf(size));
-            } catch (IllegalArgumentException e) {
-                LogHandler.invalidAttributeError(Product.class, getId(), "Size", String.valueOf(size), e.getMessage());
-                throw e;
-            }
-        }
+    public void setSize(Size size) {
+        this.size = size;
     }
 
     public Colour getColour() {
         return colour;
     }
 
-    public void setColour(Colour colour) throws IllegalArgumentException {
+    public void setColour(Colour colour) {
         this.colour = colour;
-        if (colour == null) {
-            this.colour = colour;
-        } else {
-            try {
-                Colour.valueOf(colour.name());
-                this.colour = colour;
-                LogHandler.validAttributeOK(Product.class, getId(), "Colour", String.valueOf(colour));
-            } catch (IllegalArgumentException e) {
-                LogHandler.invalidAttributeError(Product.class, getId(), "Colour", String.valueOf(colour), e.getMessage());
-                throw e;
-            }
-        }
     }
 
     public Date getCreationDate() {

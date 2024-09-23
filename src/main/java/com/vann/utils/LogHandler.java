@@ -2,8 +2,7 @@ package com.vann.utils;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 
 public class LogHandler {
@@ -51,56 +50,32 @@ public class LogHandler {
         return argsString.toString();
     }
 
-    public static void nullAttributeWarning(Class<?> clazz, UUID id, String attributeName) {
-        logger.warn("{} (class: {}) {} cannot be null", id, clazz.getSimpleName(), attributeName);
+    public static void status200OK(String message) {
+        logger.info("200 OK: {}", message);
     }
 
-    public static void validIdOK(Class<?> clazz, UUID id, String classOfValidatedId) {
-        logger.info("{} (class: {}) validated by {}", id, classOfValidatedId, clazz.getSimpleName());
+    public static void status201Created(String message) {
+        logger.info("201 Created: {}", message);
     }
 
-    public static void invalidIdNotFound(Class<?> clazz, UUID id, String classOfInvalidatedId) {
-        logger.warn("{} (class: {}) not found by {}", id, classOfInvalidatedId, clazz.getSimpleName());
+    public static void status204NoContent(String message) {
+        logger.info("204 No Content: {}", message);
     }
 
-    public static void validAttributeOK(Class<?> clazz, UUID id, String attributeName, String attributeValue) {
-        logger.info("{} (class: {}) {} set to {}", id, clazz.getSimpleName(), attributeName, attributeValue);
+    public static void status400BadRequest(String message) {
+        logger.error("400 Bad Request: {}", message);
     }
 
-    public static void invalidAttributeError(Class<?> clazz, String attributeName, String attributeValue, String errorMessage) {
-        logger.error("(class: {}) {} cannot be set to {}: {}", clazz.getSimpleName(), attributeName, attributeValue, errorMessage);
+    public static void status404NotFound(String message) {
+        logger.error("404 Not Found: {}", message);
     }
 
-    public static void invalidAttributeError(Class<?> clazz, UUID id, String attributeName, String attributeValue, String errorMessage) {
-        logger.error("{} (class: {}) {} cannot be set to {}: {}", id, clazz.getSimpleName(), attributeName, attributeValue, errorMessage);
+    public static void status409Conflict(String message) {
+        logger.error("409 Conflict: {}", message);
     }
 
-    public static void status200OK(String requestMethod, Class<?> clazz, String callMethod) {
-        logger.info("200 OK: {} request to {} via {}", requestMethod, clazz, callMethod);
-    }
-
-    public static void status201Created(String requestMethod, Class<?> clazz, String callMethod) {
-        logger.info("201 Created: {} request to {} via {}", requestMethod, clazz, callMethod);
-    }
-
-    public static void status204NoContent(String requestMethod, Class<?> clazz, String callMethod) {
-        logger.info("204 No Content: {} request to {} via {}", requestMethod, clazz, callMethod);
-    }
-
-    public static void status400BadRequest(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
-        logger.error("400 Bad Request: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
-    }
-
-    public static void status404NotFound(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
-        logger.error("404 Not Found: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
-    }
-
-    public static void status409Conflict(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
-        logger.error("409 Conflict: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
-    }
-
-    public static void status500InternalServerError(String requestMethod, Class<?> clazz, String callMethod, String errorMessage) {
-        logger.error("500 Internal Server Error: {} request to {} via {}: {}", requestMethod, clazz, callMethod, errorMessage);
+    public static void status500InternalServerError(String message) {
+        logger.error("500 Internal Server Error: {}", message);
     }
 
 }

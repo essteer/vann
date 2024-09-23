@@ -10,9 +10,10 @@ import jakarta.persistence.*;
 public class InvoiceItem {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @JoinColumn(name = "FK_product_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "fk_product_id", referencedColumnName = "id", nullable = false)
     private UUID productId;
 
     private int quantity;
@@ -23,26 +24,12 @@ public class InvoiceItem {
     }
 
     public InvoiceItem(UUID productId, int quantity) {
-        generateIdIfAbsent();
-        setProductId(productId);
-        setQuantity(quantity);
-    }
-
-    public void generateIdIfAbsent() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
     public UUID getId() {
-        generateIdIfAbsent();
         return id;
-    }
-
-    public void setId(UUID id) {
-        if (id != null) {
-            this.id = id;
-        }
     }
 
     public UUID getProductId() {
@@ -70,7 +57,7 @@ public class InvoiceItem {
     }
 
     public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;  // negative unitPrice permitted (discounts, refunds, etc)
+        this.unitPrice = unitPrice;
     }
 
     public String getProductDetails() {

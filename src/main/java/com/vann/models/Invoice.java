@@ -3,7 +3,6 @@ package com.vann.models;
 import java.util.*;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -15,14 +14,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Invoice {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private UUID customerId;
-    private String customerName;
+    @ManyToOne
+    @JoinColumn(name = "fk_customer_id", referencedColumnName = "id", nullable = false)
+    private Customer customer;
 
-    @Email
-    private String customerEmail;
-
+    @Column(nullable = false)
     private String billingAddress;
     private String shippingAddress;
 
@@ -40,64 +39,27 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(UUID customerId, String customerName, String customerEmail, String billingAddress, String shippingAddress) {
-        generateIdIfAbsent();
-        setCustomerId(customerId);
-        setCustomerName(customerName);
-        setCustomerEmail(customerEmail);
+    public Invoice(Customer customer, String billingAddress, String shippingAddress) {
+        this.customer = customer;
         this.billingAddress = billingAddress;
         this.shippingAddress = shippingAddress;
     }
 
-    public Invoice(UUID customerId, String customerName, String customerEmail, String billingAddress) {
-        this(customerId, customerName, customerEmail, billingAddress, billingAddress);
-    }
-
-    public void generateIdIfAbsent() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+    public Invoice(Customer customer, String billingAddress) {
+        this(customer, billingAddress, billingAddress);
     }
 
     public UUID getId() {
-        generateIdIfAbsent();
         return id;
     }
 
-    public void setId(UUID id) {
-        if (id != null) {
-            this.id = id;
-        }
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        if (customerId != null) {
-            this.customerId = customerId;
-        }
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        if (customerName != null && !(customerName.trim().isEmpty())) {
-            this.customerName = customerName;
-        }
-    }
-
-    public String getCustomerEmail() {
-        return customerEmail;
-    }
-
-    public void setCustomerEmail(String email) {
-        String formattedEmail = email.trim().toLowerCase();
-        if (formattedEmail != null && !(formattedEmail.trim().isEmpty())) {
-            this.customerEmail = formattedEmail;
+    public void setCustomer(Customer customer) {
+        if (customer != null) {
+            this.customer = customer;
         }
     }
 
@@ -130,8 +92,8 @@ public class Invoice {
 
     public double calculateTotalAmount() {
         return invoiceItems.stream()
-                           .mapToDouble(InvoiceItem::calculateInvoiceItemSubtotal)
-                           .sum();
+            .mapToDouble(InvoiceItem::calculateInvoiceItemSubtotal)
+            .sum();
     }
 
     public List<InvoiceItem> getInvoiceItems() {
@@ -152,7 +114,7 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice [id=" + id + ", customer=" + customerName + ", email=" + customerEmail + ", billingAddress=" + billingAddress
+        return "Invoice [id=" + id + ", customerId=" + customer.getId() + ", email=" + customer.getEmail() + ", billingAddress=" + billingAddress
                 + ", shippingAddress=" + shippingAddress + ", totalAmount=" + calculateTotalAmount() + "]";
     }
 

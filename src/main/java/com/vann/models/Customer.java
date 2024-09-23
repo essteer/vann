@@ -15,11 +15,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Customer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 100)
     @Email
     private String email;
 
@@ -33,26 +35,12 @@ public class Customer {
     }
 
     public Customer(String name, String email) {
-        generateIdIfAbsent();
-        setName(name);
-        setEmail(email);
-    }
-
-    public void generateIdIfAbsent() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
+        this.name = name;
+        this.email = email;
     }
 
     public UUID getId() {
-        generateIdIfAbsent();
         return id;
-    }
-
-    public void setId(UUID id) {
-        if (id != null) {
-            this.id = id;
-        }
     }
 
     public String getName() {

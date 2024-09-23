@@ -60,7 +60,6 @@ class CategoryServiceTest {
     void testFindCategoryById() {
         UUID id = UUID.randomUUID();
         Category category = new Category();
-        category.setId(id);
         category.setName("earring");
 
         when(categoryRepo.findById(id)).thenReturn(Optional.of(category));
@@ -104,26 +103,24 @@ class CategoryServiceTest {
     @Test
     void testUpdateCategory() {
         UUID id = UUID.randomUUID();
-        Category existingCategory = new Category(CategoryType.EARRING, "earring");
-        existingCategory.setId(id);
-    
+        Category existingCategory = new Category(CategoryType.RING, "ring");
         Category updatedCategory = new Category(CategoryType.NECKLACE, "necklace");
     
-        when(categoryRepo.existsById(id)).thenReturn(true);
-        when(categoryRepo.save(updatedCategory)).thenReturn(updatedCategory);
+        when(categoryRepo.findById(id)).thenReturn(Optional.of(existingCategory));
+        when(categoryRepo.save(existingCategory)).thenReturn(updatedCategory);
     
         Category result = categoryService.updateCategory(id, updatedCategory);
     
         assertNotNull(result);
-        assertEquals(id, result.getId());
         assertEquals("necklace", result.getName());
-        verify(categoryRepo, times(1)).existsById(id);
-        verify(categoryRepo, times(1)).save(updatedCategory);
+        verify(categoryRepo, times(1)).findById(id);
+        verify(categoryRepo, times(1)).save(existingCategory);
     }
 
     @Test
     void testDeleteCategory() {
         UUID id = UUID.randomUUID();
+        when(categoryRepo.existsById(id)).thenReturn(true);
         doNothing().when(categoryRepo).deleteById(id);
         categoryService.deleteCategory(id);
         verify(categoryRepo, times(1)).deleteById(id);

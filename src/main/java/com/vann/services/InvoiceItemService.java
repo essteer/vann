@@ -32,12 +32,12 @@ public class InvoiceItemService {
             invoiceItem.setProductDetails(productDetails);
             invoiceItem.setProductDetails(productDetails);
             
-            saveInvoiceItem(invoiceItem);
-            return invoiceItem;
+            InvoiceItem savedInvoiceItem = saveInvoiceItem(invoiceItem);
+            LogHandler.status200OK(InvoiceItemService.class + " | record created | id=" + invoiceItem.getId());
+            return savedInvoiceItem;
         
         } else {
-            LogHandler.invalidAttributeError(InvoiceItem.class, "quantity", String.valueOf(quantity), "Quantity must be greater than 0");
-            throw new IllegalArgumentException("Quantity must be greater than 0: " + quantity);
+            throw new IllegalArgumentException(InvoiceItemService.class + " | invalid quantity | must be greater than 0: " + quantity);
         }
     }
 
@@ -45,15 +45,21 @@ public class InvoiceItemService {
         return quantity > 0;
     }
 
-    public Optional<InvoiceItem> findInvoiceItemById(UUID invoiceItemUuid) {
-        return invoiceItemRepo.findById(invoiceItemUuid);
+    public Optional<InvoiceItem> findInvoiceItemById(UUID id) throws RecordNotFoundException {
+        Optional<InvoiceItem> invoiceItemOptional = invoiceItemRepo.findById(id);
+
+        if (invoiceItemOptional.isPresent()) {
+            LogHandler.status200OK(InvoiceItemService.class + " | record found | id=" + id);
+            return invoiceItemOptional;
+        } else {
+            throw new RecordNotFoundException(InvoiceItemService.class + " | record not found | id=" + id);
+        }
     }
 
-    public InvoiceItem updateInvoiceItem(UUID invoiceItemUuid, InvoiceItem updatedInvoiceItem) throws RecordNotFoundException {
-        if (!invoiceItemRepo.existsById(invoiceItemUuid)) {
-            throw new RecordNotFoundException("InvoiceItem with ID '" + invoiceItemUuid + "' not found");
+    public InvoiceItem updateInvoiceItem(UUID id, InvoiceItem updatedInvoiceItem) throws RecordNotFoundException {
+        if (!invoiceItemRepo.existsById(id)) {
+            throw new RecordNotFoundException(InvoiceItemService.class + " | record not found | id=" + id);
         }
-        updatedInvoiceItem.setId(invoiceItemUuid);
         return saveInvoiceItem(updatedInvoiceItem);
     }
 
@@ -61,8 +67,9 @@ public class InvoiceItemService {
         return invoiceItemRepo.save(invoiceItem);
     }
 
-    public void deleteInvoiceItem(UUID invoiceItemId) {
-            invoiceItemRepo.deleteById(invoiceItemId);
+    public void deleteInvoiceItem(UUID id) {
+        invoiceItemRepo.deleteById(id);
+        LogHandler.status204NoContent(InvoiceItemService.class + " | record deleted | id=" + id);
     }
 
 }
