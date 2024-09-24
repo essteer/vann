@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.vann.models.*;
 import com.vann.services.CartService;
 
+
 @RestController
 @RequestMapping("/api/v1/carts")
 public class CartController {
@@ -26,14 +27,7 @@ public class CartController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/{id}")
-    public ResponseEntity<Cart> getCart(@PathVariable UUID id) {
-        Cart cart = cartService.findCartById(id);
-        return ResponseEntity.ok(cart);
-    }
-
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/customer-id/{id}")
+    @GetMapping("/customer/{id}")
     public ResponseEntity<Cart> getCartByCustomerId(@PathVariable UUID id) {
         Cart cart = cartService.findCartByCustomerId(id);
         return ResponseEntity.ok(cart);
@@ -44,16 +38,23 @@ public class CartController {
     public ResponseEntity<Invoice> checkoutCart(
             @PathVariable UUID id,
             @RequestBody Map<String, String> addresses) {
-        String billAddress = addresses.get("billAddress");
-        String shipAddress = addresses.get("shipAddress");
+        String billingAddress = addresses.get("billingAddress");
+        String shippingAddress = addresses.get("shippingAddress");
         
-        if (shipAddress == null) {
-            Invoice invoice = cartService.checkoutCart(id, billAddress);
+        if (shippingAddress == null) {
+            Invoice invoice = cartService.checkoutCart(id, billingAddress);
             return ResponseEntity.ok(invoice);
         } else {
-            Invoice invoice = cartService.checkoutCart(id, billAddress, shipAddress);
+            Invoice invoice = cartService.checkoutCart(id, billingAddress, shippingAddress);
             return ResponseEntity.ok(invoice);
         }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/{id}")
+    public ResponseEntity<Cart> getCart(@PathVariable UUID id) {
+        Cart cart = cartService.findCartById(id);
+        return ResponseEntity.ok(cart);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")

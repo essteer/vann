@@ -33,9 +33,9 @@ public class ProductController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/category/name/{categoryName}")
-    public ResponseEntity<List<Product>> getProductsByCategoryName(@PathVariable String categoryName) {
-        Category category = categoryService.findCategoryByName(categoryName);
+    @GetMapping("/category/{name}")
+    public ResponseEntity<List<Product>> getProductsByCategoryName(@PathVariable String name) {
+        Category category = categoryService.findCategoryByName(name);
         List<Product> products = productService.findProductsByCategoryId(category.getId());
         if (products.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -53,9 +53,9 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/name/{productName}")
-    public ResponseEntity<List<Product>> getProductsByName(@PathVariable String productName) {
-        List<Product> products = productService.findProductsByName(productName);
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Product>> getProductsByName(@PathVariable String name) {
+        List<Product> products = productService.findProductsByName(name);
         if (products.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
