@@ -35,7 +35,7 @@ public class CartController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/customer-id/{id}")
     public ResponseEntity<Cart> getCartByCustomerId(@PathVariable UUID id) {
-        Cart cart = cartService.createOrFindCartByCustomerId(id);
+        Cart cart = cartService.findCartByCustomerId(id);
         return ResponseEntity.ok(cart);
     }
 

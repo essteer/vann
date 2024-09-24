@@ -1,6 +1,7 @@
 package com.vann.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
@@ -9,8 +10,8 @@ import org.junit.jupiter.api.*;
 import org.mockito.*;
 
 import com.vann.exceptions.*;
-import com.vann.models.Customer;
-import com.vann.repositories.CustomerRepo;
+import com.vann.models.*;
+import com.vann.repositories.*;
 
 
 class CustomerServiceTest {
@@ -18,12 +19,28 @@ class CustomerServiceTest {
     @Mock
     private CustomerRepo customerRepo;
 
+    @Mock
+    private CartRepo cartRepo;
+
     @InjectMocks
     private CustomerService customerService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testCreateOne() {
+        Customer mockCustomer = new Customer("John Doe", "john.doe@example.com");
+        when(customerRepo.save(any(Customer.class))).thenReturn(mockCustomer);
+        when(cartRepo.save(any(Cart.class))).thenReturn(new Cart());
+    
+        Customer savedCustomer = customerService.createOne(mockCustomer);
+    
+        assertEquals(mockCustomer, savedCustomer);
+        verify(customerRepo, times(1)).save(mockCustomer);
+        verify(cartRepo, times(1)).save(any(Cart.class));
     }
 
     @Test

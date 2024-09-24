@@ -77,29 +77,27 @@ public class CartServiceTest {
     }
 
     @Test
-    void testCreateOrFindCartByCustomerId_CartExists() {
+    void testFindCartByCustomerId_CartExists() {
         when(cartRepo.findByCustomer_Id(customerId)).thenReturn(Optional.of(cart));
-        Cart result = cartService.createOrFindCartByCustomerId(customerId);
+        Cart result = cartService.findCartByCustomerId(customerId);
         assertEquals(cart, result);
         verify(cartRepo, never()).save(any(Cart.class));
     }
 
     @Test
-    void testCreateOrFindCartByCustomerId_CartDoesNotExist() {
+    void testFindCartByCustomerId_CartDoesNotExist() {
         Customer newCustomer = new Customer("New Customer", "new@customer.com");
         UUID newCustomerId = newCustomer.getId();
     
         when(customerService.findCustomerById(newCustomerId)).thenReturn(newCustomer);
         when(cartRepo.findByCustomer_Id(newCustomerId)).thenReturn(Optional.empty());
-        when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        Cart result = cartService.createOrFindCartByCustomerId(newCustomerId);
+        
+        assertThrows(RecordNotFoundException.class, ()-> {
+            cartService.findCartByCustomerId(newCustomerId);
+        });
     
-        assertNotNull(result, "Cart should not be null");
-        assertEquals(newCustomer, result.getCustomer(), "Cart should have the correct customer");
-        assertTrue(result.getCartItems().isEmpty(), "New cart should be empty");
         verify(customerService).findCustomerById(newCustomerId);
         verify(cartRepo).findByCustomer_Id(newCustomerId);
-        verify(cartRepo).save(result);
     }
 
     @Test
