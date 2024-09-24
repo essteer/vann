@@ -80,8 +80,8 @@ class ProductServiceTest {
     void testCreateMany_ValidProducts() {
         List<Product> products = new ArrayList<>();
         Category category = new Category(CategoryType.RING, "Jewellery");
-        products.add(new Product(category, "Ring", 499.99, "image.png", Size.US_07, Colour.YELLOW_GOLD));
-        products.add(new Product(category, "Bracelet", 299.99, "image2.png", Size.US_07, Colour.WHITE_GOLD));
+        products.add(new Product(category, "Ring", 499.99, "image.png", Size.US_07, Colour.YELLOW_GOLD, false));
+        products.add(new Product(category, "Bracelet", 299.99, "image2.png", Size.US_07, Colour.WHITE_GOLD, true));
 
         when(categoryService.findCategoryByName(category.getName())).thenReturn(category);
         when(productRepo.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -96,7 +96,7 @@ class ProductServiceTest {
     void testUpdateProduct_ValidUpdate() {
         UUID id = UUID.randomUUID();
         Category existingCategory = new Category(CategoryType.RING, "Jewellery");
-        Product existingProduct = new Product(existingCategory, "Old Necklace", 299.99, "image.png", Size.US_07, Colour.YELLOW_GOLD);
+        Product existingProduct = new Product(existingCategory, "Old Necklace", 299.99, "image.png", Size.US_07, Colour.YELLOW_GOLD, false);
     
         when(productRepo.findById(id)).thenReturn(Optional.of(existingProduct));
         when(categoryService.findCategoryByName(anyString())).thenReturn(existingCategory);
@@ -109,6 +109,7 @@ class ProductServiceTest {
         updatedProduct.setImageURI("image.png");
         updatedProduct.setSize(Size.US_08);
         updatedProduct.setColour(Colour.WHITE_GOLD);
+        updatedProduct.setFeaturedStatus(true);
         Product result = productService.updateProduct(id, updatedProduct);
     
         assertEquals("UPDATED NECKLACE", result.getName());
