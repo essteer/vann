@@ -29,7 +29,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/category/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Category> getCategoryByName(@PathVariable String name) {
         Category category = categoryService.findCategoryByName(name);
         return ResponseEntity.ok(category);

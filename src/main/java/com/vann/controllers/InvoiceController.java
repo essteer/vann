@@ -26,18 +26,9 @@ public class InvoiceController {
         return ResponseEntity.ok(invoices);
     }
 
-    @GetMapping("/customer-id/{id}")
+    @GetMapping("/customer/{id}")
     public ResponseEntity<List<Invoice>> getInvoicesByCustomerId(@PathVariable UUID id) {
         List<Invoice> invoices = invoiceService.findInvoicesByCustomerId(id);
-        if (invoices.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity.ok(invoices);
-    }
-
-    @GetMapping("/customer-email/{email}")
-    public ResponseEntity<List<Invoice>> getInvoicesByCustomerEmail(@PathVariable String email) {
-        List<Invoice> invoices = invoiceService.findInvoicesByCustomerEmail(email);
         if (invoices.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
