@@ -27,33 +27,21 @@ public class CartService {
     }
 
     @Transactional
-    public Cart createOrFindCartByCustomerId(UUID customerId) throws RecordNotFoundException {
-        Customer customer = customerService.findCustomerById(customerId);
-        try {
-            Cart cart = findCartByCustomerId(customerId);
-            LogHandler.status200OK(CartService.class + " | record found | id=" + cart.getId());
-            return cart;
-        } catch (RecordNotFoundException e) {
-            Cart newCart = saveCart(new Cart(customer, new HashMap<>()));
-            LogHandler.status201Created(CartService.class + " | 1 record created | id=" + newCart.getId());
-            return newCart;
-        }
+    public Cart findCartByCustomerId(UUID id) {
+        customerService.findCustomerById(id);
+        return findCartByExistingCustomerId(id);
     }
 
-    private Cart findCartByCustomerId(UUID customerId) throws RecordNotFoundException {
-        Optional<Cart> cartOptional = cartRepo.findByCustomer_Id(customerId);
+    private Cart findCartByExistingCustomerId(UUID id) throws RecordNotFoundException {
+        Optional<Cart> cartOptional = cartRepo.findByCustomer_Id(id);
         
         if (cartOptional.isPresent()) {
-            LogHandler.status200OK(CartService.class + " | record found | customerId=" + customerId);
-            return cartOptional.get();
+            Cart cart = cartOptional.get();
+            LogHandler.status200OK(CartService.class + " | record found | id=" + cart.getId());
+            return cart;
         } else {
-            throw new RecordNotFoundException(CartService.class + " | record not found | id=" + customerId);
+            throw new RecordNotFoundException(CartService.class + " | record not found | customerId=" + id);
         }
-    }
-
-    @Transactional
-    private Cart saveCart(Cart cart) {
-        return cartRepo.save(cart);
     }
 
     public List<Cart> findAllCarts() {
@@ -139,6 +127,11 @@ public class CartService {
     @Transactional
     private void addNewCartItem(Cart cart, UUID productId, int quantity) {
         cart.getCartItems().put(productId, quantity);
+    }
+
+    @Transactional
+    private Cart saveCart(Cart cart) {
+        return cartRepo.save(cart);
     }
 
     @Transactional

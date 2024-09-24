@@ -4,8 +4,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import com.vann.exceptions.*;
-import com.vann.models.Customer;
-import com.vann.repositories.CustomerRepo;
+import com.vann.models.*;
+import com.vann.repositories.*;
 import com.vann.utils.LogHandler;
 
 import org.springframework.stereotype.Service;
@@ -16,15 +16,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomerService {
 
     private final CustomerRepo customerRepo;
+    private final CartRepo cartRepo;
 
-    public CustomerService(CustomerRepo customerRepo) {
+    public CustomerService(CustomerRepo customerRepo, CartRepo cartRepo) {
         this.customerRepo = customerRepo;
+        this.cartRepo = cartRepo;
     }
 
+    /**
+     * Creates a single Customer instance.
+     * This method makes an exception to this application's general rule of delegating interactions
+     * with each repository to its designated service layer. The reason for this exception is to
+     * overcome the temporal issue of both the CustomerService and CartService requiring an instance
+     * of the other service at initialisation. The CustomerService is permitted to interact with
+     * the CartRepo for the sole purpose of creating a new cart when a new customer is created.
+     * 
+     * @param potentialCustomer
+     * @return customer A newly created customer
+     */
     @Transactional
     public Customer createOne(Customer potentialCustomer) {
         Customer customer = create(potentialCustomer);
-        LogHandler.status201Created(CustomerService.class + " | 1 record created");
+        LogHandler.status201Created(CustomerService.class + " | 1 customer record created | id=" + customer.getId());
+        Cart cart = cartRepo.save(new Cart(customer, new HashMap<>()));
+        LogHandler.status201Created(CustomerService.class + " | 1 cart record created | id=" + cart.getId());
         return customer;
     }
 
@@ -89,14 +104,24 @@ public class CustomerService {
 
     public Customer findCustomerById(UUID id) throws RecordNotFoundException {
         Optional<Customer> customerOptional = customerRepo.findById(id);
-        return customerOptional.orElseThrow(() -> 
-            new RecordNotFoundException(CustomerService.class + " | record not found | id=" + id));
+
+        if (customerOptional.isPresent()) {
+            LogHandler.status200OK(CustomerService.class + " | record found | id=" + id);
+            return customerOptional.get();
+        } else {
+            throw new RecordNotFoundException(CustomerService.class + " | record not found | id=" + id);
+        }
     }
 
     public Customer findCustomerByEmail(String email) throws RecordNotFoundException {
         Optional<Customer> customerOptional = customerRepo.findByEmail(email.toLowerCase());
-        return customerOptional.orElseThrow(() -> 
-            new RecordNotFoundException(CustomerService.class + " | record not found | email=" + email));
+
+        if (customerOptional.isPresent()) {
+            LogHandler.status200OK(CustomerService.class + " | record found | email=" + email);
+            return customerOptional.get();
+        } else {
+            throw new RecordNotFoundException(CustomerService.class + " | record not found | email=" + email);
+        }
     }
 
     @Transactional
