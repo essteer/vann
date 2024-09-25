@@ -70,63 +70,41 @@ public class CartService {
     }
 
     @Transactional
-    public Cart addOrUpdateCartItems(UUID cartId, Map<UUID, Integer> items) throws RecordNotFoundException {
-        Cart cart = findCartById(cartId);
-        List<String> errorMessages = new ArrayList<>();
+    public Cart validateAndUpdateCartItems(UUID id, Map<UUID, Integer> items) throws BulkOperationException {
+        Cart cart = findCartById(id);
+        List<String> errorMessages = validateProductIds(items);
     
+        if (errorMessages.isEmpty()) {
+            return updateCartItems(cart, items);
+        } else {
+            throw new BulkOperationException(errorMessages);
+        }
+    }
+
+    private List<String> validateProductIds(Map<UUID, Integer> items) {
+        List<String> errorMessages = new ArrayList<>();
         for (Map.Entry<UUID, Integer> entry : items.entrySet()) {
-            UUID productId = entry.getKey();
-            int quantity = entry.getValue();
+            UUID id = entry.getKey();
             try {
-                validateProductId(productId);
-                addOrUpdateCartItem(cart, productId, quantity);
+                validateProductId(id);
             } catch (RecordNotFoundException e) {
                 errorMessages.add(e.getMessage());
             } catch (Exception e) {
                 errorMessages.add(e.getMessage());
             }
         }
-
-        if (errorMessages.isEmpty()) {
-            Cart savedCart = saveCart(cart);
-            LogHandler.status200OK(CartService.class + " | " + items.size() + " entries updated");
-            return savedCart;
-        } else {
-            throw new BulkOperationException(errorMessages);
-        }
+        return errorMessages;
     }
 
-    private void validateProductId(UUID productId) throws RecordNotFoundException {
-        productService.findProductById(productId);
+    private void validateProductId(UUID id) throws RecordNotFoundException {
+        productService.findProductById(id);
     }
 
-    @Transactional
-    private void addOrUpdateCartItem(Cart cart, UUID productId, int quantity) {
-        int existingQuantity = findExistingCartItem(cart, productId);
-        if (existingQuantity >= 0) {
-            updateExistingCartItem(cart, productId, quantity);
-        } else {
-            addNewCartItem(cart, productId, quantity);
-        }
-    }
-
-    private int findExistingCartItem(Cart cart, UUID productId) {
-        return cart.getCartItems().getOrDefault(productId, 0);
-    }
-
-    @Transactional
-    private void updateExistingCartItem(Cart cart, UUID productId, int quantity) {
-        int updatedQuantity = cart.getCartItems().getOrDefault(productId, 0) + quantity;
-        if (updatedQuantity <= 0) {
-            cart.getCartItems().remove(productId);
-        } else {
-            cart.getCartItems().put(productId, updatedQuantity);
-        }
-    }
-
-    @Transactional
-    private void addNewCartItem(Cart cart, UUID productId, int quantity) {
-        cart.getCartItems().put(productId, quantity);
+    private Cart updateCartItems(Cart cart, Map<UUID, Integer> items) {
+        cart.setCartItems(items);
+        Cart savedCart = saveCart(cart);
+        LogHandler.status200OK(CartService.class + " | " + items.size() + " entries updated");
+        return savedCart;
     }
 
     @Transactional
@@ -135,8 +113,8 @@ public class CartService {
     }
 
     @Transactional
-    public Invoice checkoutCart(UUID cartId, String billAndShipAddress) throws RecordNotFoundException {
-        return checkoutCart(cartId, billAndShipAddress, billAndShipAddress);
+    public Invoice checkoutCart(UUID id, String billAndShipAddress) throws RecordNotFoundException {
+        return checkoutCart(id, billAndShipAddress, billAndShipAddress);
     }
 
     @Transactional
