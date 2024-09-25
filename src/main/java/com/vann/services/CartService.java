@@ -76,10 +76,8 @@ public class CartService {
     
         for (Map.Entry<UUID, Integer> entry : items.entrySet()) {
             UUID productId = entry.getKey();
-            int quantity = entry.getValue();
             try {
                 validateProductId(productId);
-                addOrUpdateCartItem(cart, productId, quantity);
             } catch (RecordNotFoundException e) {
                 errorMessages.add(e.getMessage());
             } catch (Exception e) {
@@ -88,6 +86,7 @@ public class CartService {
         }
 
         if (errorMessages.isEmpty()) {
+            cart.setCartItems(items);
             Cart savedCart = saveCart(cart);
             LogHandler.status200OK(CartService.class + " | " + items.size() + " entries updated");
             return savedCart;
@@ -98,35 +97,6 @@ public class CartService {
 
     private void validateProductId(UUID productId) throws RecordNotFoundException {
         productService.findProductById(productId);
-    }
-
-    @Transactional
-    private void addOrUpdateCartItem(Cart cart, UUID productId, int quantity) {
-        int existingQuantity = findExistingCartItem(cart, productId);
-        if (existingQuantity >= 0) {
-            updateExistingCartItem(cart, productId, quantity);
-        } else {
-            addNewCartItem(cart, productId, quantity);
-        }
-    }
-
-    private int findExistingCartItem(Cart cart, UUID productId) {
-        return cart.getCartItems().getOrDefault(productId, 0);
-    }
-
-    @Transactional
-    private void updateExistingCartItem(Cart cart, UUID productId, int quantity) {
-        int updatedQuantity = cart.getCartItems().getOrDefault(productId, 0) + quantity;
-        if (updatedQuantity <= 0) {
-            cart.getCartItems().remove(productId);
-        } else {
-            cart.getCartItems().put(productId, updatedQuantity);
-        }
-    }
-
-    @Transactional
-    private void addNewCartItem(Cart cart, UUID productId, int quantity) {
-        cart.getCartItems().put(productId, quantity);
     }
 
     @Transactional

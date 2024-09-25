@@ -133,7 +133,7 @@ public class CartServiceTest {
         Cart result = cartService.addOrUpdateCartItems(cartId, items);
 
         assertEquals(1, result.getCartItems().size());
-        assertEquals(3, result.getCartItems().get(productId1));
+        assertEquals(2, result.getCartItems().get(productId1));
         verify(cartRepo).save(result);
     }
 
@@ -156,8 +156,7 @@ public class CartServiceTest {
     
         Cart result = cartService.findCartById(cartId);
         assertNotNull(result, "Cart should not be null");
-        assertEquals(1, result.getCartItems().size(), "Cart should contain only valid items");
-        assertEquals(2, result.getCartItems().get(productId1), "Cart should have the correct quantity for the valid product");
+        assertEquals(0, result.getCartItems().size(), "Cart should be empty (updates with invalid items will be rolled back)");
     
         verify(cartRepo, times(2)).findById(cartId);
         verify(productService).findProductById(productId1);
