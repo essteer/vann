@@ -101,7 +101,7 @@ public class CartServiceTest {
     }
 
     @Test
-    void testAddOrUpdateCartItems_AddNewItems() {
+    void testValidateAndUpdateCartItems_AddNewItems() {
         cart.getCartItems().clear();
         
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
@@ -111,7 +111,7 @@ public class CartServiceTest {
         items.put(productId1, 2);
         items.put(productId2, 3);
     
-        Cart result = cartService.addOrUpdateCartItems(cartId, items);
+        Cart result = cartService.validateAndUpdateCartItems(cartId, items);
     
         assertNotNull(result, "Cart should not be null");
         assertEquals(2, result.getCartItems().size(), "Cart should have 2 items");
@@ -122,7 +122,7 @@ public class CartServiceTest {
     }
 
     @Test
-    void testAddOrUpdateCartItems_UpdateExistingItem() {
+    void testValidateAndUpdateCartItems_UpdateExistingItem() {
         cart.getCartItems().put(productId1, 1);
 
         Map<UUID, Integer> items = new HashMap<>();
@@ -130,7 +130,7 @@ public class CartServiceTest {
 
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
         when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        Cart result = cartService.addOrUpdateCartItems(cartId, items);
+        Cart result = cartService.validateAndUpdateCartItems(cartId, items);
 
         assertEquals(1, result.getCartItems().size());
         assertEquals(2, result.getCartItems().get(productId1));
@@ -138,7 +138,7 @@ public class CartServiceTest {
     }
 
     @Test
-    void testAddOrUpdateCartItems_HandleInvalidProducts() {
+    void testValidateAndUpdateCartItems_HandleInvalidProducts() {
         UUID invalidProductId = UUID.randomUUID();
         when(productService.findProductById(invalidProductId)).thenThrow(new RecordNotFoundException("Product not found"));
         Map<UUID, Integer> items = new HashMap<>();
@@ -149,7 +149,7 @@ public class CartServiceTest {
         when(cartRepo.save(any(Cart.class))).thenAnswer(invocation -> invocation.getArgument(0));
     
         BulkOperationException thrown = assertThrows(BulkOperationException.class, () -> {
-            cartService.addOrUpdateCartItems(cartId, items);
+            cartService.validateAndUpdateCartItems(cartId, items);
         });
     
         assertEquals("Bulk operation failed with errors: Product not found", thrown.getMessage());
