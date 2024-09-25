@@ -62,7 +62,7 @@ public class CartController {
     public ResponseEntity<Cart> updateCartItems(
             @PathVariable UUID id,
             @RequestBody Map<UUID, Integer> items) {
-        Cart updatedCart = cartService.addOrUpdateCartItems(id, items);
+        Cart updatedCart = cartService.validateAndUpdateCartItems(id, items);
         return ResponseEntity.ok(updatedCart);
     }
 
