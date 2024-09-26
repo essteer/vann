@@ -63,15 +63,15 @@ public class LogHandler {
     }
 
     public static void status400BadRequest(String message) {
-        logger.error("400 Bad Request: {}", message);
+        logger.warn("400 Bad Request: {}", message);
     }
 
     public static void status404NotFound(String message) {
-        logger.error("404 Not Found: {}", message);
+        logger.warn("404 Not Found: {}", message);
     }
 
     public static void status409Conflict(String message) {
-        logger.error("409 Conflict: {}", message);
+        logger.warn("409 Conflict: {}", message);
     }
 
     public static void status500InternalServerError(String message) {
