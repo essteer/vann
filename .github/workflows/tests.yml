@@ -35,7 +35,7 @@ jobs:
 
       DATASOURCE_DRIVER: "org.postgresql.Driver"
       DATASOURCE_URL: "jdbc:postgresql://localhost:5432/postgres"
-      DATASOURCE_USER: root
+      DATASOURCE_USERNAME: root
       DATASOURCE_PASSWORD: postgres
 
     steps:
