@@ -1,0 +1,70 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    env:
+      SERVER_PORT: 9500
+      APPLICATION_NAME: "demo"
+
+      DATASOURCE_DRIVER: "org.postgresql.Driver"
+      DATASOURCE_URL: "jdbc:postgresql://localhost:5432/postgres"
+      DATASOURCE_USERNAME: postgres
+      DATASOURCE_PASSWORD: postgres
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Build Spring Boot app using Maven
+        run: mvn clean install
+
+      - name: Wait for Postgres to be ready
+        run: |
+          while ! pg_isready -h localhost -p 5432; do
+            sleep 1
+          done
+
+      - name: Run Spring Boot app
+        run: |
+          nohup mvn spring-boot:run > spring-boot.log 2>&1 &
+          sleep 10
+
+      - name: Upload Spring Boot logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-boot-logs
+          path: spring-boot.log
+
