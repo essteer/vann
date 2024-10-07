@@ -35,17 +35,12 @@ jobs:
 
       DATASOURCE_DRIVER: "org.postgresql.Driver"
       DATASOURCE_URL: "jdbc:postgresql://localhost:5432/postgres"
-      DATASOURCE_USERNAME: root
+      DATASOURCE_USERNAME: postgres
       DATASOURCE_PASSWORD: postgres
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -55,6 +50,12 @@ jobs:
 
       - name: Build Spring Boot app using Maven
         run: mvn clean install
+
+      - name: Wait for Postgres to be ready
+        run: |
+          while ! pg_isready -h localhost -p 5432; do
+            sleep 1
+          done
 
       - name: Run Spring Boot app
         run: |
