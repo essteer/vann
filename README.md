@@ -37,21 +37,21 @@ The core layers of this backend server are organised as entities, repositories, 
 
 Entities represent the core concepts of the shop model. The full list is as follows:
 
-- `Cart`, `Category`, `Customer`, `Invoice`, `InvoiceItem`, `Product`.
+- `Cart`, `Category`, `Invoice`, `InvoiceItem`, `Product`, `User`
 
 Several of these are currently in a simplified form and will be expanded upon in subsequent versions. Instances of each of the entities are allocated UUIDs before they become useable.
 
-The `Customer` in its current form has only name and email attributes, with the sole constraint that the email must be unique to that customer.
-
 The `Category` entity is constrained by the `CategoryType` enum under `com/vann/model/enums/CategoryType.java`. Each `Product` has a foreign key of a `Category` instance ID, and optional `Colour` and `Size` enum attributes.
 
-Instances of the `Cart` entity have a one-to-one relationship with a `Customer` instance. A `Cart` holds `Product` instances, and upon checkout an `Invoice` is created that consists of `InvoiceItems` — these are essentially snapshots of the state of their corresponding `Product` instance at the time of checkout, with additional details such as quantity.
+Instances of the `Cart` entity have a one-to-one relationship with a `User` instance. A `Cart` holds `Product` instances, and upon checkout an `Invoice` is created that consists of `InvoiceItems` — these are essentially snapshots of the state of their corresponding `Product` instance at the time of checkout, with additional details such as quantity.
+
+The `User` in its current form has only name and email attributes, with the sole constraint that the email must be unique to that user.
 
 ### Repository layer
 
 Each entity class has a corresponding repository interface. 
 
-- `CartRepo`, `CategoryRepo`, `CustomerRepo`, `InvoiceRepo`, `InvoiceItemRepo`, `ProductRepo`
+- `CartRepo`, `CategoryRepo`, `InvoiceRepo`, `InvoiceItemRepo`, `ProductRepo`, `UserRepo`
 
 The repositories hold instances of their respective entities, and provide a means of searching and retrieving them from the database.
 
@@ -61,7 +61,7 @@ The repositories are largely implemented by the Spring Data JPA framework, thoug
 
 The service layer constitutes the core business logic of the application. Each entity has a corresponding service:
 
-- `CartService`, `CategoryService`, `CustomerService`, `InvoiceService`, `InvoiceItemService`, `ProductService`
+- `CartService`, `CategoryService`, `InvoiceService`, `InvoiceItemService`, `ProductService`, `UserService`
 
 The service classes:
 
@@ -73,7 +73,7 @@ The service classes:
 
 The controller classes are API endpoints for external interaction with this application.
 
-- `CartController`, `CategoryController`, `CustomerController`, `InvoiceController`, `ProductController`
+- `CartController`, `CategoryController`, `InvoiceController`, `ProductController`, `UserController`
 
 There is no `InvoiceItemController` since invoice items are derived from cart and product information when an invoice is created — direct manipulation is not desired.
 

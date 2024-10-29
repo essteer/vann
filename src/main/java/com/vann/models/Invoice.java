@@ -18,8 +18,8 @@ public class Invoice {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "fk_customer_id", referencedColumnName = "id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "fk_user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private String billingAddress;
@@ -39,27 +39,27 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(Customer customer, String billingAddress, String shippingAddress) {
-        this.customer = customer;
+    public Invoice(User user, String billingAddress, String shippingAddress) {
+        this.user = user;
         this.billingAddress = billingAddress;
         this.shippingAddress = shippingAddress;
     }
 
-    public Invoice(Customer customer, String billingAddress) {
-        this(customer, billingAddress, billingAddress);
+    public Invoice(User user, String billingAddress) {
+        this(user, billingAddress, billingAddress);
     }
 
     public UUID getId() {
         return id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        if (customer != null) {
-            this.customer = customer;
+    public void setUser(User user) {
+        if (user != null) {
+            this.user = user;
         }
     }
 
@@ -114,7 +114,7 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice [id=" + id + ", customerId=" + customer.getId() + ", email=" + customer.getEmail() + ", billingAddress=" + billingAddress
+        return "Invoice [id=" + id + ", userId=" + user.getId() + ", email=" + user.getEmail() + ", billingAddress=" + billingAddress
                 + ", shippingAddress=" + shippingAddress + ", totalAmount=" + calculateTotalAmount() + "]";
     }
 

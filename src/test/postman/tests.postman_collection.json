@@ -262,10 +262,10 @@
 			]
 		},
 		{
-			"name": "03 Customer",
+			"name": "03 User",
 			"item": [
 				{
-					"name": "TEST: create Customer 1",
+					"name": "TEST: create User 1",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -285,7 +285,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers",
+							"raw": "http://localhost:9001/api/v1/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -294,14 +294,14 @@
 							"path": [
 								"api",
 								"v1",
-								"customers"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "TEST: create Customer 2",
+					"name": "TEST: create User 2",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -321,7 +321,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers",
+							"raw": "http://localhost:9001/api/v1/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -330,14 +330,14 @@
 							"path": [
 								"api",
 								"v1",
-								"customers"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "TEST: create Customer 3",
+					"name": "TEST: create User 3",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -357,7 +357,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers",
+							"raw": "http://localhost:9001/api/v1/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -366,14 +366,14 @@
 							"path": [
 								"api",
 								"v1",
-								"customers"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "TEST: create Customer 4",
+					"name": "TEST: create User 4",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -393,7 +393,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers",
+							"raw": "http://localhost:9001/api/v1/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -402,19 +402,19 @@
 							"path": [
 								"api",
 								"v1",
-								"customers"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "TEST: get all Customer",
+					"name": "TEST: get all User",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers",
+							"raw": "http://localhost:9001/api/v1/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -423,19 +423,19 @@
 							"path": [
 								"api",
 								"v1",
-								"customers"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "TEST: get all Customer (details for 2 and 4 should be updated)",
+					"name": "TEST: get all User (details for 2 and 4 should be updated)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers",
+							"raw": "http://localhost:9001/api/v1/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -444,14 +444,14 @@
 							"path": [
 								"api",
 								"v1",
-								"customers"
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "TEST: get Customer 1 by ID (update ID first)",
+					"name": "TEST: get User 1 by ID (update ID first)",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -474,7 +474,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers/9ccbad77-3b85-4196-af18-61b0f81071e6",
+							"raw": "http://localhost:9001/api/v1/users/9ccbad77-3b85-4196-af18-61b0f81071e6",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -483,7 +483,7 @@
 							"path": [
 								"api",
 								"v1",
-								"customers",
+								"users",
 								"9ccbad77-3b85-4196-af18-61b0f81071e6"
 							]
 						}
@@ -491,7 +491,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get Customer 1 by email",
+					"name": "TEST: get User 1 by email",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -508,7 +508,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers/email/bugs@warnerbros.com",
+							"raw": "http://localhost:9001/api/v1/users/email/bugs@warnerbros.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -517,7 +517,7 @@
 							"path": [
 								"api",
 								"v1",
-								"customers",
+								"users",
 								"email",
 								"bugs@warnerbros.com"
 							]
@@ -526,13 +526,13 @@
 					"response": []
 				},
 				{
-					"name": "TEST: update Customer 4 name (update ID in URL and Body first)",
+					"name": "TEST: update User 4 name (update ID in URL and Body first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customerName\": \"Wile E Coyote\",\r\n    \"customerEmail\": \"wile@warnerbros.com\",\r\n    \"customerId\": \"1717987f-1626-43db-8454-8af2f2453f7f\"\r\n}",
+							"raw": "{\r\n    \"userName\": \"Wile E Coyote\",\r\n    \"userEmail\": \"wile@warnerbros.com\",\r\n    \"userId\": \"1717987f-1626-43db-8454-8af2f2453f7f\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -540,7 +540,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers/1717987f-1626-43db-8454-8af2f2453f7f",
+							"raw": "http://localhost:9001/api/v1/users/1717987f-1626-43db-8454-8af2f2453f7f",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -549,7 +549,7 @@
 							"path": [
 								"api",
 								"v1",
-								"customers",
+								"users",
 								"1717987f-1626-43db-8454-8af2f2453f7f"
 							]
 						}
@@ -557,13 +557,13 @@
 					"response": []
 				},
 				{
-					"name": "TEST: update Customer 2 email (update ID in URL and Body first)",
+					"name": "TEST: update User 2 email (update ID in URL and Body first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customerName\": \"Road Runner\",\r\n    \"customerEmail\": \"roadrunner@warnerbros.com\",\r\n    \"customerId\": \"42208b87-58ec-4585-9a31-42dfd6a257c7\"\r\n}",
+							"raw": "{\r\n    \"userName\": \"Road Runner\",\r\n    \"userEmail\": \"roadrunner@warnerbros.com\",\r\n    \"userId\": \"42208b87-58ec-4585-9a31-42dfd6a257c7\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -571,7 +571,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/customers/42208b87-58ec-4585-9a31-42dfd6a257c7",
+							"raw": "http://localhost:9001/api/v1/users/42208b87-58ec-4585-9a31-42dfd6a257c7",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -580,7 +580,7 @@
 							"path": [
 								"api",
 								"v1",
-								"customers",
+								"users",
 								"42208b87-58ec-4585-9a31-42dfd6a257c7"
 							]
 						}
@@ -614,7 +614,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get Cart by Customer 1 id (should return empty cart)",
+					"name": "TEST: get Cart by User 1 id (should return empty cart)",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -631,7 +631,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-id/deed271c-6857-4a7f-b498-af1cecd33d98",
+							"raw": "http://localhost:9001/api/v1/carts/user-id/deed271c-6857-4a7f-b498-af1cecd33d98",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -641,7 +641,7 @@
 								"api",
 								"v1",
 								"carts",
-								"customer-id",
+								"user-id",
 								"deed271c-6857-4a7f-b498-af1cecd33d98"
 							]
 						}
@@ -649,12 +649,12 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get Cart by Customer 2 id (should return empty cart)",
+					"name": "TEST: get Cart by User 2 id (should return empty cart)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-id/6d63b3a9-6f5f-48d9-8e4d-55ab7b9704ac",
+							"raw": "http://localhost:9001/api/v1/carts/user-id/6d63b3a9-6f5f-48d9-8e4d-55ab7b9704ac",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -664,7 +664,7 @@
 								"api",
 								"v1",
 								"carts",
-								"customer-id",
+								"user-id",
 								"6d63b3a9-6f5f-48d9-8e4d-55ab7b9704ac"
 							]
 						}
@@ -672,12 +672,12 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get Cart by Customer 4 id (should return empty cart)",
+					"name": "TEST: get Cart by User 4 id (should return empty cart)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-id/bb1a1460-e2d7-40a6-9dd4-02964ef08c2a",
+							"raw": "http://localhost:9001/api/v1/carts/user-id/bb1a1460-e2d7-40a6-9dd4-02964ef08c2a",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -687,7 +687,7 @@
 								"api",
 								"v1",
 								"carts",
-								"customer-id",
+								"user-id",
 								"bb1a1460-e2d7-40a6-9dd4-02964ef08c2a"
 							]
 						}
@@ -695,7 +695,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: update Cart for Customer 1 by Cart id (update Cart ID in URL and product IDs in Body first)",
+					"name": "TEST: update Cart for User 1 by Cart id (update Cart ID in URL and product IDs in Body first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -726,7 +726,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: update Cart for Customer 2 by Cart id (update Cart ID in URL and product ID in Body first)",
+					"name": "TEST: update Cart for User 2 by Cart id (update Cart ID in URL and product ID in Body first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -757,7 +757,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: update Cart for Customer 4 by Cart id (update Cart ID in URL and product IDs in Body first)",
+					"name": "TEST: update Cart for User 4 by Cart id (update Cart ID in URL and product IDs in Body first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -809,7 +809,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: checkout Cart for Customer 4 (update Cart ID in URL first)",
+					"name": "TEST: checkout Cart for User 4 (update Cart ID in URL first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -847,7 +847,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get all Cart (3 carts should be returned: 2 with contents, 1 empty (Customer 4))",
+					"name": "TEST: get all Cart (3 carts should be returned: 2 with contents, 1 empty (User 4))",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -868,12 +868,12 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get Cart by Customer 1 email (should contain contents)",
+					"name": "TEST: get Cart by User 1 email (should contain contents)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-email/bugs@warnerbros.com",
+							"raw": "http://localhost:9001/api/v1/carts/user-email/bugs@warnerbros.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -883,7 +883,7 @@
 								"api",
 								"v1",
 								"carts",
-								"customer-email",
+								"user-email",
 								"bugs@warnerbros.com"
 							]
 						}
@@ -891,12 +891,12 @@
 					"response": []
 				},
 				{
-					"name": "TEST: get Cart by Customer 3 email (should be empty)",
+					"name": "TEST: get Cart by User 3 email (should be empty)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/carts/customer-email/daffy@warnerbros.com",
+							"raw": "http://localhost:9001/api/v1/carts/user-email/daffy@warnerbros.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -906,7 +906,7 @@
 								"api",
 								"v1",
 								"carts",
-								"customer-email",
+								"user-email",
 								"daffy@warnerbros.com"
 							]
 						}
@@ -914,7 +914,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: checkout Cart for Customer 1 (update Cart ID in URL first)",
+					"name": "TEST: checkout Cart for User 1 (update Cart ID in URL first)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -947,7 +947,7 @@
 					"response": []
 				},
 				{
-					"name": "TEST: empty Cart for Customer 2 (update Cart ID in URL first)",
+					"name": "TEST: empty Cart for User 2 (update Cart ID in URL first)",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -995,7 +995,7 @@
 			"name": "05 Invoice",
 			"item": [
 				{
-					"name": "TEST: get all Invoice (should be 2: Customer 1 and Customer 4)",
+					"name": "TEST: get all Invoice (should be 2: User 1 and User 4)",
 					"request": {
 						"method": "GET",
 						"header": [],

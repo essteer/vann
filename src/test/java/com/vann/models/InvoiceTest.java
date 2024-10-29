@@ -12,14 +12,14 @@ import org.mockito.Mockito;
 public class InvoiceTest {
 
     private Invoice invoice;
-    private Customer customer;
+    private User user;
     private String billAddress;
     private String shipAddress;
     private List<InvoiceItem> invoiceItems;
 
     @BeforeEach
     public void setUp() {
-        customer = mock(Customer.class);
+        user = mock(User.class);
         billAddress = "123 Main St";
         shipAddress = "456 Elm St";
 
@@ -29,14 +29,14 @@ public class InvoiceTest {
         Mockito.when(item2.calculateInvoiceItemSubtotal()).thenReturn(50.0);
 
         invoiceItems = Arrays.asList(item1, item2);
-        invoice = new Invoice(customer, billAddress, shipAddress);
+        invoice = new Invoice(user, billAddress, shipAddress);
         invoice.setInvoiceItems(invoiceItems);
     }
 
     @Test
     public void testInvoiceDefaultConstructor() {
         Invoice defaultInvoice = new Invoice();
-        assertNull(defaultInvoice.getCustomer(), "Customer should be null");
+        assertNull(defaultInvoice.getUser(), "User should be null");
         assertNull(defaultInvoice.getShippingAddress(), "Shipping address should be null");
         assertEquals(0.0, defaultInvoice.getTotalAmount(), "Total amount should be 0.0");
         assertTrue(defaultInvoice.getInvoiceItems().isEmpty(), "Invoice items should be empty");
@@ -44,8 +44,8 @@ public class InvoiceTest {
 
     @Test
     public void testInvoiceParameterizedConstructor() {
-        assertEquals(customer.getName(), invoice.getCustomer().getName(), "Customer name should match");
-        assertEquals(customer.getEmail(), invoice.getCustomer().getEmail(), "Customer email should match");
+        assertEquals(user.getName(), invoice.getUser().getName(), "User name should match");
+        assertEquals(user.getEmail(), invoice.getUser().getEmail(), "User email should match");
         assertEquals("123 Main St", invoice.getBillingAddress(), "Billing address should match");
         assertEquals("456 Elm St", invoice.getShippingAddress(), "Shipping address should match");
         assertEquals(invoiceItems, invoice.getInvoiceItems(), "Invoice items should match");
@@ -53,8 +53,8 @@ public class InvoiceTest {
 
     @Test
     public void testSettersAndGetters() {
-        Customer newCustomer = new Customer("Jane Doe", "jane.doe@example.com");
-        invoice.setCustomer(newCustomer);
+        User newUser = new User("Jane Doe", "jane.doe@example.com");
+        invoice.setUser(newUser);
         invoice.setBillingAddress("789 Pine St");
         invoice.setShippingAddress("321 Oak St");
 
@@ -67,7 +67,7 @@ public class InvoiceTest {
         List<InvoiceItem> newInvoiceItems = Arrays.asList(item1, item2);
         invoice.setInvoiceItems(newInvoiceItems);
 
-        assertEquals(newCustomer, invoice.getCustomer(), "Customer should match");
+        assertEquals(newUser, invoice.getUser(), "User should match");
         assertEquals("789 Pine St", invoice.getBillingAddress(), "Billing address should match");
         assertEquals("321 Oak St", invoice.getShippingAddress(), "Shipping address should match");
         assertEquals(newInvoiceItems, invoice.getInvoiceItems(), "Invoice items should match");

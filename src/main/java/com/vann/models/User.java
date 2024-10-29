@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
-@Table(name = "customers")
-public class Customer {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,10 +31,10 @@ public class Customer {
 	@JsonIgnore
 	private Date creationDate;
 
-    public Customer() {
+    public User() {
     }
 
-    public Customer(String name, String email) {
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
     }
@@ -70,7 +70,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer [id=" + id + ", name=" + name + ", email="
+        return "User [id=" + id + ", name=" + name + ", email="
                 + email + "]";
     }
 

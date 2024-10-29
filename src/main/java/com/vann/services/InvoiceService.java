@@ -14,27 +14,27 @@ import java.util.Map.Entry;
 @Service
 public class InvoiceService {
 
-    private final CustomerService customerService;
+    private final UserService userService;
     private final InvoiceItemService invoiceItemService;
     private final InvoiceRepo invoiceRepo;
 
-    public InvoiceService(CustomerService customerService, InvoiceItemService invoiceItemService, InvoiceRepo invoiceRepo) {
-        this.customerService = customerService;
+    public InvoiceService(UserService userService, InvoiceItemService invoiceItemService, InvoiceRepo invoiceRepo) {
+        this.userService = userService;
         this.invoiceItemService = invoiceItemService;
         this.invoiceRepo = invoiceRepo;
     }
 
-    public Invoice createInvoice(Customer customer, Map<UUID, Integer> cartItems, String billingAddress, String shippingAddress) {
-        Invoice invoiceTemplate = createCustomerInvoice(customer, billingAddress, shippingAddress);
+    public Invoice createInvoice(User user, Map<UUID, Integer> cartItems, String billingAddress, String shippingAddress) {
+        Invoice invoiceTemplate = createUserInvoice(user, billingAddress, shippingAddress);
         Invoice invoice = updateInvoice(invoiceTemplate, cartItems);
 
         return invoice;
     }
 
-    public Invoice createCustomerInvoice(Customer potentialCustomer, String billingAddress, String shippingAddress) throws RecordNotFoundException {
+    public Invoice createUserInvoice(User potentialUser, String billingAddress, String shippingAddress) throws RecordNotFoundException {
         Invoice invoice = createBlankInvoice();
-        Customer customer = customerService.findCustomerById(potentialCustomer.getId());
-        invoice.setCustomer(customer);
+        User user = userService.findUserById(potentialUser.getId());
+        invoice.setUser(user);
         invoice.setBillingAddress(billingAddress);
         invoice.setShippingAddress(shippingAddress);
 
@@ -74,15 +74,15 @@ public class InvoiceService {
         }
     }
 
-    public List<Invoice> findInvoicesByCustomerId(UUID id) {
-        List<Invoice> invoices = invoiceRepo.findByCustomer_Id(id);
-        logBulkFindOperation(invoices, "findInvoicesByCustomer_Id()");
+    public List<Invoice> findInvoicesByUserId(UUID id) {
+        List<Invoice> invoices = invoiceRepo.findByUser_Id(id);
+        logBulkFindOperation(invoices, "findInvoicesByUser_Id()");
         return invoices;
     }
 
-    public List<Invoice> findInvoicesByCustomerEmail(String email) {
-        List<Invoice> invoices = invoiceRepo.findByCustomer_Email(email);
-        logBulkFindOperation(invoices, "findByCustomer_Email()");
+    public List<Invoice> findInvoicesByUserEmail(String email) {
+        List<Invoice> invoices = invoiceRepo.findByUser_Email(email);
+        logBulkFindOperation(invoices, "findByUser_Email()");
         return invoices;
     }
 

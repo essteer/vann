@@ -10,7 +10,7 @@ import com.vann.models.Invoice;
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, UUID> {
 
-    List<Invoice> findByCustomer_Email(String email);
-    List<Invoice> findByCustomer_Id(UUID id);
+    List<Invoice> findByUser_Email(String email);
+    List<Invoice> findByUser_Id(UUID id);
 
 }
