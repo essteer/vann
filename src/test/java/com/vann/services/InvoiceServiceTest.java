@@ -23,7 +23,7 @@ public class InvoiceServiceTest {
     private InvoiceItemService invoiceItemService;
 
     @Mock
-    private CustomerService customerService;
+    private UserService userService;
 
     @InjectMocks
     private InvoiceService invoiceService;
@@ -40,27 +40,27 @@ public class InvoiceServiceTest {
     }
 
     @Test
-    void testCreateCustomerInvoice() throws RecordNotFoundException {
-        UUID customerId = UUID.randomUUID();
+    void testCreateUserInvoice() throws RecordNotFoundException {
+        UUID userId = UUID.randomUUID();
         String billAddress = "12 Oak Street";
         String shipAddress = "15 Elm Street";
     
-        Customer customer = new Customer("John Doe", "john@example.com");
-        when(customerService.findCustomerById(customerId)).thenReturn(customer);
+        User user = new User("John Doe", "john@example.com");
+        when(userService.findUserById(userId)).thenReturn(user);
         
         Invoice invoice = new Invoice();
-        invoice.setCustomer(customer);
+        invoice.setUser(user);
         invoice.setBillingAddress(billAddress);
         invoice.setShippingAddress(shipAddress);
         
         when(invoiceRepo.save(any(Invoice.class))).thenReturn(invoice);
         
-        Invoice result = invoiceService.createCustomerInvoice(customer, billAddress, shipAddress);
+        Invoice result = invoiceService.createUserInvoice(user, billAddress, shipAddress);
     
         assertNotNull(result);
-        assertEquals(customer, result.getCustomer());
-        assertEquals("John Doe", result.getCustomer().getName());
-        assertEquals("john@example.com", result.getCustomer().getEmail());
+        assertEquals(user, result.getUser());
+        assertEquals("John Doe", result.getUser().getName());
+        assertEquals("john@example.com", result.getUser().getEmail());
         assertEquals(billAddress, result.getBillingAddress());
         assertEquals(shipAddress, result.getShippingAddress());
         verify(invoiceRepo, times(1)).save(any(Invoice.class));
@@ -83,35 +83,35 @@ public class InvoiceServiceTest {
     }
 
     @Test
-    void testFindInvoicesByCustomerId() {
-        UUID customerId = UUID.randomUUID();
+    void testFindInvoicesByUserId() {
+        UUID userId = UUID.randomUUID();
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByCustomer_Id(customerId)).thenReturn(Arrays.asList(invoice1, invoice2));
+        when(invoiceRepo.findByUser_Id(userId)).thenReturn(Arrays.asList(invoice1, invoice2));
 
-        List<Invoice> invoices = invoiceService.findInvoicesByCustomerId(customerId);
+        List<Invoice> invoices = invoiceService.findInvoicesByUserId(userId);
 
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByCustomer_Id(customerId);
+        verify(invoiceRepo, times(1)).findByUser_Id(userId);
     }
 
     @Test
-    void testFindInvoicesByCustomerEmail() {
-        String email = "customer@example.com";
+    void testFindInvoicesByUserEmail() {
+        String email = "user@example.com";
         Invoice invoice1 = new Invoice();
         Invoice invoice2 = new Invoice();
 
-        when(invoiceRepo.findByCustomer_Email(email)).thenReturn(Arrays.asList(invoice1, invoice2));
+        when(invoiceRepo.findByUser_Email(email)).thenReturn(Arrays.asList(invoice1, invoice2));
 
-        List<Invoice> invoices = invoiceService.findInvoicesByCustomerEmail(email);
+        List<Invoice> invoices = invoiceService.findInvoicesByUserEmail(email);
 
         assertEquals(2, invoices.size());
         assertTrue(invoices.contains(invoice1));
         assertTrue(invoices.contains(invoice2));
-        verify(invoiceRepo, times(1)).findByCustomer_Email(email);
+        verify(invoiceRepo, times(1)).findByUser_Email(email);
     }
 
     @Test

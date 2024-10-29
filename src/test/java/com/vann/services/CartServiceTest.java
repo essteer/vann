@@ -20,10 +20,10 @@ public class CartServiceTest {
     private CartRepo cartRepo;
 
     @Mock
-    private CustomerRepo customerRepo;
+    private UserRepo userRepo;
 
     @Mock
-    private CustomerService customerService;
+    private UserService userService;
 
     @Mock
     private ProductService productService;
@@ -32,26 +32,26 @@ public class CartServiceTest {
     private CartService cartService;
 
     private Cart cart;
-    private Customer customer;
+    private User user;
     private UUID cartId;
-    private UUID customerId;
+    private UUID userId;
     private UUID productId1;
     private UUID productId2;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        customerId = UUID.randomUUID();
+        userId = UUID.randomUUID();
         productId1 = UUID.randomUUID();
         productId2 = UUID.randomUUID();
         cartId = UUID.randomUUID();
-        customer = new Customer("John Doe", "john.doe@example.com");
-        cart = new Cart(customer, new HashMap<>());
+        user = new User("John Doe", "john.doe@example.com");
+        cart = new Cart(user, new HashMap<>());
     }
 
     @Test
     void testFindAllCarts() {
-        List<Cart> carts = Arrays.asList(cart, new Cart(customer, new HashMap<>()));
+        List<Cart> carts = Arrays.asList(cart, new Cart(user, new HashMap<>()));
         when(cartRepo.findAll()).thenReturn(carts);
         List<Cart> result = cartService.findAllCarts();
         assertEquals(2, result.size());
@@ -77,27 +77,27 @@ public class CartServiceTest {
     }
 
     @Test
-    void testFindCartByCustomerId_CartExists() {
-        when(cartRepo.findByCustomer_Id(customerId)).thenReturn(Optional.of(cart));
-        Cart result = cartService.findCartByCustomerId(customerId);
+    void testFindCartByUserId_CartExists() {
+        when(cartRepo.findByUser_Id(userId)).thenReturn(Optional.of(cart));
+        Cart result = cartService.findCartByUserId(userId);
         assertEquals(cart, result);
         verify(cartRepo, never()).save(any(Cart.class));
     }
 
     @Test
-    void testFindCartByCustomerId_CartDoesNotExist() {
-        Customer newCustomer = new Customer("New Customer", "new@customer.com");
-        UUID newCustomerId = newCustomer.getId();
+    void testFindCartByUserId_CartDoesNotExist() {
+        User newUser = new User("New User", "new@user.com");
+        UUID newUserId = newUser.getId();
     
-        when(customerService.findCustomerById(newCustomerId)).thenReturn(newCustomer);
-        when(cartRepo.findByCustomer_Id(newCustomerId)).thenReturn(Optional.empty());
+        when(userService.findUserById(newUserId)).thenReturn(newUser);
+        when(cartRepo.findByUser_Id(newUserId)).thenReturn(Optional.empty());
         
         assertThrows(RecordNotFoundException.class, ()-> {
-            cartService.findCartByCustomerId(newCustomerId);
+            cartService.findCartByUserId(newUserId);
         });
     
-        verify(customerService).findCustomerById(newCustomerId);
-        verify(cartRepo).findByCustomer_Id(newCustomerId);
+        verify(userService).findUserById(newUserId);
+        verify(cartRepo).findByUser_Id(newUserId);
     }
 
     @Test

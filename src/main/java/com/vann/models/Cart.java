@@ -14,8 +14,8 @@ public class Cart {
     private UUID id;
 
     @OneToOne
-    @JoinColumn(name = "fk_customer_id", referencedColumnName = "id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "fk_user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
     @ElementCollection
     @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
@@ -26,8 +26,8 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Customer customer, Map<UUID, Integer> cartItems) {
-        this.customer = customer;
+    public Cart(User user, Map<UUID, Integer> cartItems) {
+        this.user = user;
         this.cartItems = cartItems;
     }
 
@@ -35,8 +35,8 @@ public class Cart {
         return id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
     public Map<UUID, Integer> getCartItems() {
@@ -52,7 +52,7 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart [id=" + id + ", customerId=" + customer.getId() + "]";
+        return "Cart [id=" + id + ", userId=" + user.getId() + "]";
     }
 
 }

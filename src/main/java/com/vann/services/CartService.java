@@ -15,32 +15,32 @@ import com.vann.utils.LogHandler;
 public class CartService {
 
     private final CartRepo cartRepo;
-    private final CustomerService customerService;
+    private final UserService userService;
     private final InvoiceService invoiceService;
     private final ProductService productService;
 
-    public CartService(CartRepo cartRepo, CustomerService customerService, InvoiceService invoiceService, ProductService productService) {
+    public CartService(CartRepo cartRepo, UserService userService, InvoiceService invoiceService, ProductService productService) {
         this.cartRepo = cartRepo;
-        this.customerService = customerService;
+        this.userService = userService;
         this.invoiceService = invoiceService;
         this.productService = productService;
     }
 
     @Transactional
-    public Cart findCartByCustomerId(UUID id) {
-        customerService.findCustomerById(id);
-        return findCartByExistingCustomerId(id);
+    public Cart findCartByUserId(UUID id) {
+        userService.findUserById(id);
+        return findCartByExistingUserId(id);
     }
 
-    private Cart findCartByExistingCustomerId(UUID id) throws RecordNotFoundException {
-        Optional<Cart> cartOptional = cartRepo.findByCustomer_Id(id);
+    private Cart findCartByExistingUserId(UUID id) throws RecordNotFoundException {
+        Optional<Cart> cartOptional = cartRepo.findByUser_Id(id);
         
         if (cartOptional.isPresent()) {
             Cart cart = cartOptional.get();
             LogHandler.status200OK(CartService.class + " | record found | id=" + cart.getId());
             return cart;
         } else {
-            throw new RecordNotFoundException(CartService.class + " | record not found | customerId=" + id);
+            throw new RecordNotFoundException(CartService.class + " | record not found | userId=" + id);
         }
     }
 
@@ -123,7 +123,7 @@ public class CartService {
         if (isCartEmpty(cart)) {
             throw new IllegalArgumentException(CartService.class + " | empty cart cannot be checked out | id=" + id);
         }
-        Invoice invoice = invoiceService.createInvoice(cart.getCustomer(), cart.getCartItems(), billAddress, shipAddress);
+        Invoice invoice = invoiceService.createInvoice(cart.getUser(), cart.getCartItems(), billAddress, shipAddress);
         emptyCart(id);
 
         return invoice;

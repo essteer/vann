@@ -11,19 +11,19 @@ import java.util.*;
 public class CartTest {
 
     private Cart cart;
-    private Customer customer;
-    private UUID customerId;
+    private User user;
+    private UUID userId;
     private Map<UUID, Integer> items;
 
     @BeforeEach
     public void setUp() {
-        customer = mock(Customer.class);
+        user = mock(User.class);
         items = new HashMap<>();
         UUID itemId1 = UUID.randomUUID();
         UUID itemId2 = UUID.randomUUID();
         items.put(itemId1, 0);
         items.put(itemId2, 0);
-        cart = new Cart(customer, items);
+        cart = new Cart(user, items);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CartTest {
     @Test
     public void testToString() {
         String expectedString = "Cart [id=" + cart.getId() +
-                ", customerId=" + customerId + "]";
+                ", userId=" + userId + "]";
         assertEquals(expectedString, cart.toString(), "toString should match the expected output");
     }
 }

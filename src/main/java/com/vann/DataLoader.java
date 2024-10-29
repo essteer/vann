@@ -13,16 +13,16 @@ public class DataLoader implements ApplicationRunner {
 
     private CartRepo cartRepo;
     private CategoryRepo categoryRepo;
-    private CustomerRepo customerRepo;
+    private UserRepo userRepo;
     private InvoiceItemRepo invoiceItemRepo;
     private InvoiceRepo invoiceRepo;
     private ProductRepo productRepo;
 
-    public DataLoader(CartRepo cartRepo, CategoryRepo categoryRepo, CustomerRepo customerRepo, InvoiceItemRepo invoiceItemRepo, InvoiceRepo invoiceRepo, ProductRepo productRepo) {
+    public DataLoader(CartRepo cartRepo, CategoryRepo categoryRepo, UserRepo userRepo, InvoiceItemRepo invoiceItemRepo, InvoiceRepo invoiceRepo, ProductRepo productRepo) {
         super();
         this.cartRepo = cartRepo;
         this.categoryRepo = categoryRepo;
-        this.customerRepo = customerRepo;
+        this.userRepo = userRepo;
         this.invoiceItemRepo = invoiceItemRepo;
         this.invoiceRepo = invoiceRepo;
         this.productRepo = productRepo;
@@ -38,16 +38,16 @@ public class DataLoader implements ApplicationRunner {
             ProductService productService = new ProductService(this.productRepo, categoryService);
             LogHandler.serviceClassInitOK(productService.getClass().getName());
             
-            CustomerService customerService = new CustomerService(this.customerRepo, this.cartRepo);
-            LogHandler.serviceClassInitOK(customerService.getClass().getName());
+            UserService userService = new UserService(this.userRepo, this.cartRepo);
+            LogHandler.serviceClassInitOK(userService.getClass().getName());
             
             InvoiceItemService invoiceItemService = new InvoiceItemService(this.invoiceItemRepo, productService);
             LogHandler.serviceClassInitOK(invoiceItemService.getClass().getName());
             
-            InvoiceService invoiceService = new InvoiceService(customerService, invoiceItemService, this.invoiceRepo);
+            InvoiceService invoiceService = new InvoiceService(userService, invoiceItemService, this.invoiceRepo);
             LogHandler.serviceClassInitOK(invoiceService.getClass().getName());
             
-            CartService cartService = new CartService(this.cartRepo, customerService, invoiceService, productService);
+            CartService cartService = new CartService(this.cartRepo, userService, invoiceService, productService);
             LogHandler.serviceClassInitOK(cartService.getClass().getName());
         
         } catch (Exception e) {

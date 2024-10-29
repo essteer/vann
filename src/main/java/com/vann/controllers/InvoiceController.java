@@ -26,9 +26,9 @@ public class InvoiceController {
         return ResponseEntity.ok(invoices);
     }
 
-    @GetMapping("/customer/{id}")
-    public ResponseEntity<List<Invoice>> getInvoicesByCustomerId(@PathVariable UUID id) {
-        List<Invoice> invoices = invoiceService.findInvoicesByCustomerId(id);
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Invoice>> getInvoicesByUserId(@PathVariable UUID id) {
+        List<Invoice> invoices = invoiceService.findInvoicesByUserId(id);
         if (invoices.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
