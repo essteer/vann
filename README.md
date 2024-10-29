@@ -227,6 +227,12 @@ A test suite implemented via [Junit](https://junit.org/junit5/) and [Mockito](ht
 
 The Junit and Mockito libraries come included with the `spring-boot-starter-test` dependency, so are not referenced separately in the `pom.xml`.
 
+Run the full test suite from the root directory with the following command:
+
+```console
+$ mvn test
+```
+
 A collection of API tests for use with Postman is included in a JSON file under `src/test/postman`.
 
 ## Logs
