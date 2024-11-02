@@ -19,6 +19,7 @@ public class InvoiceItem {
 
     private int quantity;
     private double unitPrice;
+    @Column(columnDefinition = "TEXT")
     private String productDetails;
 
     public InvoiceItem() {
