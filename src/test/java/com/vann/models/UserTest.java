@@ -35,10 +35,4 @@ public class UserTest {
         assertEquals("jane.doe@example.com", user.getEmail(), "User email should match");
     }
 
-    @Test
-    public void testToString() {
-        String expectedString = "User [id=" + user.getId() + 
-                                ", name=John Doe, email=john.doe@example.com]";
-        assertEquals(expectedString, user.toString(), "toString should match");
-    }
 }

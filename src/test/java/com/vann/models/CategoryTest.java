@@ -39,8 +39,8 @@ public class CategoryTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Category [id=" + category.getId() + ", type=" + category.getType() +
-                                ", name=jewellery]";
+        String expectedString = "Category(id=" + category.getId() + ", type=" + category.getType() +
+                                ", name=jewellery)";
         assertEquals(expectedString, category.toString(), "toString should match");
     }
 }

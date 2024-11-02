@@ -1,12 +1,12 @@
 package com.vann.models;
 
 import java.util.*;
-
 import jakarta.persistence.*;
-
+import lombok.*;
 
 @Entity
 @Table(name = "carts")
+@Getter
 public class Cart {
 
     @Id
@@ -31,14 +31,6 @@ public class Cart {
         this.cartItems = cartItems;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
     public Map<UUID, Integer> getCartItems() {
         if (cartItems == null) {
             this.cartItems = new HashMap<>();
@@ -52,7 +44,7 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart [id=" + id + ", userId=" + user.getId() + "]";
+        return "Cart(id=" + id + ", userId=" + user.getId() + ")";
     }
 
 }
