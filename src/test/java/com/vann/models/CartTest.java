@@ -55,8 +55,8 @@ public class CartTest {
 
     @Test
     public void testToString() {
-        String expectedString = "Cart [id=" + cart.getId() +
-                ", userId=" + userId + "]";
+        String expectedString = "Cart(id=" + cart.getId() +
+                ", userId=" + userId + ")";
         assertEquals(expectedString, cart.toString(), "toString should match the expected output");
     }
 }

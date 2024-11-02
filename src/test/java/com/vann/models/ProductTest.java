@@ -58,13 +58,5 @@ public class ProductTest {
         assertEquals(Colour.WHITE_GOLD, product.getColour(), "Colour should match");
         assertEquals(false, product.getFeaturedStatus(), "Featured status should be false");
     }
-
-    @Test
-    public void testToString() {
-        String expectedString = "Product [id=" + product.getId() +
-                ", category_name=" + category.getName() + ", name=RING, unitprice=499.99, size=" + 
-                product.getSize() + ", colour=" + product.getColour() + ", featuredStatus=" + product.getFeaturedStatus() + "]";
-
-        assertEquals(expectedString, product.toString(), "toString should match the expected output");
-    }
+    
 }

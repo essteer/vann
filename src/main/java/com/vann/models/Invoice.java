@@ -1,16 +1,16 @@
 package com.vann.models;
 
 import java.util.*;
-
 import jakarta.persistence.*;
-
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
 @Table(name = "invoices")
+@Getter
+@ToString
 public class Invoice {
 
     @Id
@@ -49,32 +49,16 @@ public class Invoice {
         this(user, billingAddress, billingAddress);
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
     public void setUser(User user) {
         if (user != null) {
             this.user = user;
         }
     }
 
-    public String getBillingAddress() {
-        return billingAddress;
-    }
-
     public void setBillingAddress(String billingAddress) {
         if (billingAddress != null) {
             this.billingAddress = billingAddress;
         }
-    }
-
-    public String getShippingAddress() {
-        return shippingAddress;
     }
 
     public void setShippingAddress(String shippingAddress) {
@@ -106,16 +90,6 @@ public class Invoice {
     public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
         this.invoiceItems = invoiceItems;
         this.totalAmount = calculateTotalAmount();
-    }
-
-    public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Invoice [id=" + id + ", userId=" + user.getId() + ", email=" + user.getEmail() + ", billingAddress=" + billingAddress
-                + ", shippingAddress=" + shippingAddress + ", totalAmount=" + calculateTotalAmount() + "]";
     }
 
 }

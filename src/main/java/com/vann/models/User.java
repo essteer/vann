@@ -1,10 +1,9 @@
 package com.vann.models;
 
-import java.util.*;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-
+import java.util.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
+@Getter
+@ToString
 public class User {
 
     @Id
@@ -39,22 +40,10 @@ public class User {
         this.email = email;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         if (name != null && !(name.trim().isEmpty())) {
             this.name = name;
         }
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
@@ -62,16 +51,6 @@ public class User {
         if (formattedEmail != null && !(formattedEmail.trim().isEmpty())) {
             this.email = formattedEmail;
         }
-    }
-
-    public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", name=" + name + ", email="
-                + email + "]";
     }
 
 }
